@@ -1,0 +1,12 @@
+*.pyc
+build
+dist
+*.egg-info
+.coverage
+*~
+\#*
+\.\#*
+doc/source/repoman.rst
+doc/source/repoman.*.rst
+venv/
+.idea/

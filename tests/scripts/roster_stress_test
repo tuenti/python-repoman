@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+This scripts tests concurrence of roster module by stressing it
+with multiple processes trying to free and reserve resources.
+ @copyright:  2013, (c) Tuenti Technologies S.L.
+ @author:  Jaime Soriano Pastor <jsoriano@tuenti.com>
+"""
+
+import os
+import tempfile
+from multiprocessing import Pool
+
+from repoman.roster import Roster
+
+
+def init_roster(max_clones):
+    roster = Roster(database_path, max_clones=max_clones)
+    for i in range(max_clones):
+        reservation = roster.add('/test{0}'.format(i), i, 'test')
+        roster.free_clone(reservation, reservation.task)
+
+def reserve(id):
+    roster = Roster(database_path)
+    return roster.reserve_clone(id, 'test')
+
+def free(reservation):
+    roster = Roster(database_path)
+    roster.free_clone(reservation, reservation.task)
+
+def check_available(n, availables):
+    roster = Roster(database_path, max_clones=n)
+    assert len(roster.get_available()) == availables
+
+
+def main(n):
+    global database_path
+    fd, database_path = tempfile.mkstemp(); os.close(fd)
+
+    try:
+        init_roster(n)
+        pool = Pool(n)
+
+        reservations = pool.map(reserve, range(n))
+        check_available(n, 0)
+
+        pool.map(free, reservations)
+        check_available(n, n)
+    finally:
+        os.remove(database_path)
+
+
+main(n=150)
+print("OK")

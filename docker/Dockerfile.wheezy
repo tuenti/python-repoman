@@ -1,0 +1,17 @@
+FROM debian:wheezy
+
+# libgit2 > 0.18 required, only available in experimental by now
+RUN echo deb http://ftp.debian.org/debian experimental main > /etc/apt/sources.list.d/experimental.list
+RUN echo deb http://ftp.debian.org/debian testing main >> /etc/apt/sources.list.d/experimental.list
+RUN apt-get update
+RUN apt-get install -y --force-yes -t testing libc6
+RUN apt-get install -y --force-yes -t experimental libgit2-0 libgit2-dbg libgit2-dev
+RUN apt-get install -y --force-yes -t stable git python-dev build-essential python-pip
+RUN apt-get install -y --force-yes mercurial
+RUN pip install pip
+
+ADD run.sh /run.sh
+
+ENTRYPOINT ["/run.sh"]
+
+CMD []

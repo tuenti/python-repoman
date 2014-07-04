@@ -1,0 +1,15 @@
+# testing
+nose
+coverage
+mox
+unittest2
+
+# documentation
+sphinx
+sphinx-bootstrap-theme
+
+# production
+sh
+ordereddict
+python-hglib<=1.2
+pygit2==0.20.1
