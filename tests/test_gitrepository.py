@@ -261,7 +261,8 @@ class TestGitRepository(unittest.TestCase):
 
     def test_tag(self):
         gitrepo = Repository(self.main_repo)
-        gitrepo.tag("new-tag", message="fake tag")
+        signature = Signature(user='fake user')
+        gitrepo.tag("new-tag", message="fake tag", signature=signature)
 
         repo = pygit2.Repository(self.main_repo)
         self.assertIsNotNone(repo.lookup_reference('refs/tags/new-tag'))
@@ -481,9 +482,10 @@ class TestGitRepository(unittest.TestCase):
     def test_get_changeset_tags(self):
         repo = pygit2.Repository(self.main_repo)
         gitrepo = Repository(self.main_repo)
+        signature = Signature(user='fake user')
         rev = gitrepo[repo.head.get_object().hex]
-        gitrepo.tag("test_tag", revision=rev.hash)
-        gitrepo.tag("test_tag2", revision=rev.hash)
+        gitrepo.tag("test_tag", revision=rev.hash, signature=signature)
+        gitrepo.tag("test_tag2", revision=rev.hash, signature=signature)
         tags = gitrepo.get_changeset_tags(rev.hash)
         self.assertListEqual(tags, ["test_tag", "test_tag2"])
 

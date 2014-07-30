@@ -132,12 +132,12 @@ class Repository(BaseRepo):
         return self._new_branch_object(branch_name)
 
     @with_repo(error_message="Error tagging revision")
-    def tag(self, repo, name, revision=None, message=None):
+    def tag(self, repo, name, signature, revision=None, message=None):
         """ Inherited method
         :func:`~repoman.repository.Repository.tag`
         """
         repo.update()
-        repo.tag(name, rev=revision, message=message, force=True)
+        repo.tag(name, rev=revision, message=message, force=True, user=signature.user)
 
     @with_repo()
     def strip(self, repo, changeset):

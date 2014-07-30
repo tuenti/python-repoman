@@ -124,7 +124,7 @@ class Repository(BaseRepo):
         self.update(name)
         return self._new_branch_object(name)
 
-    def tag(self, name, revision=None, message=None):
+    def tag(self, name, signature, revision=None, message=None):
         """Inherited method :func:`~repoman.repository.Repository.tag` """
         if not revision:
             commit = self._repository.head.get_object()

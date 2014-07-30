@@ -92,7 +92,7 @@ class AbstractTestDepotManager(object):
         depot.repository.branch(new_branch)
         self._add_file(depot.repository, 'bar')
         depot.repository.commit("Other commit", signature=signature)
-        depot.repository.tag(new_tag)
+        depot.repository.tag(new_tag, signature=signature)
         self.assertIn(
             new_tag,
             self._get_tag_names(depot.repository.tags()))

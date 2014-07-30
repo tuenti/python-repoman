@@ -288,7 +288,8 @@ class TestHgRepository(unittest.TestCase):
 
     def test_tag(self):
         repo = Repository(self.main_repo)
-        repo.tag("new-tag", message="fake tag")
+        signature = Signature(user='fake_user')
+        repo.tag("new-tag", message="fake tag", signature=signature)
         hgrepo = hglib.open(self.main_repo)
         self.assertEquals(hgrepo.tags()[1][0], "new-tag")
         hgrepo.close()
@@ -444,8 +445,8 @@ class TestHgRepository(unittest.TestCase):
         hgrepo = hglib.open(self.main_repo)
         hgrepo.update()
         rev = hgrepo.tip().node
-        hgrepo.tag("test_tag", rev=rev)
-        hgrepo.tag("test_tag2", rev=rev)
+        hgrepo.tag("test_tag", rev=rev, user='fake_user')
+        hgrepo.tag("test_tag2", rev=rev, user='fake_user')
         repo = Repository(self.main_repo)
         tags = repo.get_changeset_tags(rev)
         self.assertListEqual(tags, ["test_tag", "test_tag2"])
