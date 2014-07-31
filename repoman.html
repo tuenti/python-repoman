@@ -1,0 +1,1496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>repoman package &mdash; Repoman 0.6.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Repoman 0.6.4 documentation" href="index.html" />
+    <link rel="up" title="repoman" href="modules.html" />
+    <link rel="next" title="repoman.git package" href="repoman.git.html" />
+    <link rel="prev" title="repoman" href="modules.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>Repoman 0.6.4 documentation</span></a></h1>
+        <h2 class="heading"><span>repoman package</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="modules.html">repoman</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repoman.git.html">repoman.git package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="repoman-package">
+<h1>repoman package<a class="headerlink" href="#repoman-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="repoman.git.html">repoman.git package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="repoman.git.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.git.html#module-repoman.git.depot_operations">repoman.git.depot_operations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.git.html#module-repoman.git.pygitext">repoman.git.pygitext module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.git.html#module-repoman.git.repository">repoman.git.repository module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.git.html#module-repoman.git">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="repoman.hg.html">repoman.hg package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="repoman.hg.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.hg.html#module-repoman.hg.depot_operations">repoman.hg.depot_operations module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.hg.html#module-repoman.hg.hglibext">repoman.hg.hglibext module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.hg.html#module-repoman.hg.hgwebapi">repoman.hg.hgwebapi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.hg.html#module-repoman.hg.repository">repoman.hg.repository module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.hg.html#module-repoman.hg">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="repoman.repo_indexers.html">repoman.repo_indexers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="repoman.repo_indexers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.repo_indexers.html#module-repoman.repo_indexers.base_indexer">repoman.repo_indexers.base_indexer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.repo_indexers.html#module-repoman.repo_indexers.hgweb_indexer">repoman.repo_indexers.hgweb_indexer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.repo_indexers.html#module-repoman.repo_indexers">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="repoman.utils.html">repoman.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="repoman.utils.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="repoman.utils.introspection.html">repoman.utils.introspection package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="repoman.utils.introspection.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repoman.utils.introspection.html#module-repoman.utils.introspection.dynamic_class_loading">repoman.utils.introspection.dynamic_class_loading module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="repoman.utils.introspection.html#module-repoman.utils.introspection">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="repoman.utils.html#module-repoman.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-repoman.changeset">
+<span id="repoman-changeset-module"></span><h2>repoman.changeset module<a class="headerlink" href="#module-repoman.changeset" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.changeset.Changeset">
+<em class="property">class </em><tt class="descclassname">repoman.changeset.</tt><tt class="descname">Changeset</tt><a class="headerlink" href="#repoman.changeset.Changeset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt></p>
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.SHORT_HASH_COUNT">
+<tt class="descname">SHORT_HASH_COUNT</tt><em class="property"> = 12</em><a class="headerlink" href="#repoman.changeset.Changeset.SHORT_HASH_COUNT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.author">
+<tt class="descname">author</tt><a class="headerlink" href="#repoman.changeset.Changeset.author" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.branch">
+<tt class="descname">branch</tt><a class="headerlink" href="#repoman.changeset.Changeset.branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.branches">
+<tt class="descname">branches</tt><a class="headerlink" href="#repoman.changeset.Changeset.branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.changeset.Changeset.create_branch">
+<tt class="descname">create_branch</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#repoman.changeset.Changeset.create_branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.changeset.Changeset.create_tag">
+<tt class="descname">create_tag</tt><big>(</big><em>name</em>, <em>message</em><big>)</big><a class="headerlink" href="#repoman.changeset.Changeset.create_tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.desc">
+<tt class="descname">desc</tt><a class="headerlink" href="#repoman.changeset.Changeset.desc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.changeset.Changeset.get_ancestor">
+<tt class="descname">get_ancestor</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.changeset.Changeset.get_ancestor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.hash">
+<tt class="descname">hash</tt><a class="headerlink" href="#repoman.changeset.Changeset.hash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.local">
+<tt class="descname">local</tt><a class="headerlink" href="#repoman.changeset.Changeset.local" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.merge">
+<tt class="descname">merge</tt><a class="headerlink" href="#repoman.changeset.Changeset.merge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.parents">
+<tt class="descname">parents</tt><a class="headerlink" href="#repoman.changeset.Changeset.parents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.repository">
+<tt class="descname">repository</tt><a class="headerlink" href="#repoman.changeset.Changeset.repository" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.shorthash">
+<tt class="descname">shorthash</tt><a class="headerlink" href="#repoman.changeset.Changeset.shorthash" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.tags">
+<tt class="descname">tags</tt><a class="headerlink" href="#repoman.changeset.Changeset.tags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.changeset.Changeset.timestamp">
+<tt class="descname">timestamp</tt><a class="headerlink" href="#repoman.changeset.Changeset.timestamp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.commitmessage">
+<span id="repoman-commitmessage-module"></span><h2>repoman.commitmessage module<a class="headerlink" href="#module-repoman.commitmessage" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.commitmessage.CommitMessage">
+<em class="property">class </em><tt class="descclassname">repoman.commitmessage.</tt><tt class="descname">CommitMessage</tt><big>(</big><em>message</em>, <em>values={}</em><big>)</big><a class="headerlink" href="#repoman.commitmessage.CommitMessage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder">
+<em class="property">class </em><tt class="descclassname">repoman.commitmessage.</tt><tt class="descname">DefaultCommitMessageBuilder</tt><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder.CLOSE_BRANCH">
+<tt class="descname">CLOSE_BRANCH</tt><em class="property"> = 'Closing branch %(branch)s'</em><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder.CLOSE_BRANCH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder.MERGE">
+<tt class="descname">MERGE</tt><em class="property"> = 'Merging %(other_branch)s&#64;%(other_revision)s into %(local_branch)s&#64;%(local_revision)s'</em><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder.MERGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder.close_branch">
+<tt class="descname">close_branch</tt><big>(</big><em>branch</em><big>)</big><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder.close_branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder.commit">
+<tt class="descname">commit</tt><big>(</big><em>message</em>, <em>values={}</em><big>)</big><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder.commit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder.commit_message">
+<tt class="descname">commit_message</tt><big>(</big><em>message</em>, <em>values={}</em><big>)</big><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder.commit_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.commitmessage.DefaultCommitMessageBuilder.merge">
+<tt class="descname">merge</tt><big>(</big><em>local_branch=None</em>, <em>local_revision=None</em>, <em>other_branch=None</em>, <em>other_revision=None</em><big>)</big><a class="headerlink" href="#repoman.commitmessage.DefaultCommitMessageBuilder.merge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.depot">
+<span id="repoman-depot-module"></span><h2>repoman.depot module<a class="headerlink" href="#module-repoman.depot" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.depot.Depot">
+<em class="property">class </em><tt class="descclassname">repoman.depot.</tt><tt class="descname">Depot</tt><big>(</big><em>path</em>, <em>parent</em>, <em>dvcs</em><big>)</big><a class="headerlink" href="#repoman.depot.Depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Manages a depot.</p>
+<dl class="method">
+<dt id="repoman.depot.Depot.grab_changesets_from_upstream">
+<tt class="descname">grab_changesets_from_upstream</tt><big>(</big><em>requirements</em><big>)</big><a class="headerlink" href="#repoman.depot.Depot.grab_changesets_from_upstream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy the specified requirements from their origins, add them to this
+repo.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>requirements</strong> (<em>dict</em>) &#8211; {&#8216;repository_path&#8217;: [changeset1, changeset2, ...],...}</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.depot.Depot.repo_kind">
+<tt class="descname">repo_kind</tt><a class="headerlink" href="#repoman.depot.Depot.repo_kind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.depot.Depot.repository">
+<tt class="descname">repository</tt><a class="headerlink" href="#repoman.depot.Depot.repository" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot.Depot.request_refresh">
+<tt class="descname">request_refresh</tt><big>(</big><em>requirements</em><big>)</big><a class="headerlink" href="#repoman.depot.Depot.request_refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Refresh a clon with the required changesets from upstream cache.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>requirements</strong> (<em>dict</em>) &#8211; requirements with the following type:
+{&#8216;repository_path&#8217;: [changeset1, changeset2,...],...}</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True is successfull.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot.Depot.set_source">
+<tt class="descname">set_source</tt><big>(</big><em>source</em><big>)</big><a class="headerlink" href="#repoman.depot.Depot.set_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default source in the dvcs</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.depot_manager">
+<span id="repoman-depot-manager-module"></span><h2>repoman.depot_manager module<a class="headerlink" href="#module-repoman.depot_manager" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="exception">
+<dt id="repoman.depot_manager.CloneProvisionError">
+<em class="property">exception </em><tt class="descclassname">repoman.depot_manager.</tt><tt class="descname">CloneProvisionError</tt><a class="headerlink" href="#repoman.depot_manager.CloneProvisionError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Raised when a repo cannot be provisioned.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="repoman.depot_manager.DepotManager">
+<em class="property">class </em><tt class="descclassname">repoman.depot_manager.</tt><tt class="descname">DepotManager</tt><big>(</big><em>main_workspace='~/.repo'</em>, <em>repo_kind='hg'</em>, <em>main_source=None</em><big>)</big><a class="headerlink" href="#repoman.depot_manager.DepotManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Acts as an public facing API for working with managed clones.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>main_workspace</strong> (<em>string</em>) &#8211; directory where all the workspaces will be
+created.</li>
+<li><strong>repo_kind</strong> (<em>string</em>) &#8211; Repository type</li>
+<li><strong>main_source</strong> (<em>string</em>) &#8211; FIXME</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="repoman.depot_manager.DepotManager.cache_name">
+<tt class="descname">cache_name</tt><em class="property"> = 'main_cache'</em><a class="headerlink" href="#repoman.depot_manager.DepotManager.cache_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_manager.DepotManager.free_depot">
+<tt class="descname">free_depot</tt><big>(</big><em>depot</em>, <em>task_guid</em><big>)</big><a class="headerlink" href="#repoman.depot_manager.DepotManager.free_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frees a repository for new uses.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clone</strong> &#8211; a RepoWorkspace to be freed from use.</li>
+<li><strong>task_guid</strong> &#8211; Identifier of the task reserving the clone.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Raises RepoFreeError:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">When a repo cannot be freed.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_manager.DepotManager.get_available_clone">
+<tt class="descname">get_available_clone</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#repoman.depot_manager.DepotManager.get_available_clone" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a clone with the available clone specified by path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">RepoWorkspace</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_manager.DepotManager.get_not_available_clone">
+<tt class="descname">get_not_available_clone</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#repoman.depot_manager.DepotManager.get_not_available_clone" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">a clone with the not available clone specified by path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">RepoWorkspace</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_manager.DepotManager.give_me_depot">
+<tt class="descname">give_me_depot</tt><big>(</big><em>task_guid</em>, <em>task_name</em>, <em>requirements=None</em>, <em>default_source=None</em><big>)</big><a class="headerlink" href="#repoman.depot_manager.DepotManager.give_me_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reserves or prepares a new repository workspace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>task_guid</strong> &#8211; Identifier of the task reserving the clone.</li>
+<li><strong>task_name</strong> &#8211; Name of the task for information purposes</li>
+<li><strong>requirements</strong> &#8211; requirements to pull</li>
+<li><strong>default_source</strong> &#8211; default clone source</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a free repo.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#repoman.depot.Depot" title="repoman.depot.Depot"><tt class="xref py py-class docutils literal"><span class="pre">Depot</span></tt></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">Raises RepoProvisionError:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">When a new repo cannot be provisioned.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_manager.DepotManager.give_me_depot_from_path">
+<tt class="descname">give_me_depot_from_path</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#repoman.depot_manager.DepotManager.give_me_depot_from_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a repository from the current path without checking its state, no
+matter if it&#8217;s FREE or INUSE</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<em>string</em>) &#8211; depot path to get</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.depot_manager.DepotManager.squadron_roster_name">
+<tt class="descname">squadron_roster_name</tt><em class="property"> = 'squadron_roster.db'</em><a class="headerlink" href="#repoman.depot_manager.DepotManager.squadron_roster_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.depot_manager.DepotManager.workspaces_prefix">
+<tt class="descname">workspaces_prefix</tt><em class="property"> = 'workspace'</em><a class="headerlink" href="#repoman.depot_manager.DepotManager.workspaces_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.depot_operations">
+<span id="repoman-depot-operations-module"></span><h2>repoman.depot_operations module<a class="headerlink" href="#module-repoman.depot_operations" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.depot_operations.DepotOperations">
+<em class="property">class </em><tt class="descclassname">repoman.depot_operations.</tt><tt class="descname">DepotOperations</tt><a class="headerlink" href="#repoman.depot_operations.DepotOperations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="repoman.depot_operations.DepotOperations.KIND">
+<tt class="descname">KIND</tt><em class="property"> = None</em><a class="headerlink" href="#repoman.depot_operations.DepotOperations.KIND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.check_changeset_availability">
+<tt class="descname">check_changeset_availability</tt><big>(</big><em>path</em>, <em>changesets</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.check_changeset_availability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check for changesets are already in the specified depot path.
+Always request all changesets from all sources. This means
+that the changesets will always be missing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; Path to the depot.</li>
+<li><strong>changesets</strong> &#8211; List of strings specifying the changesets.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">List of changesets missing</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.clear_depot">
+<tt class="descname">clear_depot</tt><big>(</big><em>path</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.clear_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear a depot just in case a previous usage let it dirty
+This should also reset configuration</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> &#8211; Path of the depot</li>
+<li><strong>parent</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.get_depot_from_path">
+<tt class="descname">get_depot_from_path</tt><big>(</big><em>path</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.get_depot_from_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory method that creates Depots from a given path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; Path of the depot</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Depot class corresponding to the path.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="repoman.depot_operations.DepotOperations.get_depot_operations">
+<em class="property">classmethod </em><tt class="descname">get_depot_operations</tt><big>(</big><em>repo_kind</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.get_depot_operations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.grab_changesets">
+<tt class="descname">grab_changesets</tt><big>(</big><em>path</em>, <em>url</em>, <em>changesets</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.grab_changesets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies changesets from the remote url to the specified path.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> &#8211; target depot for the changesets.</li>
+<li><strong>url</strong> &#8211; depot to copy the changesets from.</li>
+<li><strong>changesets</strong> &#8211; List of changesets ids.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.init_depot">
+<tt class="descname">init_depot</tt><big>(</big><em>path</em>, <em>parent=None</em>, <em>source=None</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.init_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes a new depot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; path to the main depot</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Depot class corresponding to the path. False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.is_a_depot">
+<tt class="descname">is_a_depot</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.is_a_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the given path corresponds to a depot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; path to the supposed depot</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if a depot. False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.depot_operations.DepotOperations.set_source">
+<tt class="descname">set_source</tt><big>(</big><em>path</em>, <em>source</em><big>)</big><a class="headerlink" href="#repoman.depot_operations.DepotOperations.set_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the default remote source.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>path</strong> &#8211; Path of the depot</li>
+<li><strong>source</strong> &#8211; Remote URI of the source repo</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.reference">
+<span id="repoman-reference-module"></span><h2>repoman.reference module<a class="headerlink" href="#module-repoman.reference" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.reference.Reference">
+<em class="property">class </em><tt class="descclassname">repoman.reference.</tt><tt class="descname">Reference</tt><big>(</big><em>name</em>, <em>repository</em><big>)</big><a class="headerlink" href="#repoman.reference.Reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This class represents a SCM reference.
+A reference is just a pointer to a specific changeset.</p>
+<dl class="method">
+<dt id="repoman.reference.Reference.get_changeset">
+<tt class="descname">get_changeset</tt><big>(</big><big>)</big><a class="headerlink" href="#repoman.reference.Reference.get_changeset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.reference.Reference.name">
+<tt class="descname">name</tt><em class="property"> = None</em><a class="headerlink" href="#repoman.reference.Reference.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.reference.Reference.repository">
+<tt class="descname">repository</tt><em class="property"> = None</em><a class="headerlink" href="#repoman.reference.Reference.repository" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.repo_indexer">
+<span id="repoman-repo-indexer-module"></span><h2>repoman.repo_indexer module<a class="headerlink" href="#module-repoman.repo_indexer" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.repo_indexer.MultiRepoIndexer">
+<em class="property">class </em><tt class="descclassname">repoman.repo_indexer.</tt><tt class="descname">MultiRepoIndexer</tt><big>(</big><em>repository_name_matrix</em>, <em>indexers_list=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexer.MultiRepoIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>MultiRepoIndexer is a repo indexer that search in multiple sources
+ordered by priority. If one doesn&#8217;t find the data, it will search
+in the next one.
+You can register as many repository indexers as you want</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>repository_name_matrix</strong> (<em>dict</em>) &#8211; is a dict that represent each repository
+name for the registered indexers, the dict
+key is the repository id</li>
+<li><strong>indexers_list</strong> (<em>list of indexers</em>) &#8211; Every item in the list is a tuple
+that contains: priority, indexer path, indexer id
+and another tuple with the auth credentials</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="repoman.repo_indexer.MultiRepoIndexer.get_branch_log">
+<tt class="descname">get_branch_log</tt><big>(</big><em>branch_name</em>, <em>limit=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexer.MultiRepoIndexer.get_branch_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the log for the given brancha and limit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>branch_name</strong> (<em>string</em>) &#8211; </li>
+<li><strong>limit</strong> (<em>int</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of tuples with the log information</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repo_indexer.MultiRepoIndexer.get_branches">
+<tt class="descname">get_branches</tt><big>(</big><em>limit=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexer.MultiRepoIndexer.get_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the branches in the repository, it look for them in all the
+registered repositories by priority</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>limit</strong> (<em>int</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of strings with the name of the branches</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repo_indexer.MultiRepoIndexer.register_indexer">
+<tt class="descname">register_indexer</tt><big>(</big><em>priority</em>, <em>indexer</em>, <em>id</em>, <em>auth</em><big>)</big><a class="headerlink" href="#repoman.repo_indexer.MultiRepoIndexer.register_indexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method register a new indexer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>priority</strong> (<em>int</em>) &#8211; indexer priority</li>
+<li><strong>indexer</strong> (<em>string</em>) &#8211; module plus class name to instantiate,
+having this form: module1.module2.ClassName</li>
+<li><strong>id</strong> (<em>string</em>) &#8211; repository</li>
+<li><strong>auth</strong> (<em>tuple</em>) &#8211; tuple that contains 3 elements: url, user
+and password</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="repoman.repo_indexer.RepoIndexerError">
+<em class="property">exception </em><tt class="descclassname">repoman.repo_indexer.</tt><tt class="descname">RepoIndexerError</tt><a class="headerlink" href="#repoman.repo_indexer.RepoIndexerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.repository">
+<span id="repoman-repository-module"></span><h2>repoman.repository module<a class="headerlink" href="#module-repoman.repository" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="exception">
+<dt id="repoman.repository.MergeConflictError">
+<em class="property">exception </em><tt class="descclassname">repoman.repository.</tt><tt class="descname">MergeConflictError</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#repoman.repository.MergeConflictError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#repoman.repository.RepositoryError" title="repoman.repository.RepositoryError"><tt class="xref py py-class docutils literal"><span class="pre">repoman.repository.RepositoryError</span></tt></a></p>
+<p>There was any conflict while merging.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="repoman.repository.Repository">
+<em class="property">class </em><tt class="descclassname">repoman.repository.</tt><tt class="descname">Repository</tt><big>(</big><em>repo_path</em>, <em>repo_indexer=None</em>, <em>message_builder=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Models a repo and provides changesets, operations and such.</p>
+<p>ABSTRACT class. Do not create instances of this class.
+Use <a class="reference internal" href="#repoman.repository.repository_factory" title="repoman.repository.repository_factory"><tt class="xref py py-func docutils literal"><span class="pre">repository_factory()</span></tt></a> to get the proper Repository implementation.</p>
+<dl class="method">
+<dt id="repoman.repository.Repository.add">
+<tt class="descname">add</tt><big>(</big><em>files</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a file or a list of files to the repo to be tracked</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>files</strong> (<em>string or list of strings</em>) &#8211; file or files to add</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference internal" href="#repoman.repository.RepositoryError" title="repoman.repository.RepositoryError"><tt class="xref py py-exc docutils literal"><span class="pre">RepositoryError</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.branch">
+<tt class="descname">branch</tt><big>(</big><em>branch_name</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a branch in the repository.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.branch_exists">
+<tt class="descname">branch_exists</tt><big>(</big><em>branch_name</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.branch_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if the given branch exists in the repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.commit">
+<tt class="descname">commit</tt><big>(</big><em>message</em>, <em>signature</em>, <em>custom_parent=None</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.commit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Commits changes in current working copy. This will implement a
+git commit -a behaviour.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>message</strong> (<em>string</em>) &#8211; commit message</li>
+<li><strong>signature</strong> (<em>string</em>) &#8211; signature to be used in commit message</li>
+<li><strong>custom_parent</strong> (<em>pygit2.Oid</em>) &#8211; by default the commit parent is the repo head
+with this parameter you can specify a custom one
+like when there was a fastforward merge and you
+want to perform a commit anyway</li>
+<li><strong>allow_empty</strong> (<em>bool</em>) &#8211; allows empty commits</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.compare_branches">
+<tt class="descname">compare_branches</tt><big>(</big><em>revision_to_check</em>, <em>branch_base</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.compare_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns the changesets that would be included
+in branch_base_name if you merge revision_to_check_hash into
+branch_base_name.
+The first param must be a changeset hash and the second a branch name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>revision_to_check_hash</strong> (<em>string</em>) &#8211; </li>
+<li><strong>branch_base_name</strong> (<em>string</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.exterminate_branch">
+<tt class="descname">exterminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.exterminate_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exterminating the branch, apart from terminate it, this also
+removes it from remote</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</li>
+<li><strong>signature</strong> (<em>string</em>) &#8211; Signature to use in the commit</li>
+<li><strong>repo_origin</strong> (<em>string</em>) &#8211; repository source</li>
+<li><strong>repo_dest</strong> (<em>string</em>) &#8211; repository destination</li>
+<li><strong>message</strong> (<em>string</em>) &#8211; Message used in commit message (ignored)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.full_merge_and_push">
+<tt class="descname">full_merge_and_push</tt><big>(</big><em>base_branch</em>, <em>changeset_to_merge_hash</em>, <em>branch_to_merge_name</em>, <em>signature</em>, <em>origin</em>, <em>destination</em>, <em>ref_name=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.full_merge_and_push" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a full merge and push.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>base_branch</strong> (<em>string</em>) &#8211; branch where the changeset will be merged into</li>
+<li><strong>changeset_to_merge_hash</strong> (<em>string</em>) &#8211; changeset to merge into base_branch</li>
+<li><strong>branch_to_merge_name</strong> (<em>string</em>) &#8211; name of the branch to merge</li>
+<li><strong>signature</strong> (<a class="reference internal" href="#repoman.signature.Signature" title="repoman.signature.Signature"><tt class="xref py py-class docutils literal"><span class="pre">Signature</span></tt></a>) &#8211; signature to perform the merge commit</li>
+<li><strong>origin</strong> (<em>string</em>) &#8211; repository origin</li>
+<li><strong>destination</strong> (<em>string</em>) &#8211; repository destination</li>
+<li><strong>ref_name</strong> (<em>string</em>) &#8211; reference name to push</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_ancestor">
+<tt class="descname">get_ancestor</tt><big>(</big><em>cs1</em>, <em>cs2</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_ancestor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a changeset being the first ancestor of both changesets
+provided</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cs1</strong> (<em>string</em>) &#8211; First changeset</li>
+<li><strong>cs2</strong> (<em>string</em>) &#8211; Second changeset</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">ancestor changeset</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">string</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_branch">
+<tt class="descname">get_branch</tt><big>(</big><em>branch_name=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Branch object.
+If no branch_provided, current branch is returned
+Does not need to swith to the branch</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Branch object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#repoman.reference.Reference" title="repoman.reference.Reference"><tt class="xref py py-func docutils literal"><span class="pre">repoman.reference.Reference()</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_branch_tip">
+<tt class="descname">get_branch_tip</tt><big>(</big><em>branch_name</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_branch_tip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the changeset being the branch tip checking the indexers first
+and then the repository itself</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_branches">
+<tt class="descname">get_branches</tt><big>(</big><em>active=False</em>, <em>closed=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of branches.
+Firstly, it tries to do so using the included repo indexer,
+if not possible, it tries to retrieve them from repository itself.
+If either active or closed are true, it directly search in the
+repository.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>active</strong> (<em>bool</em>) &#8211; indicates to get active branches</li>
+<li><strong>closed</strong> (<em>bool</em>) &#8211; indicates to get closed branches</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_changeset_branches">
+<tt class="descname">get_changeset_branches</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_changeset_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the branches associated to the given changeset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>changeset</strong> &#8211; Changeset to look for</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_changeset_tags">
+<tt class="descname">get_changeset_tags</tt><big>(</big><em>changeset_hash</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_changeset_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the tags of the given changeset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>changeset_hash</strong> (<em>string</em>) &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the tags of the given changeset</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_parents">
+<tt class="descname">get_parents</tt><big>(</big><em>changeset_hash</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the list of parents of the given changeset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>changeset_hash</strong> (<em>string</em>) &#8211; hash identifying the changeset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="repoman.repository.Repository.get_repository">
+<em class="property">static </em><tt class="descname">get_repository</tt><big>(</big><em>repo_path</em>, <em>repo_kind=None</em>, <em>repo_indexer=None</em>, <em>commit_message_builder=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_repository" title="Permalink to this definition">¶</a></dt>
+<dd><div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.5.1: </span>Use <a class="reference internal" href="#repoman.repository.repository_factory" title="repoman.repository.repository_factory"><tt class="xref py py-func docutils literal"><span class="pre">repository_factory()</span></tt></a> instead.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.get_revset">
+<tt class="descname">get_revset</tt><big>(</big><em>cs_from=None</em>, <em>cs_to=None</em>, <em>branch=None</em>, <em>keyword=None</em>, <em>date=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.get_revset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator for the changesets in the repository that
+correspond to the given parameters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>cs_from</strong> (<em>string</em>) &#8211; starting changeset. If this is the only parameter,
+a list with just this changeset will be returned</li>
+<li><strong>cs_to</strong> (<em>string</em>) &#8211; ending changeset. If specified, all changesets between
+cs_from and cs_to will be returned, both included</li>
+<li><strong>branch</strong> &#8211; branch that returned changesets should belong to.
+Filter out changesets not belonging to that branch</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.is_merge">
+<tt class="descname">is_merge</tt><big>(</big><em>changeset_hash</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.is_merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns if the changeset is a merge.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>changeset_hash</strong> (<em>string</em>) &#8211; hash identifying the changeset</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.merge">
+<tt class="descname">merge</tt><big>(</big><em>signature</em>, <em>local_branch=None</em>, <em>other_rev=None</em>, <em>other_branch_name=None</em>, <em>dry_run=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges two revision and commits the result</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>signature</strong> &#8211; signature for the possible commit</li>
+<li><strong>local_branch</strong> &#8211; branch object to merge to - optional, if None,
+it takes current branch</li>
+<li><strong>other_rev</strong> &#8211; changeset object to merge with - mandatory</li>
+<li><strong>other_branch_name</strong> (<em>string</em>) &#8211; name of the branch the other_rev changeset
+belongs to</li>
+<li><strong>dry_run</strong> (<em>bool</em>) &#8211; option to simulate the merge, it assuer the repository
+is restored to the previous state</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.parents">
+<tt class="descname">parents</tt><big>(</big><big>)</big><a class="headerlink" href="#repoman.repository.Repository.parents" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of the parents of current working copy revision</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.pull">
+<tt class="descname">pull</tt><big>(</big><em>remote=None</em>, <em>revision=None</em>, <em>branch=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.pull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets changesets from remote repo into local repo
+If neither branch nor revision are specified, everything will be
+pulled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>remote</strong> (<em>string</em>) &#8211; URL of the remote repo, where to pull from</li>
+<li><strong>revision</strong> (<em>string</em>) &#8211; revision to pull</li>
+<li><strong>branch</strong> (<em>string</em>) &#8211; branch to pull</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#repoman.repository.RepositoryError" title="repoman.repository.RepositoryError"><tt class="xref py py-func docutils literal"><span class="pre">RepositoryError()</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.push">
+<tt class="descname">push</tt><big>(</big><em>orig</em>, <em>dest</em>, <em>rev=None</em>, <em>ref_name=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.push" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Pushes changesets to remote repo from local repo. It will also pull,</dt>
+<dd>merge and commit if two remote heads are found</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>orig</strong> (<em>string</em>) &#8211; URL of repo to pull from if two heads found</li>
+<li><strong>dest</strong> (<em>string</em>) &#8211; URL of the remote repo, where to push to</li>
+<li><strong>rev</strong> (<em>changeset object</em>) &#8211; changeset object to push</li>
+<li><strong>ref_name</strong> (<em>string</em>) &#8211; reference name to push</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#repoman.repository.RepositoryError" title="repoman.repository.RepositoryError"><tt class="xref py py-func docutils literal"><span class="pre">RepositoryError()</span></tt></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.rawcommand">
+<tt class="descname">rawcommand</tt><big>(</big><em>command</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.rawcommand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.strip">
+<tt class="descname">strip</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Strips the given changeset</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>changesets</strong> (<em>list of Changeset</em>) &#8211; list of changeset objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.tag">
+<tt class="descname">tag</tt><big>(</big><em>tag_name</em>, <em>signature</em>, <em>revision=None</em>, <em>message=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a tag in the repository</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.tag_exists">
+<tt class="descname">tag_exists</tt><big>(</big><em>tag_name</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.tag_exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return if the given tag exists in the repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tag_name</strong> (<em>string</em>) &#8211; name of the tag</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.tags">
+<tt class="descname">tags</tt><big>(</big><big>)</big><a class="headerlink" href="#repoman.repository.Repository.tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just returns the tags</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.terminate_branch">
+<tt class="descname">terminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.terminate_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the branch locally and remotely</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</li>
+<li><strong>signature</strong> (<em>string</em>) &#8211; Signature to use in the commit</li>
+<li><strong>repo_origin</strong> (<em>string</em>) &#8211; repository source</li>
+<li><strong>repo_dest</strong> (<em>string</em>) &#8211; repository destination</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.tip">
+<tt class="descname">tip</tt><big>(</big><big>)</big><a class="headerlink" href="#repoman.repository.Repository.tip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.repository.Repository.update">
+<tt class="descname">update</tt><big>(</big><em>branch</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates working copy to the specified branch.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>branch</strong> (<em>string</em>) &#8211; ref to update working copy to, a branch name or a
+revision hash</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="repoman.repository.RepositoryError">
+<em class="property">exception </em><tt class="descclassname">repoman.repository.</tt><tt class="descname">RepositoryError</tt><big>(</big><em>exception</em><big>)</big><a class="headerlink" href="#repoman.repository.RepositoryError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Any error relative to repositories.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="repoman.repository.repository_factory">
+<tt class="descclassname">repoman.repository.</tt><tt class="descname">repository_factory</tt><big>(</big><em>repo_path</em>, <em>repo_kind=None</em>, <em>repo_indexer=None</em>, <em>commit_message_builder=None</em><big>)</big><a class="headerlink" href="#repoman.repository.repository_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Factory to create Repository objects.
+It will try to choose the correct repository kind.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>repo_path</strong> (<em>string</em>) &#8211; Path to the repository working copy.</li>
+<li><strong>repo_kind</strong> (<em>string</em>) &#8211; Repository class to be used.It will be determined
+automatically if None.</li>
+<li><strong>repo_indexer</strong> (<em>string</em>) &#8211; Indexer to be used, if any.
+See <a class="reference internal" href="repoman.repo_indexers.html"><em>repoman.repo_indexers package</em></a>.</li>
+<li><strong>commit_message_builder</strong> (<a class="reference internal" href="#module-repoman.commitmessage" title="repoman.commitmessage"><em>repoman.commitmessage</em></a>) &#8211; Constructor to generate the commit message.
+It will use
+<a class="reference internal" href="#repoman.commitmessage.DefaultCommitMessageBuilder" title="repoman.commitmessage.DefaultCommitMessageBuilder"><tt class="xref py py-class docutils literal"><span class="pre">repoman.commitmessage.DefaultCommitMessageBuilder</span></tt></a> if None.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.roster">
+<span id="repoman-roster-module"></span><h2>repoman.roster module<a class="headerlink" href="#module-repoman.roster" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.roster.Clone">
+<em class="property">class </em><tt class="descclassname">repoman.roster.</tt><tt class="descname">Clone</tt><big>(</big><em>path</em>, <em>status</em>, <em>task</em>, <em>task_name</em>, <em>timestamp</em><big>)</big><a class="headerlink" href="#repoman.roster.Clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="repoman.roster.Clone.FREE">
+<tt class="descname">FREE</tt><em class="property"> = 'FREE'</em><a class="headerlink" href="#repoman.roster.Clone.FREE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.roster.Clone.INUSE">
+<tt class="descname">INUSE</tt><em class="property"> = 'INUSE'</em><a class="headerlink" href="#repoman.roster.Clone.INUSE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="repoman.roster.MaxClonesLimitReached">
+<em class="property">exception </em><tt class="descclassname">repoman.roster.</tt><tt class="descname">MaxClonesLimitReached</tt><a class="headerlink" href="#repoman.roster.MaxClonesLimitReached" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#repoman.roster.RosterError" title="repoman.roster.RosterError"><tt class="xref py py-class docutils literal"><span class="pre">repoman.roster.RosterError</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="repoman.roster.Roster">
+<em class="property">class </em><tt class="descclassname">repoman.roster.</tt><tt class="descname">Roster</tt><big>(</big><em>location</em>, <em>max_clones=12</em>, <em>clone_timeout=datetime.timedelta(0</em>, <em>1800)</em><big>)</big><a class="headerlink" href="#repoman.roster.Roster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">_abcoll.MutableMapping</span></tt></p>
+<p>Manages the file used as a roster. Provides dict API to it.</p>
+<dl class="class">
+<dt id="repoman.roster.Roster.DBCursor">
+<em class="property">class </em><tt class="descname">DBCursor</tt><big>(</big><em>connection</em><big>)</big><a class="headerlink" href="#repoman.roster.Roster.DBCursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.roster.Roster.add">
+<tt class="descclassname">Roster.</tt><tt class="descname">add</tt><big>(</big><em>path</em>, <em>task</em>, <em>task_name</em><big>)</big><a class="headerlink" href="#repoman.roster.Roster.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.roster.Roster.free_clone">
+<tt class="descclassname">Roster.</tt><tt class="descname">free_clone</tt><big>(</big><em>clone</em>, <em>task</em><big>)</big><a class="headerlink" href="#repoman.roster.Roster.free_clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.roster.Roster.get_available">
+<tt class="descclassname">Roster.</tt><tt class="descname">get_available</tt><big>(</big><big>)</big><a class="headerlink" href="#repoman.roster.Roster.get_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.roster.Roster.get_not_available">
+<tt class="descclassname">Roster.</tt><tt class="descname">get_not_available</tt><big>(</big><big>)</big><a class="headerlink" href="#repoman.roster.Roster.get_not_available" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.roster.Roster.reserve_clone">
+<tt class="descclassname">Roster.</tt><tt class="descname">reserve_clone</tt><big>(</big><em>task</em>, <em>task_name</em><big>)</big><a class="headerlink" href="#repoman.roster.Roster.reserve_clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="repoman.roster.RosterError">
+<em class="property">exception </em><tt class="descclassname">repoman.roster.</tt><tt class="descname">RosterError</tt><a class="headerlink" href="#repoman.roster.RosterError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="repoman.roster.marshall">
+<tt class="descclassname">repoman.roster.</tt><tt class="descname">marshall</tt><big>(</big><em>clone</em><big>)</big><a class="headerlink" href="#repoman.roster.marshall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adapter for serializing the object into a string for db storage.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>clone</strong> &#8211; Clone class to be serialized.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="repoman.roster.unmarshall">
+<tt class="descclassname">repoman.roster.</tt><tt class="descname">unmarshall</tt><big>(</big><em>db_str</em><big>)</big><a class="headerlink" href="#repoman.roster.unmarshall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a Python Clone object from the result of a db query.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_str</strong> &#8211; String from the database.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.signature">
+<span id="repoman-signature-module"></span><h2>repoman.signature module<a class="headerlink" href="#module-repoman.signature" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.signature.Signature">
+<em class="property">class </em><tt class="descclassname">repoman.signature.</tt><tt class="descname">Signature</tt><a class="headerlink" href="#repoman.signature.Signature" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
+<dl class="attribute">
+<dt id="repoman.signature.Signature.author">
+<tt class="descname">author</tt><a class="headerlink" href="#repoman.signature.Signature.author" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.signature.Signature.author_email">
+<tt class="descname">author_email</tt><a class="headerlink" href="#repoman.signature.Signature.author_email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.signature.Signature.email">
+<tt class="descname">email</tt><a class="headerlink" href="#repoman.signature.Signature.email" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.signature.Signature.user">
+<tt class="descname">user</tt><a class="headerlink" href="#repoman.signature.Signature.user" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-repoman" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="modules.html">repoman</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repoman.git.html">repoman.git package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Tuenti Technologies S.L..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

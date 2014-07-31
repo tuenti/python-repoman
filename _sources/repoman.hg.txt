@@ -1,0 +1,46 @@
+repoman.hg package
+==================
+
+Submodules
+----------
+
+repoman.hg.depot_operations module
+----------------------------------
+
+.. automodule:: repoman.hg.depot_operations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.hg.hglibext module
+--------------------------
+
+.. automodule:: repoman.hg.hglibext
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.hg.hgwebapi module
+--------------------------
+
+.. automodule:: repoman.hg.hgwebapi
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.hg.repository module
+----------------------------
+
+.. automodule:: repoman.hg.repository
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: repoman.hg
+    :members:
+    :undoc-members:
+    :show-inheritance:

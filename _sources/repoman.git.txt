@@ -1,0 +1,38 @@
+repoman.git package
+===================
+
+Submodules
+----------
+
+repoman.git.depot_operations module
+-----------------------------------
+
+.. automodule:: repoman.git.depot_operations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.git.pygitext module
+---------------------------
+
+.. automodule:: repoman.git.pygitext
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.git.repository module
+-----------------------------
+
+.. automodule:: repoman.git.repository
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: repoman.git
+    :members:
+    :undoc-members:
+    :show-inheritance:

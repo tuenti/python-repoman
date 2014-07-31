@@ -1,0 +1,104 @@
+repoman package
+===============
+
+Subpackages
+-----------
+
+.. toctree::
+
+    repoman.git
+    repoman.hg
+    repoman.repo_indexers
+    repoman.utils
+
+Submodules
+----------
+
+repoman.changeset module
+------------------------
+
+.. automodule:: repoman.changeset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.commitmessage module
+----------------------------
+
+.. automodule:: repoman.commitmessage
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.depot module
+--------------------
+
+.. automodule:: repoman.depot
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.depot_manager module
+----------------------------
+
+.. automodule:: repoman.depot_manager
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.depot_operations module
+-------------------------------
+
+.. automodule:: repoman.depot_operations
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.reference module
+------------------------
+
+.. automodule:: repoman.reference
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.repo_indexer module
+---------------------------
+
+.. automodule:: repoman.repo_indexer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.repository module
+-------------------------
+
+.. automodule:: repoman.repository
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.roster module
+---------------------
+
+.. automodule:: repoman.roster
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.signature module
+------------------------
+
+.. automodule:: repoman.signature
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: repoman
+    :members:
+    :undoc-members:
+    :show-inheritance:

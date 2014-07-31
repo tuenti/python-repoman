@@ -1,0 +1,494 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>repoman.hg package &mdash; Repoman 0.6.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Repoman 0.6.4 documentation" href="index.html" />
+    <link rel="up" title="repoman package" href="repoman.html" />
+    <link rel="next" title="repoman.repo_indexers package" href="repoman.repo_indexers.html" />
+    <link rel="prev" title="repoman.git package" href="repoman.git.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>Repoman 0.6.4 documentation</span></a></h1>
+        <h2 class="heading"><span>repoman.hg package</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="repoman.git.html">repoman.git package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repoman.repo_indexers.html">repoman.repo_indexers package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="repoman-hg-package">
+<h1>repoman.hg package<a class="headerlink" href="#repoman-hg-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-repoman.hg.depot_operations">
+<span id="repoman-hg-depot-operations-module"></span><h2>repoman.hg.depot_operations module<a class="headerlink" href="#module-repoman.hg.depot_operations" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.hg.depot_operations.DepotOperations">
+<em class="property">class </em><tt class="descclassname">repoman.hg.depot_operations.</tt><tt class="descname">DepotOperations</tt><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations" title="repoman.depot_operations.DepotOperations"><tt class="xref py py-class docutils literal"><span class="pre">repoman.depot_operations.DepotOperations</span></tt></a></p>
+<p>Highlevel Mercurial DCVS operations.</p>
+<dl class="attribute">
+<dt id="repoman.hg.depot_operations.DepotOperations.KIND">
+<tt class="descname">KIND</tt><em class="property"> = 'hg'</em><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.KIND" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.depot_operations.DepotOperations.check_changeset_availability">
+<tt class="descname">check_changeset_availability</tt><big>(</big><em>path</em>, <em>changesets</em><big>)</big><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.check_changeset_availability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations.check_changeset_availability" title="repoman.depot_operations.DepotOperations.check_changeset_availability"><tt class="xref py py-func docutils literal"><span class="pre">check_changeset_availability()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.depot_operations.DepotOperations.clear_depot">
+<tt class="descname">clear_depot</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.clear_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations.clear_depot" title="repoman.depot_operations.DepotOperations.clear_depot"><tt class="xref py py-func docutils literal"><span class="pre">clear_depot()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.depot_operations.DepotOperations.grab_changesets">
+<tt class="descname">grab_changesets</tt><big>(</big><em>path</em>, <em>url</em>, <em>changesets</em><big>)</big><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.grab_changesets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations.grab_changesets" title="repoman.depot_operations.DepotOperations.grab_changesets"><tt class="xref py py-func docutils literal"><span class="pre">grab_changesets()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.depot_operations.DepotOperations.init_depot">
+<tt class="descname">init_depot</tt><big>(</big><em>path</em>, <em>parent=None</em>, <em>source=None</em><big>)</big><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.init_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations.init_depot" title="repoman.depot_operations.DepotOperations.init_depot"><tt class="xref py py-func docutils literal"><span class="pre">init_depot()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.depot_operations.DepotOperations.is_a_depot">
+<tt class="descname">is_a_depot</tt><big>(</big><em>path</em><big>)</big><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.is_a_depot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations.is_a_depot" title="repoman.depot_operations.DepotOperations.is_a_depot"><tt class="xref py py-func docutils literal"><span class="pre">is_a_depot()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.depot_operations.DepotOperations.set_source">
+<tt class="descname">set_source</tt><big>(</big><em>path</em>, <em>source</em><big>)</big><a class="headerlink" href="#repoman.hg.depot_operations.DepotOperations.set_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.depot_operations.DepotOperations.set_source" title="repoman.depot_operations.DepotOperations.set_source"><tt class="xref py py-func docutils literal"><span class="pre">set_source()</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.hg.hglibext">
+<span id="repoman-hg-hglibext-module"></span><h2>repoman.hg.hglibext module<a class="headerlink" href="#module-repoman.hg.hglibext" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.hg.hglibext.HgClientExtensions">
+<em class="property">class </em><tt class="descclassname">repoman.hg.hglibext.</tt><tt class="descname">HgClientExtensions</tt><big>(</big><em>path</em>, <em>encoding</em>, <em>configs</em>, <em>connect=True</em><big>)</big><a class="headerlink" href="#repoman.hg.hglibext.HgClientExtensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">hglib.client.hgclient</span></tt></p>
+<dl class="method">
+<dt id="repoman.hg.hglibext.HgClientExtensions.churn">
+<tt class="descname">churn</tt><big>(</big><em>revrange=None</em>, <em>date=None</em>, <em>template=None</em>, <em>dateformat=None</em>, <em>files=</em>, <span class="optional">[</span><span class="optional">]</span><em>changesets=False</em>, <em>sort=None</em>, <em>include=None</em>, <em>exclude=None</em><big>)</big><a class="headerlink" href="#repoman.hg.hglibext.HgClientExtensions.churn" title="Permalink to this definition">¶</a></dt>
+<dd><p>histogram of changes to the repository</p>
+<p>This command will display a histogram representing the number of
+changed lines or revisions, grouped according to the given template.
+The default template will group changes by author. The &#8211;dateformat
+option may be used to group the results by date instead.</p>
+<p>Statistics are based on the number of changed lines, or alternatively
+the number of matching revisions if the &#8211;changesets option is
+specified.</p>
+<p>Examples:</p>
+<blockquote>
+<div><p># display count of changed lines for every committer
+hg churn -t &#8216;{author|email}&#8217;</p>
+<p># display daily activity graph
+hg churn -f &#8216;%H&#8217; -s -c</p>
+<p># display activity of developers by month
+hg churn -f &#8216;%Y-%m&#8217; -s -c</p>
+<p># display count of lines changed in every year
+hg churn -f &#8216;%Y&#8217; -s</p>
+</div></blockquote>
+<p>It is possible to map alternate email addresses to a main address by
+providing a file using the following format:</p>
+<blockquote>
+<div>&lt;alias email&gt; = &lt;actual email&gt;</div></blockquote>
+<p>Such a file may be specified with the &#8211;aliases option, otherwise a
+.hgchurn file will be looked for in the working directory root.</p>
+<p>revrange          count rate for the specified revision or range
+date              count rate for revisions matching date spec
+template TEMPLATE  to group changesets (default: {author|email})
+dateformat FORMAT strftime-compatible format for grouping by date
+changesets count rate by number of changesets
+sort sort by key (default: sort by count)
+include include names matching the given patterns
+exclude  exclude names matching the given patterns</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.hglibext.HgClientExtensions.strip">
+<tt class="descname">strip</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.hg.hglibext.HgClientExtensions.strip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.strip" title="repoman.repository.Repository.strip"><tt class="xref py py-func docutils literal"><span class="pre">strip()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.hglibext.HgClientExtensions.unbundle">
+<tt class="descname">unbundle</tt><big>(</big><em>file</em>, <em>update=False</em>, <em>ssh=None</em>, <em>remotecmd=None</em>, <em>insecure=False</em><big>)</big><a class="headerlink" href="#repoman.hg.hglibext.HgClientExtensions.unbundle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply one or more compressed changegroup files generated by the bundle
+command.</p>
+<dl class="docutils">
+<dt>Returns True on success, False if an update has unresolved files.</dt>
+<dd><p class="first">file - source file name
+update - update to new branch head if changesets were unbundled
+ssh - specify ssh command to use
+remotecmd - specify hg command to run on the remote side
+insecure - do not verify server certificate (ignoring web.cacerts</p>
+<blockquote class="last">
+<div>config)</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="repoman.hg.hglibext.revision">
+<em class="property">class </em><tt class="descclassname">repoman.hg.hglibext.</tt><tt class="descname">revision</tt><a class="headerlink" href="#repoman.hg.hglibext.revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">hglib.client.revision</span></tt></p>
+<dl class="attribute">
+<dt id="repoman.hg.hglibext.revision.parents">
+<tt class="descname">parents</tt><a class="headerlink" href="#repoman.hg.hglibext.revision.parents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.hg.hgwebapi">
+<span id="repoman-hg-hgwebapi-module"></span><h2>repoman.hg.hgwebapi module<a class="headerlink" href="#module-repoman.hg.hgwebapi" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.hg.hgwebapi.HGWebApi">
+<em class="property">class </em><tt class="descclassname">repoman.hg.hgwebapi.</tt><tt class="descname">HGWebApi</tt><big>(</big><em>base_url</em>, <em>user</em>, <em>password</em><big>)</big><a class="headerlink" href="#repoman.hg.hgwebapi.HGWebApi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="repoman.hg.hgwebapi.HGWebApi.get_branches">
+<tt class="descname">get_branches</tt><big>(</big><em>repository</em>, <em>limit=None</em><big>)</big><a class="headerlink" href="#repoman.hg.hgwebapi.HGWebApi.get_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the branches for the given repository</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>repository</strong> (<em>string</em>) &#8211; repository name</li>
+<li><strong>limit</strong> (<em>int</em>) &#8211; max search</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">generator with the branch names</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.hg.hgwebapi.HGWebApi.opener">
+<tt class="descname">opener</tt><a class="headerlink" href="#repoman.hg.hgwebapi.HGWebApi.opener" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.hg.repository">
+<span id="repoman-hg-repository-module"></span><h2>repoman.hg.repository module<a class="headerlink" href="#module-repoman.hg.repository" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.hg.repository.Repository">
+<em class="property">class </em><tt class="descclassname">repoman.hg.repository.</tt><tt class="descname">Repository</tt><big>(</big><em>repo_path</em>, <em>repo_indexer=None</em>, <em>message_builder=None</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="repoman.html#repoman.repository.Repository" title="repoman.repository.Repository"><tt class="xref py py-class docutils literal"><span class="pre">repoman.repository.Repository</span></tt></a></p>
+<p>Models a Mercurial repository</p>
+<dl class="attribute">
+<dt id="repoman.hg.repository.Repository.MERGING_WITH_ANCESTOR_LITERAL">
+<tt class="descname">MERGING_WITH_ANCESTOR_LITERAL</tt><em class="property"> = 'working directory ancestor has no effect'</em><a class="headerlink" href="#repoman.hg.repository.Repository.MERGING_WITH_ANCESTOR_LITERAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.hg.repository.Repository.NEW_REMOTE_HEAD_LITERAL">
+<tt class="descname">NEW_REMOTE_HEAD_LITERAL</tt><em class="property"> = 'creates new remote head'</em><a class="headerlink" href="#repoman.hg.repository.Repository.NEW_REMOTE_HEAD_LITERAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.add">
+<tt class="descname">add</tt><big>(</big><em>files</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.add" title="repoman.repository.Repository.add"><tt class="xref py py-func docutils literal"><span class="pre">add()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.branch">
+<tt class="descname">branch</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.branch_exists">
+<tt class="descname">branch_exists</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.branch_exists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.commit">
+<tt class="descname">commit</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.commit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.compare_branches">
+<tt class="descname">compare_branches</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.compare_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.exterminate_branch">
+<tt class="descname">exterminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.exterminate_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.exterminate_branch" title="repoman.repository.Repository.exterminate_branch"><tt class="xref py py-func docutils literal"><span class="pre">exterminate_branch()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_ancestor">
+<tt class="descname">get_ancestor</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_ancestor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_branch">
+<tt class="descname">get_branch</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_branches">
+<tt class="descname">get_branches</tt><big>(</big><em>active=False</em>, <em>closed=False</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.get_branches" title="repoman.repository.Repository.get_branches"><tt class="xref py py-func docutils literal"><span class="pre">get_branches()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_changeset_branches">
+<tt class="descname">get_changeset_branches</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_changeset_branches" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.get_changeset_branches" title="repoman.repository.Repository.get_changeset_branches"><tt class="xref py py-func docutils literal"><span class="pre">get_changeset_branches()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_changeset_tags">
+<tt class="descname">get_changeset_tags</tt><big>(</big><em>changeset_hash</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_changeset_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.get_changeset_tags" title="repoman.repository.Repository.get_changeset_tags"><tt class="xref py py-func docutils literal"><span class="pre">get_changeset_tags()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_parents">
+<tt class="descname">get_parents</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_parents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.get_revset">
+<tt class="descname">get_revset</tt><big>(</big><em>cs_from=None</em>, <em>cs_to=None</em>, <em>branch=None</em>, <em>keyword=None</em>, <em>date=None</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.get_revset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.get_revset" title="repoman.repository.Repository.get_revset"><tt class="xref py py-func docutils literal"><span class="pre">get_revset()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.is_merge">
+<tt class="descname">is_merge</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.is_merge" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.merge">
+<tt class="descname">merge</tt><big>(</big><em>signature</em>, <em>local_branch=None</em>, <em>other_rev=None</em>, <em>other_branch_name=None</em>, <em>dry_run=False</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.merge" title="repoman.repository.Repository.merge"><tt class="xref py py-func docutils literal"><span class="pre">merge()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.parents">
+<tt class="descname">parents</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.parents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.pull">
+<tt class="descname">pull</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.pull" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.push">
+<tt class="descname">push</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.push" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.rawcommand">
+<tt class="descname">rawcommand</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.rawcommand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.strip">
+<tt class="descname">strip</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.strip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.tag">
+<tt class="descname">tag</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.tag" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.tag_exists">
+<tt class="descname">tag_exists</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.tag_exists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.tags">
+<tt class="descname">tags</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.tags" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.terminate_branch">
+<tt class="descname">terminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.terminate_branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inherited method
+<a class="reference internal" href="repoman.html#repoman.repository.Repository.terminate_branch" title="repoman.repository.Repository.terminate_branch"><tt class="xref py py-func docutils literal"><span class="pre">terminate_branch()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.tip">
+<tt class="descname">tip</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.tip" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.hg.repository.Repository.update">
+<tt class="descname">update</tt><big>(</big><em>they</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="repoman.hg.repository.Repository.with_repo">
+<em class="property">class </em><tt class="descname">with_repo</tt><big>(</big><em>error_message=None</em>, <em>exceptions=(&lt;class 'hglib.error.CommandError'&gt;</em>, <em>&lt;class 'hglib.error.ServerError'&gt;</em>, <em>&lt;class 'hglib.error.ResponseError'&gt;)</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.with_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="function">
+<dt id="repoman.hg.repository.Repository.with_repo.with_repo">
+<tt class="descclassname">&#64;</tt><tt class="descname">with_repo</tt><a class="headerlink" href="#repoman.hg.repository.Repository.with_repo.with_repo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator for methods in this class that use a repository.</p>
+<p>It adds a parameter after &#8220;self&#8221; with the repository, so, a method
+defined like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="nd">@with_repo</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="o">...</span>
+</pre></div>
+</div>
+<p>Will have to be called as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">hg_repository</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And will receive self as usual, and a repository instantiated
+with the path of the hg_repository object.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="repoman.hg.repository.Repository.with_repo.DEFAULT_EXCEPTIONS">
+<tt class="descname">DEFAULT_EXCEPTIONS</tt><em class="property"> = (&lt;class 'hglib.error.CommandError'&gt;, &lt;class 'hglib.error.ServerError'&gt;, &lt;class 'hglib.error.ResponseError'&gt;)</em><a class="headerlink" href="#repoman.hg.repository.Repository.with_repo.DEFAULT_EXCEPTIONS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.hg">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-repoman.hg" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="repoman.git.html">repoman.git package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repoman.repo_indexers.html">repoman.repo_indexers package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Tuenti Technologies S.L..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

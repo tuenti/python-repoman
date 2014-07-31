@@ -1,0 +1,30 @@
+repoman.repo_indexers package
+=============================
+
+Submodules
+----------
+
+repoman.repo_indexers.base_indexer module
+-----------------------------------------
+
+.. automodule:: repoman.repo_indexers.base_indexer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+repoman.repo_indexers.hgweb_indexer module
+------------------------------------------
+
+.. automodule:: repoman.repo_indexers.hgweb_indexer
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: repoman.repo_indexers
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>repoman.repo_indexers package &mdash; Repoman 0.6.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.6.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Repoman 0.6.4 documentation" href="index.html" />
+    <link rel="up" title="repoman package" href="repoman.html" />
+    <link rel="next" title="repoman.utils package" href="repoman.utils.html" />
+    <link rel="prev" title="repoman.hg package" href="repoman.hg.html" /> 
+  </head>
+  <body>
+      <div class="header"><h1 class="heading"><a href="index.html">
+          <span>Repoman 0.6.4 documentation</span></a></h1>
+        <h2 class="heading"><span>repoman.repo_indexers package</span></h2>
+      </div>
+      <div class="topnav">
+      
+        <p>
+        «&#160;&#160;<a href="repoman.hg.html">repoman.hg package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repoman.utils.html">repoman.utils package</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="repoman-repo-indexers-package">
+<h1>repoman.repo_indexers package<a class="headerlink" href="#repoman-repo-indexers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-repoman.repo_indexers.base_indexer">
+<span id="repoman-repo-indexers-base-indexer-module"></span><h2>repoman.repo_indexers.base_indexer module<a class="headerlink" href="#module-repoman.repo_indexers.base_indexer" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.repo_indexers.base_indexer.BaseIndexer">
+<em class="property">class </em><tt class="descclassname">repoman.repo_indexers.base_indexer.</tt><tt class="descname">BaseIndexer</tt><big>(</big><em>repo_name</em>, <em>url</em>, <em>user</em>, <em>password</em>, <em>api=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexers.base_indexer.BaseIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Base class for all the indexers</p>
+<dl class="attribute">
+<dt id="repoman.repo_indexers.base_indexer.BaseIndexer.repo_name">
+<tt class="descname">repo_name</tt><a class="headerlink" href="#repoman.repo_indexers.base_indexer.BaseIndexer.repo_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="repoman.repo_indexers.base_indexer.IndexerError">
+<em class="property">exception </em><tt class="descclassname">repoman.repo_indexers.base_indexer.</tt><tt class="descname">IndexerError</tt><a class="headerlink" href="#repoman.repo_indexers.base_indexer.IndexerError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.repo_indexers.hgweb_indexer">
+<span id="repoman-repo-indexers-hgweb-indexer-module"></span><h2>repoman.repo_indexers.hgweb_indexer module<a class="headerlink" href="#module-repoman.repo_indexers.hgweb_indexer" title="Permalink to this headline">¶</a></h2>
+<p>Copyright 2014 Tuenti Technologies S.L.</p>
+<p>Licensed under the Apache License, Version 2.0 (the &#8220;License&#8221;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at</p>
+<blockquote>
+<div><a class="reference external" href="http://www.apache.org/licenses/LICENSE-2.0">http://www.apache.org/licenses/LICENSE-2.0</a></div></blockquote>
+<p>Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &#8220;AS IS&#8221; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</p>
+<dl class="class">
+<dt id="repoman.repo_indexers.hgweb_indexer.HGWebIndexer">
+<em class="property">class </em><tt class="descclassname">repoman.repo_indexers.hgweb_indexer.</tt><tt class="descname">HGWebIndexer</tt><big>(</big><em>repo_name</em>, <em>url</em>, <em>user</em>, <em>password</em>, <em>api=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexers.hgweb_indexer.HGWebIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#repoman.repo_indexers.base_indexer.BaseIndexer" title="repoman.repo_indexers.base_indexer.BaseIndexer"><tt class="xref py py-class docutils literal"><span class="pre">repoman.repo_indexers.base_indexer.BaseIndexer</span></tt></a></p>
+<p>Indexer for HGWeb</p>
+<dl class="attribute">
+<dt id="repoman.repo_indexers.hgweb_indexer.HGWebIndexer.api">
+<tt class="descname">api</tt><a class="headerlink" href="#repoman.repo_indexers.hgweb_indexer.HGWebIndexer.api" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="repoman.repo_indexers.hgweb_indexer.HGWebIndexer.get_branch_log">
+<tt class="descname">get_branch_log</tt><big>(</big><em>branch_name</em>, <em>limit=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexers.hgweb_indexer.HGWebIndexer.get_branch_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented, need to adapt the raw output for the changesets log</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="repoman.repo_indexers.hgweb_indexer.HGWebIndexer.get_branches">
+<tt class="descname">get_branches</tt><big>(</big><em>limit=None</em><big>)</big><a class="headerlink" href="#repoman.repo_indexers.hgweb_indexer.HGWebIndexer.get_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repoman.repo_indexers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-repoman.repo_indexers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav">
+      
+        <p>
+        «&#160;&#160;<a href="repoman.hg.html">repoman.hg package</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="repoman.utils.html">repoman.utils package</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer">
+        &copy; Copyright 2014, Tuenti Technologies S.L..
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
