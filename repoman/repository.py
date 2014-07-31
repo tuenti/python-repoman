@@ -132,7 +132,7 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def tag(self, tag_name, revision=None, message=None):
+    def tag(self, tag_name, signature, revision=None, message=None):
         """
         Creates a tag in the repository
         """
