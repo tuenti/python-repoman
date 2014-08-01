@@ -143,6 +143,19 @@ class DepotOperations(BaseDepotOps):
         if os.path.exists(index_lock_path):
             os.remove(index_lock_path)
 
+    def _clear_working_copy(self, path):
+        repository = pygit2.Repository(path)
+        if repository.head_is_unborn:
+            for dirty_file in os.listdir(path):
+                if dirty_file != '.git':
+                    dirty_file_path = os.path.join(path, dirty_file)
+                    if os.path.isdir(dirty_file_path):
+                        shutil.rmtree(dirty_file_path)
+                    else:
+                        os.remove(dirty_file_path)
+        else:
+            repository.checkout_head(pygit2.GIT_CHECKOUT_FORCE)
+
     def clear_depot(self, path):
         """
         Inherited method :func:`~DepotOperations.clear_depot`
@@ -151,8 +164,7 @@ class DepotOperations(BaseDepotOps):
         repository = pygit2.Repository(path)
         self._restore_state_refs(repository.path)
         self._restore_state_head(repository.path)
-        if not repository.head_is_unborn:
-            repository.checkout_head(pygit2.GIT_CHECKOUT_FORCE)
+        self._clear_working_copy(path)
 
     def _save_state(self, path):
         repository = pygit2.Repository(path)

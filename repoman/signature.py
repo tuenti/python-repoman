@@ -15,19 +15,22 @@
 # limitations under the License.
 #
 
+import getpass
 import socket
 
 
 class Signature(dict):
     @property
     def user(self):
-        return self['user']
+        if 'user' in self:
+            return self['user']
+        return getpass.getuser()
 
     @property
     def email(self):
         if 'email' in self:
             return self['email']
-        return "%s@%s" % (self['user'], socket.gethostname())
+        return "%s@%s" % (self.user, socket.gethostname())
 
     @property
     def author(self):

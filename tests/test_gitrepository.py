@@ -27,7 +27,6 @@ except ImportError:
 
 from repoman.git import pygitext
 from repoman.repository import RepositoryError, MergeConflictError
-from repoman.signature import Signature
 from repoman.git.repository import Repository
 
 FIXTURE_PATH = 'fixtures'
@@ -156,8 +155,7 @@ class TestGitRepository(unittest.TestCase):
 
         gitrepo = Repository(self.main_repo)
         gitrepo.add(file_name)
-        signature = Signature(user='fake_user')
-        commit = gitrepo.commit(commit_msg, signature)
+        commit = gitrepo.commit(commit_msg)
 
         final_len = len(list(repo.walk(repo.head.target,
                                        pygit2.GIT_SORT_TOPOLOGICAL)))
@@ -165,7 +163,7 @@ class TestGitRepository(unittest.TestCase):
         self.assertEquals(final_len, initial_len + 1)
         self.assertEquals(repo.head.get_object().message, commit_msg)
         self.assertEquals(commit.desc, commit_msg)
-        self.assertIsNone(gitrepo.commit(commit_msg, signature))
+        self.assertIsNone(gitrepo.commit(commit_msg))
 
     def test_merge_wrong_revision(self):
         gitrepo = Repository(self.cloned_from_repo)
@@ -179,8 +177,7 @@ class TestGitRepository(unittest.TestCase):
         gitrepo = Repository(self.cloned_from_repo)
         # Checkout to master
         gitrepo.update('master')
-        cs = gitrepo.merge(
-            Signature(user='fake_user'), other_rev=gitrepo[headnewbranch])
+        cs = gitrepo.merge(other_rev=gitrepo[headnewbranch])
         self.assertEquals(len(repo.head.get_object().parents), 2)
         self.assertEquals(repo.head.get_object().hex, cs.hash)
 
@@ -196,11 +193,10 @@ class TestGitRepository(unittest.TestCase):
             file.write(file_content)
 
         gitrepo.add(file_to_conflict_name)
-        signature = Signature(user="fake_user")
-        conflict_cs = gitrepo.commit("Provoking conflict", signature)
+        conflict_cs = gitrepo.commit("Provoking conflict")
         gitrepo.update('master')
         try:
-            gitrepo.merge(signature=signature, other_rev=conflict_cs)
+            gitrepo.merge(other_rev=conflict_cs)
             self.fail()
         except MergeConflictError as exp:
             self.assertTrue('Conflicts found: merging test1.txt failed' in exp)
@@ -217,11 +213,10 @@ class TestGitRepository(unittest.TestCase):
             file.write(file_content)
         gitrepo.add(ff_file_name)
 
-        signature = Signature(user="fake user")
-        ff_head = gitrepo.commit(message="commit ff file", signature=signature)
+        ff_head = gitrepo.commit(message="commit ff file")
         gitrepo.update('master')
         cs = gitrepo.merge_fastforward(
-            signature, other_rev=ff_head, other_branch_name='test')
+            other_rev=ff_head, other_branch_name='test')
         self.assertEquals(len(repo.head.get_object().parents), 1)
         self.assertEquals(repo.head.get_object().hex, cs.hash)
         self.assertEquals(ff_head.hash, cs.hash)
@@ -239,11 +234,9 @@ class TestGitRepository(unittest.TestCase):
             file.write(file_content)
         gitrepo.add(ff_file_name)
 
-        signature = Signature(user="foo", email="foo@example.com")
-        ff_head = gitrepo.commit(message="commit ff file", signature=signature)
+        ff_head = gitrepo.commit(message="commit ff file")
         gitrepo.update('master')
-        cs = gitrepo.merge(signature=signature, other_rev=ff_head,
-                           other_branch_name='test')
+        cs = gitrepo.merge(other_rev=ff_head, other_branch_name='test')
         self.assertEquals(len(repo.head.get_object().parents), 2)
         self.assertEquals(repo.head.get_object().hex, cs.hash)
         # We want a commit in fastforward merges, hashes must be different
@@ -255,14 +248,12 @@ class TestGitRepository(unittest.TestCase):
         gitrepo.update('master')
         uptodate_hash = '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9'
         cs = gitrepo[uptodate_hash]
-        should_be_none = gitrepo.merge(
-            Signature(user='fake user'), other_rev=cs)
+        should_be_none = gitrepo.merge(other_rev=cs)
         self.assertIsNone(should_be_none)
 
     def test_tag(self):
         gitrepo = Repository(self.main_repo)
-        signature = Signature(user='fake user')
-        gitrepo.tag("new-tag", message="fake tag", signature=signature)
+        gitrepo.tag("new-tag", message="fake tag")
 
         repo = pygit2.Repository(self.main_repo)
         self.assertIsNotNone(repo.lookup_reference('refs/tags/new-tag'))
@@ -475,17 +466,15 @@ class TestGitRepository(unittest.TestCase):
         self.assertFalse(gitrepo.is_merge(repo.head.get_object().hex))
         # Do a merge
         gitrepo.update('master')
-        merge_rev = gitrepo.merge(
-            Signature(user='fake_user'), other_rev=gitrepo[headnewbranch])
+        merge_rev = gitrepo.merge(other_rev=gitrepo[headnewbranch])
         self.assertTrue(gitrepo.is_merge(merge_rev.hash))
 
     def test_get_changeset_tags(self):
         repo = pygit2.Repository(self.main_repo)
         gitrepo = Repository(self.main_repo)
-        signature = Signature(user='fake user')
         rev = gitrepo[repo.head.get_object().hex]
-        gitrepo.tag("test_tag", revision=rev.hash, signature=signature)
-        gitrepo.tag("test_tag2", revision=rev.hash, signature=signature)
+        gitrepo.tag("test_tag", revision=rev.hash)
+        gitrepo.tag("test_tag2", revision=rev.hash)
         tags = gitrepo.get_changeset_tags(rev.hash)
         self.assertListEqual(tags, ["test_tag", "test_tag2"])
 
@@ -515,16 +504,14 @@ class TestGitRepository(unittest.TestCase):
         self.assertEquals(len(list(gitrepo.get_branches())), 2)
         self.assertEquals(len(list(gitrepo_main.get_branches())), 2)
 
-        gitrepo.terminate_branch(
-            branch_name, 'fake_user', None, self.main_repo)
+        gitrepo.terminate_branch(branch_name, None, self.main_repo)
 
         self.assertEquals(len(list(gitrepo.get_branches())), 1)
         self.assertEquals(len(list(gitrepo_main.get_branches())), 2)
 
         # Terminating a branch already terminated
         # it shouldn't do anything but warning with a message
-        gitrepo.terminate_branch(
-            branch_name, 'fake_user', None, self.main_repo)
+        gitrepo.terminate_branch(branch_name, None, self.main_repo)
 
     def test_exterminate_branch(self):
         branch_name = 'newbranch'
@@ -538,13 +525,11 @@ class TestGitRepository(unittest.TestCase):
         self.assertEquals(len(list(gitrepo.get_branches())), 2)
         self.assertEquals(len(list(gitrepo_main.get_branches())), 2)
 
-        gitrepo.exterminate_branch(
-            branch_name, 'fake_user', None, self.main_repo)
+        gitrepo.exterminate_branch(branch_name, None, self.main_repo)
 
         self.assertEquals(len(list(gitrepo.get_branches())), 1)
         self.assertEquals(len(list(gitrepo_main.get_branches())), 1)
 
         # Terminating a branch already terminated
         # it shouldn't do anything but warning with a message
-        gitrepo.exterminate_branch(
-            branch_name, 'fake_user', None, self.main_repo)
+        gitrepo.exterminate_branch(branch_name, None, self.main_repo)
