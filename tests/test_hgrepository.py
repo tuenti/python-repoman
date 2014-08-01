@@ -22,7 +22,6 @@ import tempfile
 import mox
 
 from repoman.changeset import Changeset
-from repoman.signature import Signature
 from repoman.hg import hglibext as hglib
 from repoman.hg.repository import Repository
 from repoman.repository import RepositoryError
@@ -180,15 +179,14 @@ class TestHgRepository(unittest.TestCase):
         commit_msg = "Test message"
         repo.add(file_path)
 
-        signature = Signature(user='fake_user')
         repository = Repository(self.main_repo)
-        repository.commit(commit_msg, signature)
+        repository.commit(commit_msg)
 
         self.assertEquals(len(repo.log()), initial_len + 1)
         self.assertEquals(repo.tip()[5], commit_msg)
         repo.close()
 
-        self.assertIsNone(repository.commit(commit_msg, signature))
+        self.assertIsNone(repository.commit(commit_msg))
 
     def test_get_branches(self):
         repo = hglib.open(self.main_repo)
@@ -214,17 +212,15 @@ class TestHgRepository(unittest.TestCase):
         commit_msg = "Test message"
         repo.add(file_path)
 
-        signature = Signature(user='fake_user')
-
         repository = Repository(repo_path)
-        repository.commit(commit_msg, signature)
+        repository.commit(commit_msg)
 
         self.assertEquals(len(repo.branches()), 2)
         self.assertEquals(len(repo.branches(active=True)), 1)
         self.assertEquals(len(repo.branches(closed=True)), 2)
 
         self.mox.StubOutWithMock(repository, "push")
-        repository.terminate_branch(branch_name, signature, None, None)
+        repository.terminate_branch(branch_name, None, None)
 
         self.assertEquals(len(repo.branches()), 1)
         self.assertEquals(len(repo.branches(active=True)), 0)
@@ -232,7 +228,7 @@ class TestHgRepository(unittest.TestCase):
 
         # Closing branch already closed
         # it shouldn't do anything but warning with a message
-        repository.terminate_branch(branch_name, signature, None, None)
+        repository.terminate_branch(branch_name, None, None)
 
         repo.close()
 
@@ -254,7 +250,7 @@ class TestHgRepository(unittest.TestCase):
         third_revision = repository[repo.tip()[1]]
 
         # need to commit, return true
-        repository.merge(Signature(user='fake_user'), other_rev=new_rev)
+        repository.merge(other_rev=new_rev)
         cs = repository["tip"]
         self.assertEquals(len(cs.parents), 2)
         repo.update(third_revision, clean=True)
@@ -288,8 +284,7 @@ class TestHgRepository(unittest.TestCase):
 
     def test_tag(self):
         repo = Repository(self.main_repo)
-        signature = Signature(user='fake_user')
-        repo.tag("new-tag", message="fake tag", signature=signature)
+        repo.tag("new-tag", message="fake tag")
         hgrepo = hglib.open(self.main_repo)
         self.assertEquals(hgrepo.tags()[1][0], "new-tag")
         hgrepo.close()

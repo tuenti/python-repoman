@@ -150,4 +150,54 @@ class HgClientExtensions(original_hgclient):
         args.extend(['--config', 'extensions.hgext.churn='])
         return self.rawcommand(args)
 
+    def purge(self, dirs=None, all=False, include=None, exclude=None, p=False,
+              abortonerr=False):
+        """
+        aliases: clean
+
+        removes files not tracked by Mercurial
+
+        Delete files not known to Mercurial. This is useful to test local and
+        uncommitted changes in an otherwise-clean source tree.
+
+        This means that purge will delete:
+
+        - Unknown files: files marked with "?" by "hg status"
+        - Empty directories: in fact Mercurial ignores directories unless they
+          contain files under source control management
+
+        But it will leave untouched:
+
+        - Modified and unmodified tracked files
+        - Ignored files (unless --all is specified)
+        - New files added to the repository (with "hg add")
+
+        If directories are given on the command line, only files in these
+        directories are considered.
+
+        Be careful with purge, as you could irreversibly delete some files you
+        forgot to add to the repository. If you only want to print the list of
+        files that this program would delete, use the --print option.
+
+        Return True on success
+
+        all - purge ignored files too
+        include - include names matching the given patterns
+        exclude - exclude names matching the given patterns
+        abortonerror - abort if an error occurs
+        p - print filenames instead of deleting them
+        """
+        if not isinstance(dirs, list):
+            dirs = [dirs]
+
+        args = util.cmdbuilder(
+            'purge', all=all, I=include, X=exclude, p=p, a=abortonerr, *dirs)
+        args.extend(['--config', 'extensions.hgext.purge='])
+
+        eh = util.reterrorhandler(args)
+        self.rawcommand(args, eh=eh)
+
+        return bool(eh)
+
+
 client.hgclient = HgClientExtensions

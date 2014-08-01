@@ -88,4 +88,4 @@ class TestRepository(unittest.TestCase):
 
         repo = Repository(self.main_repo)
         repo.full_merge_and_push(base_branch, hash, 'fake_branch',
-                                 'fakeuser', origin, destination)
+                                 origin, destination)

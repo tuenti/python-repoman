@@ -71,6 +71,13 @@ class Repository(BaseRepo):
                                   revision)
         return pygit2rev
 
+    def _get_pygit_committer(self):
+        return pygit2.Signature(self.signature.user, self.signature.email)
+
+    def _get_pygit_author(self):
+        return pygit2.Signature(self.signature.author,
+                                self.signature.author_email)
+
     @property
     def _repository(self):
         """ Lazy property with a reference to the real git repository."""
@@ -124,15 +131,15 @@ class Repository(BaseRepo):
         self.update(name)
         return self._new_branch_object(name)
 
-    def tag(self, name, signature, revision=None, message=None):
+    def tag(self, name, revision=None, message=None):
         """Inherited method :func:`~repoman.repository.Repository.tag` """
         if not revision:
             commit = self._repository.head.get_object()
         else:
             commit = self._get_pygit_revision(revision)
-        signature = pygit2.Signature('#TODO NAME', '#TODO MAIL')
         self._repository.create_tag(name, commit.oid, pygit2.GIT_OBJ_COMMIT,
-                                    signature, message if message else '')
+                                    self._get_pygit_committer(),
+                                    message if message else '')
         return self._new_tag_object(name)
 
     def strip(self, changeset):
@@ -193,18 +200,16 @@ class Repository(BaseRepo):
         for branch in self._repository.listall_branches():
             yield self._new_branch_object(branch)
 
-    def exterminate_branch(self, branch_name, signature, repo_origin,
-                           repo_dest):
+    def exterminate_branch(self, branch_name, repo_origin, repo_dest):
         """Inherited method
         :func:`~repoman.repository.Repository.exterminate_branch`
         """
-        if not self.terminate_branch(
-                branch_name, signature, repo_origin, repo_dest):
+        if not self.terminate_branch(branch_name, repo_origin, repo_dest):
             return
         # Deleting remotely
         self.push(repo_origin, repo_dest, ref_name=":%s" % branch_name)
 
-    def terminate_branch(self, branch_name, signature, repo_origin, repo_dest):
+    def terminate_branch(self, branch_name, repo_origin, repo_dest):
         """Inherited method
         :func:`~repoman.repository.Repository.terminate_branch`
         """
@@ -354,7 +359,7 @@ class Repository(BaseRepo):
         except sh.ErrorReturnCode as e:
             raise RepositoryError('Push to %s failed (%s)' % (ref_name, e))
 
-    def merge(self, signature, local_branch=None, other_rev=None,
+    def merge(self, local_branch=None, other_rev=None,
               other_branch_name=None, dry_run=False):
         """Inherited method
         :func:`~repoman.repository.Repository.merge`
@@ -378,10 +383,10 @@ class Repository(BaseRepo):
         else:
             self._check_merge_conflicts()
 
-        return self._perform_merge(other_rev, local_branch, signature,
+        return self._perform_merge(other_rev, local_branch,
                                    other_branch_name, dry_run, custom_parent)
 
-    def merge_fastforward(self, signature, local_branch=None, other_rev=None,
+    def merge_fastforward(self, local_branch=None, other_rev=None,
                           other_branch_name=None,
                           dry_run=False):
         """
@@ -389,18 +394,16 @@ class Repository(BaseRepo):
            No alternative provided, but this method does not match the
            :py:class:`repoman.repository.Repository` interface.
         """
-        return self._merge_fastforward(signature, local_branch, other_rev,
+        return self._merge_fastforward(local_branch, other_rev,
                                        other_branch_name, dry_run)
 
-    def _merge_fastforward(self, signature, local_branch=None, other_rev=None,
+    def _merge_fastforward(self, local_branch=None, other_rev=None,
                            other_branch_name=None,
                            dry_run=False):
         """
         Merges two revision and commits the result using fastforward if
         possible
 
-        :param signature: signature for the possible commit
-        :type Signature: string
         :param local_branch: branch object to merge to - optional, if None,
             it takes current branch
         :type local_branch: :py:class:`~repoman.changeset.Changeset`
@@ -438,7 +441,7 @@ class Repository(BaseRepo):
         else:
             self._check_merge_conflicts()
 
-        return self._perform_merge(other_rev, local_branch, signature,
+        return self._perform_merge(other_rev, local_branch,
                                    other_branch_name, dry_run)
 
     def _get_local_branch_name(self):
@@ -464,7 +467,7 @@ class Repository(BaseRepo):
             return True
         return False
 
-    def _perform_merge(self, other_rev, local_branch, signature,
+    def _perform_merge(self, other_rev, local_branch,
                        other_branch_name, dry_run, custom_parent):
         if not dry_run:
             # Do the commit
@@ -474,7 +477,7 @@ class Repository(BaseRepo):
                 local_branch=local_branch.name,
                 local_revision=local_branch.get_changeset().shorthash,
             )
-            return self.commit(message=commit_message, signature=signature,
+            return self.commit(message=commit_message,
                                custom_parent=custom_parent)
         else:
             self.update(local_branch.name)
@@ -516,7 +519,7 @@ class Repository(BaseRepo):
         except KeyError, e:
             raise RepositoryError('File %s doesn\'t exist' % e)
 
-    def commit(self, message, signature, custom_parent=None,
+    def commit(self, message, custom_parent=None,
                allow_empty=False):
         """Inherited method
         :func:`~repoman.repository.Repository.commit`
@@ -529,11 +532,6 @@ class Repository(BaseRepo):
 
         # Write the index to disk
         oid = self._repository.index.write_tree()
-
-        # Signature
-        committer_signature = pygit2.Signature(signature.user, signature.email)
-        author_signature = pygit2.Signature(
-            signature.author, signature.author_email)
 
         # Parent (OID) of our commit
         if self._repository.head_is_unborn:
@@ -559,8 +557,8 @@ class Repository(BaseRepo):
 
         oid = self._repository.create_commit(
             reference,
-            author_signature,
-            committer_signature,
+            self._get_pygit_author(),
+            self._get_pygit_committer(),
             str(self.message_builder.commit(message)),
             oid,
             parents)

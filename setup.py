@@ -21,6 +21,7 @@ from repoman import __version__ as version
 
 github_url = 'https://github.com/tuenti/python-repoman'
 
+
 def read_description():
     with open('README.rst') as fd:
         return fd.read()

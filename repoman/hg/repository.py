@@ -132,12 +132,13 @@ class Repository(BaseRepo):
         return self._new_branch_object(branch_name)
 
     @with_repo(error_message="Error tagging revision")
-    def tag(self, repo, name, signature, revision=None, message=None):
+    def tag(self, repo, name, revision=None, message=None):
         """ Inherited method
         :func:`~repoman.repository.Repository.tag`
         """
         repo.update()
-        repo.tag(name, rev=revision, message=message, force=True, user=signature.user)
+        repo.tag(name, rev=revision, message=message, force=True,
+                 user=self.signature.user)
 
     @with_repo()
     def strip(self, repo, changeset):
@@ -177,14 +178,13 @@ class Repository(BaseRepo):
                                       % (branch_name, self.path))
         return self._new_branch_object(branch_name)
 
-    def exterminate_branch(self, branch_name, signature, repo_origin,
-                           repo_dest):
+    def exterminate_branch(self, branch_name, repo_origin, repo_dest):
         """ Inherited method
         :func:`~repoman.repository.Repository.exterminate_branch`
         """
-        self.terminate_branch(branch_name, signature, repo_origin, repo_dest)
+        self.terminate_branch(branch_name, repo_origin, repo_dest)
 
-    def terminate_branch(self, branch_name, signature, repo_origin, repo_dest):
+    def terminate_branch(self, branch_name, repo_origin, repo_dest):
         """ Inherited method
         :func:`~repoman.repository.Repository.terminate_branch`
         """
@@ -202,7 +202,7 @@ class Repository(BaseRepo):
                     message=str(self.message_builder.close_branch(
                         branch=branch_name
                     )),
-                    user=signature.user,
+                    user=self.signature.user,
                     closebranch=True)
 
                 parents = repo.parents()
@@ -351,7 +351,7 @@ class Repository(BaseRepo):
         parents = repo.parents()
         return self._new_changeset_object(parents[0])
 
-    def merge(self, signature, local_branch=None, other_rev=None,
+    def merge(self, local_branch=None, other_rev=None,
               other_branch_name=None, dry_run=False):
         """ Inherited method
         :func:`~repoman.repository.Repository.merge`
@@ -413,7 +413,7 @@ class Repository(BaseRepo):
                     local_revision=local_branch.get_changeset().shorthash
                 )
                 commit = repo.commit(message=str(commit_message),
-                                     user=signature.user)
+                                     user=self.signature.user)
                 return self._new_changeset_object(repo.tip())
             else:
                 # Restoring state
@@ -444,7 +444,7 @@ class Repository(BaseRepo):
                     raise RepositoryError("Could not add file '%s'" % file)
 
     @with_repo()
-    def commit(self, repo, message, signature, custom_parent=None,
+    def commit(self, repo, message, custom_parent=None,
                allow_empty=False):
         """ Inherited method
         :func:`~repoman.repository.Repository.commit`
@@ -456,7 +456,7 @@ class Repository(BaseRepo):
             return None
         repo.commit(
             message=str(self.message_builder.commit(message)),
-            user=signature.user
+            user=self.signature.user
         )
         return self._new_changeset_object(repo.tip())
 

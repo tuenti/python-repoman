@@ -15,11 +15,13 @@
 # limitations under the License.
 #
 
+import copy
 import logging
 
+from repoman.commitmessage import DefaultCommitMessageBuilder
 from repoman.reference import Reference
 from repoman.repo_indexer import RepoIndexerError
-from repoman.commitmessage import DefaultCommitMessageBuilder
+from repoman.signature import Signature
 
 logger = logging.getLogger(__name__)
 
@@ -93,10 +95,37 @@ class Repository(object):
                                   repo_indexer,
                                   commit_message_builder)
 
-    def __init__(self, repo_path, repo_indexer=None, message_builder=None):
+    def __init__(self, repo_path, repo_indexer=None, message_builder=None,
+                 signature=None):
         self.path = repo_path
         self._repo_indexer = repo_indexer
         self.message_builder = message_builder or DefaultCommitMessageBuilder()
+        self._signature = signature
+
+    @property
+    def signature(self):
+        if not self._signature:
+            self._signature = Signature()
+        return self._signature
+
+    @signature.setter
+    def signature(self, signature):
+        self._signature = signature
+
+    def do_as(self, signature):
+        """
+        Convenience methods to do operations with an specific signature.
+
+        To be used like:
+
+          repository.do_as(other_signature).tag('foo')
+
+        :param signature: Signature to use for the operation.
+        :type signature: :func:`repoman.signature.Signature`
+        """
+        clone = copy.copy(self)
+        clone.signature = signature
+        return clone
 
     def _new_branch_object(self, branch_name):
         """
@@ -132,7 +161,7 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def tag(self, tag_name, signature, revision=None, message=None):
+    def tag(self, tag_name, revision=None, message=None):
         """
         Creates a tag in the repository
         """
@@ -191,15 +220,12 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def terminate_branch(self, branch_name, signature, repo_origin,
-                         repo_dest):
+    def terminate_branch(self, branch_name, repo_origin, repo_dest):
         """
         Remove the branch locally and remotely
 
         :param branch_name: name of the branch
         :type branch_name: string
-        :param signature: Signature to use in the commit
-        :type signature: string
         :param repo_origin: repository source
         :type repo_origin: string
         :param repo_dest: repository destination
@@ -339,16 +365,13 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def commit(self, message, signature, custom_parent=None,
-               allow_empty=False):
+    def commit(self, message, custom_parent=None, allow_empty=False):
         """
         Commits changes in current working copy. This will implement a
         git commit -a behaviour.
 
         :param message: commit message
         :type message: string
-        :param signature: signature to be used in commit message
-        :type signature: string
         :param custom_parent: by default the commit parent is the repo head
                              with this parameter you can specify a custom one
                              like when there was a fastforward merge and you
@@ -406,13 +429,11 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def merge(self, signature, local_branch=None, other_rev=None,
+    def merge(self, local_branch=None, other_rev=None,
               other_branch_name=None, dry_run=False):
         """
         Merges two revision and commits the result
 
-        :param signature: signature for the possible commit
-        :type Signature: string
         :param local_branch: branch object to merge to - optional, if None,
             it takes current branch
         :type Reference: repoman.git.gitchangeset
@@ -439,16 +460,13 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def exterminate_branch(self, branch_name, signature, repo_origin,
-                           repo_dest):
+    def exterminate_branch(self, branch_name, repo_origin, repo_dest):
         """
         Exterminating the branch, apart from terminate it, this also
         removes it from remote
 
         :param branch_name: name of the branch
         :type branch_name: string
-        :param signature: Signature to use in the commit
-        :type signature: string
         :param repo_origin: repository source
         :type repo_origin: string
         :param repo_dest: repository destination
@@ -463,7 +481,7 @@ class Repository(object):
     ###########################
 
     def full_merge_and_push(self, base_branch, changeset_to_merge_hash,
-                            branch_to_merge_name, signature, origin,
+                            branch_to_merge_name, origin,
                             destination, ref_name=None):
         """
         Perform a full merge and push.
@@ -474,8 +492,6 @@ class Repository(object):
         :type changeset_to_merge_hash: string
         :param branch_to_merge_name: name of the branch to merge
         :type branch_to_merge_name: string
-        :param signature: signature to perform the merge commit
-        :type signature: :py:class:`~repoman.signature.Signature`
         :param origin: repository origin
         :type origin: string
         :param destination: repository destination
@@ -487,8 +503,7 @@ class Repository(object):
         self.pull(origin, changeset_to_merge_hash)
 
         changeset_to_merge = self[changeset_to_merge_hash]
-        merge_changeset = self.merge(signature=signature,
-                                     local_branch=self.get_branch(base_branch),
+        merge_changeset = self.merge(local_branch=self.get_branch(base_branch),
                                      other_rev=changeset_to_merge,
                                      other_branch_name=branch_to_merge_name)
         if merge_changeset:
