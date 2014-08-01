@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>repoman package &mdash; Repoman 0.6.4 documentation</title>
+    <title>repoman package &mdash; Repoman 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Repoman 0.6.4 documentation" href="index.html" />
+    <link rel="top" title="Repoman 0.7.0 documentation" href="index.html" />
     <link rel="up" title="repoman" href="modules.html" />
     <link rel="next" title="repoman.git package" href="repoman.git.html" />
     <link rel="prev" title="repoman" href="modules.html" /> 
   </head>
   <body>
       <div class="header"><h1 class="heading"><a href="index.html">
-          <span>Repoman 0.6.4 documentation</span></a></h1>
+          <span>Repoman 0.7.0 documentation</span></a></h1>
         <h2 class="heading"><span>repoman package</span></h2>
       </div>
       <div class="topnav">
@@ -712,7 +712,7 @@ and password</li>
 
 <dl class="class">
 <dt id="repoman.repository.Repository">
-<em class="property">class </em><tt class="descclassname">repoman.repository.</tt><tt class="descname">Repository</tt><big>(</big><em>repo_path</em>, <em>repo_indexer=None</em>, <em>message_builder=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">repoman.repository.</tt><tt class="descname">Repository</tt><big>(</big><em>repo_path</em>, <em>repo_indexer=None</em>, <em>message_builder=None</em>, <em>signature=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Models a repo and provides changesets, operations and such.</p>
 <p>ABSTRACT class. Do not create instances of this class.
@@ -755,7 +755,7 @@ Use <a class="reference internal" href="#repoman.repository.repository_factory" 
 
 <dl class="method">
 <dt id="repoman.repository.Repository.commit">
-<tt class="descname">commit</tt><big>(</big><em>message</em>, <em>signature</em>, <em>custom_parent=None</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.commit" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">commit</tt><big>(</big><em>message</em>, <em>custom_parent=None</em>, <em>allow_empty=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.commit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Commits changes in current working copy. This will implement a
 git commit -a behaviour.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -764,7 +764,6 @@ git commit -a behaviour.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>message</strong> (<em>string</em>) &#8211; commit message</li>
-<li><strong>signature</strong> (<em>string</em>) &#8211; signature to be used in commit message</li>
 <li><strong>custom_parent</strong> (<em>pygit2.Oid</em>) &#8211; by default the commit parent is the repo head
 with this parameter you can specify a custom one
 like when there was a fastforward merge and you
@@ -799,8 +798,25 @@ The first param must be a changeset hash and the second a branch name.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="repoman.repository.Repository.do_as">
+<tt class="descname">do_as</tt><big>(</big><em>signature</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.do_as" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convenience methods to do operations with an specific signature.</p>
+<p>To be used like:</p>
+<blockquote>
+<div>repository.do_as(other_signature).tag(&#8216;foo&#8217;)</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>signature</strong> (<a class="reference internal" href="#repoman.signature.Signature" title="repoman.signature.Signature"><tt class="xref py py-func docutils literal"><span class="pre">repoman.signature.Signature()</span></tt></a>) &#8211; Signature to use for the operation.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="repoman.repository.Repository.exterminate_branch">
-<tt class="descname">exterminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.exterminate_branch" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">exterminate_branch</tt><big>(</big><em>branch_name</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.exterminate_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exterminating the branch, apart from terminate it, this also
 removes it from remote</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -809,7 +825,6 @@ removes it from remote</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</li>
-<li><strong>signature</strong> (<em>string</em>) &#8211; Signature to use in the commit</li>
 <li><strong>repo_origin</strong> (<em>string</em>) &#8211; repository source</li>
 <li><strong>repo_dest</strong> (<em>string</em>) &#8211; repository destination</li>
 <li><strong>message</strong> (<em>string</em>) &#8211; Message used in commit message (ignored)</li>
@@ -822,7 +837,7 @@ removes it from remote</p>
 
 <dl class="method">
 <dt id="repoman.repository.Repository.full_merge_and_push">
-<tt class="descname">full_merge_and_push</tt><big>(</big><em>base_branch</em>, <em>changeset_to_merge_hash</em>, <em>branch_to_merge_name</em>, <em>signature</em>, <em>origin</em>, <em>destination</em>, <em>ref_name=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.full_merge_and_push" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">full_merge_and_push</tt><big>(</big><em>base_branch</em>, <em>changeset_to_merge_hash</em>, <em>branch_to_merge_name</em>, <em>origin</em>, <em>destination</em>, <em>ref_name=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.full_merge_and_push" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a full merge and push.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -832,7 +847,6 @@ removes it from remote</p>
 <li><strong>base_branch</strong> (<em>string</em>) &#8211; branch where the changeset will be merged into</li>
 <li><strong>changeset_to_merge_hash</strong> (<em>string</em>) &#8211; changeset to merge into base_branch</li>
 <li><strong>branch_to_merge_name</strong> (<em>string</em>) &#8211; name of the branch to merge</li>
-<li><strong>signature</strong> (<a class="reference internal" href="#repoman.signature.Signature" title="repoman.signature.Signature"><tt class="xref py py-class docutils literal"><span class="pre">Signature</span></tt></a>) &#8211; signature to perform the merge commit</li>
 <li><strong>origin</strong> (<em>string</em>) &#8211; repository origin</li>
 <li><strong>destination</strong> (<em>string</em>) &#8211; repository destination</li>
 <li><strong>ref_name</strong> (<em>string</em>) &#8211; reference name to push</li>
@@ -1024,14 +1038,13 @@ Filter out changesets not belonging to that branch</li>
 
 <dl class="method">
 <dt id="repoman.repository.Repository.merge">
-<tt class="descname">merge</tt><big>(</big><em>signature</em>, <em>local_branch=None</em>, <em>other_rev=None</em>, <em>other_branch_name=None</em>, <em>dry_run=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.merge" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">merge</tt><big>(</big><em>local_branch=None</em>, <em>other_rev=None</em>, <em>other_branch_name=None</em>, <em>dry_run=False</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merges two revision and commits the result</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>signature</strong> &#8211; signature for the possible commit</li>
 <li><strong>local_branch</strong> &#8211; branch object to merge to - optional, if None,
 it takes current branch</li>
 <li><strong>other_rev</strong> &#8211; changeset object to merge with - mandatory</li>
@@ -1107,6 +1120,11 @@ pulled.</p>
 <tt class="descname">rawcommand</tt><big>(</big><em>command</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.rawcommand" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="attribute">
+<dt id="repoman.repository.Repository.signature">
+<tt class="descname">signature</tt><a class="headerlink" href="#repoman.repository.Repository.signature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="repoman.repository.Repository.strip">
 <tt class="descname">strip</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.strip" title="Permalink to this definition">¶</a></dt>
@@ -1123,7 +1141,7 @@ pulled.</p>
 
 <dl class="method">
 <dt id="repoman.repository.Repository.tag">
-<tt class="descname">tag</tt><big>(</big><em>tag_name</em>, <em>signature</em>, <em>revision=None</em>, <em>message=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.tag" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">tag</tt><big>(</big><em>tag_name</em>, <em>revision=None</em>, <em>message=None</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.tag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a tag in the repository</p>
 </dd></dl>
 
@@ -1149,7 +1167,7 @@ pulled.</p>
 
 <dl class="method">
 <dt id="repoman.repository.Repository.terminate_branch">
-<tt class="descname">terminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.terminate_branch" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">terminate_branch</tt><big>(</big><em>branch_name</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.repository.Repository.terminate_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the branch locally and remotely</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1157,7 +1175,6 @@ pulled.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>branch_name</strong> (<em>string</em>) &#8211; name of the branch</li>
-<li><strong>signature</strong> (<em>string</em>) &#8211; Signature to use in the commit</li>
 <li><strong>repo_origin</strong> (<em>string</em>) &#8211; repository source</li>
 <li><strong>repo_dest</strong> (<em>string</em>) &#8211; repository destination</li>
 </ul>

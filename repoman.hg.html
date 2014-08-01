@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>repoman.hg package &mdash; Repoman 0.6.4 documentation</title>
+    <title>repoman.hg package &mdash; Repoman 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,14 +23,14 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Repoman 0.6.4 documentation" href="index.html" />
+    <link rel="top" title="Repoman 0.7.0 documentation" href="index.html" />
     <link rel="up" title="repoman package" href="repoman.html" />
     <link rel="next" title="repoman.repo_indexers package" href="repoman.repo_indexers.html" />
     <link rel="prev" title="repoman.git package" href="repoman.git.html" /> 
   </head>
   <body>
       <div class="header"><h1 class="heading"><a href="index.html">
-          <span>Repoman 0.6.4 documentation</span></a></h1>
+          <span>Repoman 0.7.0 documentation</span></a></h1>
         <h2 class="heading"><span>repoman.hg package</span></h2>
       </div>
       <div class="topnav">
@@ -154,6 +154,38 @@ exclude  exclude names matching the given patterns</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="repoman.hg.hglibext.HgClientExtensions.purge">
+<tt class="descname">purge</tt><big>(</big><em>dirs=None</em>, <em>all=False</em>, <em>include=None</em>, <em>exclude=None</em>, <em>p=False</em>, <em>abortonerr=False</em><big>)</big><a class="headerlink" href="#repoman.hg.hglibext.HgClientExtensions.purge" title="Permalink to this definition">¶</a></dt>
+<dd><p>aliases: clean</p>
+<p>removes files not tracked by Mercurial</p>
+<p>Delete files not known to Mercurial. This is useful to test local and
+uncommitted changes in an otherwise-clean source tree.</p>
+<p>This means that purge will delete:</p>
+<ul class="simple">
+<li>Unknown files: files marked with &#8221;?&#8221; by &#8220;hg status&#8221;</li>
+<li>Empty directories: in fact Mercurial ignores directories unless they
+contain files under source control management</li>
+</ul>
+<p>But it will leave untouched:</p>
+<ul class="simple">
+<li>Modified and unmodified tracked files</li>
+<li>Ignored files (unless &#8211;all is specified)</li>
+<li>New files added to the repository (with &#8220;hg add&#8221;)</li>
+</ul>
+<p>If directories are given on the command line, only files in these
+directories are considered.</p>
+<p>Be careful with purge, as you could irreversibly delete some files you
+forgot to add to the repository. If you only want to print the list of
+files that this program would delete, use the &#8211;print option.</p>
+<p>Return True on success</p>
+<p>all - purge ignored files too
+include - include names matching the given patterns
+exclude - exclude names matching the given patterns
+abortonerror - abort if an error occurs
+p - print filenames instead of deleting them</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="repoman.hg.hglibext.HgClientExtensions.strip">
 <tt class="descname">strip</tt><big>(</big><em>changeset</em><big>)</big><a class="headerlink" href="#repoman.hg.hglibext.HgClientExtensions.strip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inherited method
@@ -231,7 +263,7 @@ insecure - do not verify server certificate (ignoring web.cacerts</p>
 <span id="repoman-hg-repository-module"></span><h2>repoman.hg.repository module<a class="headerlink" href="#module-repoman.hg.repository" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="repoman.hg.repository.Repository">
-<em class="property">class </em><tt class="descclassname">repoman.hg.repository.</tt><tt class="descname">Repository</tt><big>(</big><em>repo_path</em>, <em>repo_indexer=None</em>, <em>message_builder=None</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">repoman.hg.repository.</tt><tt class="descname">Repository</tt><big>(</big><em>repo_path</em>, <em>repo_indexer=None</em>, <em>message_builder=None</em>, <em>signature=None</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="repoman.html#repoman.repository.Repository" title="repoman.repository.Repository"><tt class="xref py py-class docutils literal"><span class="pre">repoman.repository.Repository</span></tt></a></p>
 <p>Models a Mercurial repository</p>
 <dl class="attribute">
@@ -273,7 +305,7 @@ insecure - do not verify server certificate (ignoring web.cacerts</p>
 
 <dl class="method">
 <dt id="repoman.hg.repository.Repository.exterminate_branch">
-<tt class="descname">exterminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.exterminate_branch" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">exterminate_branch</tt><big>(</big><em>branch_name</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.exterminate_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inherited method
 <a class="reference internal" href="repoman.html#repoman.repository.Repository.exterminate_branch" title="repoman.repository.Repository.exterminate_branch"><tt class="xref py py-func docutils literal"><span class="pre">exterminate_branch()</span></tt></a></p>
 </dd></dl>
@@ -328,7 +360,7 @@ insecure - do not verify server certificate (ignoring web.cacerts</p>
 
 <dl class="method">
 <dt id="repoman.hg.repository.Repository.merge">
-<tt class="descname">merge</tt><big>(</big><em>signature</em>, <em>local_branch=None</em>, <em>other_rev=None</em>, <em>other_branch_name=None</em>, <em>dry_run=False</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.merge" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">merge</tt><big>(</big><em>local_branch=None</em>, <em>other_rev=None</em>, <em>other_branch_name=None</em>, <em>dry_run=False</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inherited method
 <a class="reference internal" href="repoman.html#repoman.repository.Repository.merge" title="repoman.repository.Repository.merge"><tt class="xref py py-func docutils literal"><span class="pre">merge()</span></tt></a></p>
 </dd></dl>
@@ -375,7 +407,7 @@ insecure - do not verify server certificate (ignoring web.cacerts</p>
 
 <dl class="method">
 <dt id="repoman.hg.repository.Repository.terminate_branch">
-<tt class="descname">terminate_branch</tt><big>(</big><em>branch_name</em>, <em>signature</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.terminate_branch" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">terminate_branch</tt><big>(</big><em>branch_name</em>, <em>repo_origin</em>, <em>repo_dest</em><big>)</big><a class="headerlink" href="#repoman.hg.repository.Repository.terminate_branch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inherited method
 <a class="reference internal" href="repoman.html#repoman.repository.Repository.terminate_branch" title="repoman.repository.Repository.terminate_branch"><tt class="xref py py-func docutils literal"><span class="pre">terminate_branch()</span></tt></a></p>
 </dd></dl>
