@@ -602,6 +602,8 @@ class Repository(BaseRepo):
         http://stackoverflow.com/questions/22620393/git-remove-local-changes
         """
         try:
+            # Clean index to avoid unmerged files
+            sh.git('read-tree', '--empty', _cwd=self.path)
             sh.git('reset', '--hard', _cwd=self.path)
             sh.git('clean', '-f', _cwd=self.path)
         except Exception:
