@@ -154,7 +154,10 @@ class DepotOperations(BaseDepotOps):
                     else:
                         os.remove(dirty_file_path)
         else:
-            repository.checkout_head(pygit2.GIT_CHECKOUT_FORCE)
+            repository.reset(repository.head.target, pygit2.GIT_RESET_HARD)
+            repository.checkout_head(
+                    pygit2.GIT_CHECKOUT_FORCE |
+                    pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
 
     def clear_depot(self, path):
         """
