@@ -10,3 +10,4 @@ doc/source/repoman.rst
 doc/source/repoman.*.rst
 venv/
 .idea/
+.coverage.*

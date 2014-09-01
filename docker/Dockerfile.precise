@@ -10,6 +10,6 @@ RUN pip install pip
 
 ADD run.sh /run.sh
 
-ENTRYPOINT ["/run.sh", "tests", "--cov", "repoman"]
+ENTRYPOINT ["/run.sh"]
 
-CMD []
+CMD ["tests", "--cov", "repoman"]
