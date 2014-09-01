@@ -3,6 +3,7 @@ pytest
 pytest-cov
 mox
 unittest2
+python-coveralls
 
 # documentation
 sphinx
