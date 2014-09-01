@@ -13,4 +13,4 @@ install:
 script:
   - py.test --cov repoman tests
 after_success:
-  - make coveralls
+  - coveralls
