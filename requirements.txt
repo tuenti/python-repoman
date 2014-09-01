@@ -1,6 +1,6 @@
 # testing
-nose
-coverage
+pytest
+pytest-cov
 mox
 unittest2
 

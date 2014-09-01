@@ -14,4 +14,4 @@ ADD run.sh /run.sh
 
 ENTRYPOINT ["/run.sh"]
 
-CMD []
+CMD ["tests", "--cov", "repoman"]

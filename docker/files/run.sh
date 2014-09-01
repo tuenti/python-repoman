@@ -8,4 +8,10 @@ fi
 cd /source
 pip install -r requirements.txt --src /tmp/pip-src
 
-nosetests "$@"
+# Workaround for needed hg configuration
+cat > $HOME/.hgrc << EOF
+[ui]
+username = test
+EOF
+
+py.test "$@"
