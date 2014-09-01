@@ -188,6 +188,66 @@ class TestHgRepository(unittest.TestCase):
 
         self.assertIsNone(repository.commit(commit_msg))
 
+    def test_commit_commits_all_but_removed_files(self):
+        file_name = "f1"
+        file_path = os.path.join(self.main_repo, file_name)
+        commit_msg = "Test message"
+
+        repository = Repository(self.main_repo)
+        os.remove(file_path)
+        repository.commit(commit_msg)
+
+        hglibrepo = hglib.open(self.main_repo)
+        hglibrepo.branch(clean=True)
+
+        self.assertFalse(os.path.exists(file_path))
+
+    def test_commit_commits_all(self):
+        repo = hglib.open(self.main_repo)
+
+        file_name = "f1"
+        file_path = os.path.join(self.main_repo, file_name)
+        expected_content = "changed content"
+        with open(file_path, "w+") as file:
+            file.write("foo test content")
+        commit_msg = "Test message"
+        repo.add(file_path)
+        repo.commit('Creating file', user="foo")
+        with open(file_path, "w+") as file:
+            file.write(expected_content)
+
+        repository = Repository(self.main_repo)
+        repository.commit(commit_msg)
+
+        with open(file_path, "w+") as file:
+            file.write('content changed again')
+
+        repo.update(clean=True)
+
+        with open(file_path) as file:
+            self.assertEquals(expected_content, file.read())
+
+        repo.close()
+
+    def test_commit_without_allow_empty_does_not_fail_when_no_changes(self):
+        repo = hglib.open(self.main_repo)
+        initial_len = len(repo.log())
+        commit_msg = 'foo message'
+
+        repository = Repository(self.main_repo)
+        result = repository.commit(commit_msg)
+
+        self.assertIsNone(result)
+        self.assertEquals(len(repo.log()), initial_len)
+        repo.close()
+
+    def test_commit_with_allow_empty_fails_when_no_changes(self):
+        commit_msg = 'foo message'
+
+        repository = Repository(self.main_repo)
+        with self.assertRaises(RepositoryError):
+            repository.commit(commit_msg, allow_empty=True)
+
     def test_get_branches(self):
         repo = hglib.open(self.main_repo)
         repository = Repository(self.main_repo)

@@ -448,10 +448,19 @@ class Repository(BaseRepo):
                allow_empty=False):
         """ Inherited method
         :func:`~repoman.repository.Repository.commit`
+
+        Advise: allow_empty not commit on non-changed working copy,
+        but it won't raise an error.
         """
         def branch_exists():
             return any(repo.branch() == b[0] for b in repo.branches())
-        if not repo.status() and branch_exists():
+        def has_modifications():
+            return repo.status(added=True,
+                               modified=True,
+                               removed=True,
+                               deleted=False,
+            )
+        if not allow_empty and not has_modifications() and branch_exists():
             logger.info("Nothing to commit, repository clean")
             return None
         repo.commit(
