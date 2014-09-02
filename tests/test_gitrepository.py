@@ -165,6 +165,48 @@ class TestGitRepository(unittest.TestCase):
         self.assertEquals(commit.desc, commit_msg)
         self.assertIsNone(gitrepo.commit(commit_msg))
 
+    def test_commit_commits_all(self):
+        file_name = "test1.txt"
+        file_path = os.path.join(self.main_repo, file_name)
+        expected_content = "changed content"
+        commit_msg = "Test message"
+        with open(file_path, "w+") as file:
+            file.write(expected_content)
+
+        gitrepo = Repository(self.main_repo)
+        gitrepo.commit(commit_msg)
+
+        with open(file_path, "w+") as fd:
+            fd.write('content changed again')
+
+        repo = pygit2.Repository(self.main_repo)
+        repo.reset(repo.head.target.hex, pygit2.GIT_RESET_HARD)
+        repo.checkout_head(
+            pygit2.GIT_CHECKOUT_FORCE |
+            pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
+
+        self.assertTrue(os.path.exists(file_path))
+        with open(file_path) as fd:
+            self.assertEquals(expected_content, fd.read())
+
+    def test_commit_commits_but_with_removed_files(self):
+        file_name = "test1.txt"
+        file_path = os.path.join(self.main_repo, file_name)
+        commit_msg = "Test message"
+
+        gitrepo = Repository(self.main_repo)
+        gitrepo.update('master')
+        os.remove(file_path)
+        gitrepo.commit(commit_msg)
+
+        repo = pygit2.Repository(self.main_repo)
+        repo.reset(repo.head.target.hex, pygit2.GIT_RESET_HARD)
+        repo.checkout_head(
+            pygit2.GIT_CHECKOUT_FORCE |
+            pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
+
+        self.assertTrue(os.path.exists(file_path))
+
     def test_merge_wrong_revision(self):
         gitrepo = Repository(self.cloned_from_repo)
         with self.assertRaises(RepositoryError):

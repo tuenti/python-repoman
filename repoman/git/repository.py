@@ -530,6 +530,12 @@ class Repository(BaseRepo):
             logger.debug("Nothing to commit, repository clean")
             return None
 
+        # if the working copy is dirty, adds all modified files (git commit -a)
+        if status:
+            for filename, filestatus in status.items():
+                if filestatus & pygit2.GIT_STATUS_WT_MODIFIED:
+                    self._repository.index.add(filename)
+
         # Write the index to disk
         oid = self._repository.index.write_tree()
 

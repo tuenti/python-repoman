@@ -18,6 +18,7 @@
 import tempfile
 import shutil
 import os
+import logging
 try:
     import unittest2 as unittest
 except ImportError:
@@ -29,6 +30,7 @@ from repoman.roster import Clone
 FIXTURE_PATH = 'fixtures'
 SELF_DIRECTORY_PATH = os.path.dirname(__file__)
 
+logging.basicConfig()
 
 class AbstractTestDepotManager(object):
     REPO_KIND = None

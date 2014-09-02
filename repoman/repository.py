@@ -368,7 +368,8 @@ class Repository(object):
     def commit(self, message, custom_parent=None, allow_empty=False):
         """
         Commits changes in current working copy. This will implement a
-        git commit -a behaviour.
+        'hg commit' behaviour, adding all modified files if necessary and
+        ignoring removed files.
 
         :param message: commit message
         :type message: string
