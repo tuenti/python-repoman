@@ -52,6 +52,13 @@ But the best way to see how it works is with an example:
 You can know more by looking to the examples in the ``doc/examples``
 directory, and to the full `API reference`_.
 
+==============  ===============  =========  ============
+VERSION         DOWNLOADS        TESTS      COVERAGE
+==============  ===============  =========  ============
+|pip version|   |pip downloads|  |travis|   |coveralls|
+==============  ===============  =========  ============
+
+
 Installation
 ------------
 
@@ -107,7 +114,26 @@ License
 Repoman is available under the Apache License, Version 2.0. See LICENSE
 file for more info.
 
+.. |travis| image:: https://travis-ci.org/tuenti/python-repoman.png?branch=master
+  :target: `Travis`_
+  :alt: Travis results
+
+.. |coveralls| image:: https://coveralls.io/repos/tuenti/python-repoman/badge.png
+  :target: `Coveralls`_
+  :alt: Coveralls results_
+
+.. |pip version| image:: https://pypip.in/v/repoman-scm/badge.png
+    :target: https://pypi.python.org/pypi/repoman-scm
+    :alt: Latest PyPI version
+
+.. |pip downloads| image:: https://pypip.in/d/repoman-scm/badge.png
+    :target: https://pypi.python.org/pypi/repoman-scm
+    :alt: Number of PyPI downloads
+
+
 .. _`API reference`: http://tuenti.github.io/python-repoman
 .. _`pygit2 installation notes`: http://www.pygit2.org/install.html
+.. _Travis: https://travis-ci.org/tuenti/python-repoman
+.. _Coveralls: https://coveralls.io/r/tuenti/python-repoman
 .. _`@tuentieng`: http://twitter.com/tuentieng
 .. _`Tuenti Technologies S.L.`: http://github.com/tuenti

@@ -12,13 +12,6 @@ env_setup_for_documentation::
 	@echo installing all requirements...
 	@pip install -r requirements-doc.txt
 
-install_packages::
-	 sudo add-apt-repository -y ppa:kronoss/libgit2
-	 sudo add-apt-repository -y ppa:mercurial-ppa/releases
-	 sudo apt-get update -qq
-	 sudo apt-get install -y --force-yes libgit2-0 libgit2-dev
-	 sudo apt-get install -y --force-yes mercurial
-
 test::
 	@echo launching tests...
 	@py.test tests
