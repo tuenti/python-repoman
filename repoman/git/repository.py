@@ -582,9 +582,11 @@ class Repository(BaseRepo):
         local_ref_prefix = 'refs/heads/'
 
         try:
+            self._clean()
+            if ref == 'HEAD':
+                return self.tip()
             # Let's assume the ref is branch name
             branch = ref
-            self._clean()
             try:
                 if not self._repository.lookup_branch(branch):
                     branch_head = self._repository.lookup_reference(
