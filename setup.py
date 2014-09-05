@@ -49,5 +49,8 @@ setup(
         'ordereddict',
         'pygit2',
         'python-hglib',
-    ]
+    ],
+    data_files=[
+        ('', ['README.rst']),
+    ],
 )
