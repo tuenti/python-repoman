@@ -65,11 +65,15 @@ class Repository(BaseRepo):
         return self._new_changeset_object(self._get_pygit_revision(revision))
 
     def _get_pygit_revision(self, revision):
-        pygit2rev = self._repository.get(revision)
-        if not pygit2rev:
-            raise RepositoryError("Revision %s not found in repository" %
+        try:
+            pygit2rev = self._repository.get(revision)
+            if pygit2rev:
+                return pygit2rev
+            raise RepositoryError("Revision '%s' not found in repository" %
                                   revision)
-        return pygit2rev
+        except ValueError:
+            raise RepositoryError("Invalid format for revision '%s'" %
+                                  revision)
 
     def _get_pygit_committer(self):
         return pygit2.Signature(self.signature.user, self.signature.email)
@@ -571,38 +575,62 @@ class Repository(BaseRepo):
         commit = self._repository.git_object_lookup_prefix(oid)
         return self._new_changeset_object(commit)
 
+    def _lookup_remote_branch(self, branch):
+        matching_remote_branches = []
+        for remote in self._repository.remotes:
+            for refspec in remote.get_fetch_refspecs():
+                _, local_refspec = refspec.split(':')
+                remote_ref = local_refspec.replace('*', branch)
+                if remote_ref in self._repository.listall_references():
+                    matching_remote_branches.append(remote_ref)
+        if matching_remote_branches:
+            if len(matching_remote_branches) > 1:
+                raise RepositoryError("Ambiguous reference '%s'" % branch)
+            return self._repository.lookup_reference(
+                matching_remote_branches[0])
+
+    def _create_tmp_reference(self, revision):
+        pygit_revision = self._get_pygit_revision(revision)
+        return self._repository.create_reference(
+            'refs/repoman_tmp_update/%s' % pygit_revision.hex,
+            pygit_revision.hex)
+
+    def _find_checkout_reference(self, ref):
+        if ref == 'HEAD':
+            return ref
+
+        local_branch = self._repository.lookup_branch(ref)
+        if not local_branch:
+            remote_branch_ref = self._lookup_remote_branch(ref)
+            if remote_branch_ref:
+                local_branch = self._repository.create_branch(
+                    ref, remote_branch_ref.get_object())
+
+        ref_to_checkout = None
+        if local_branch:
+            ref_to_checkout = local_branch.name
+        elif self.tag_exists(ref):
+            ref_to_checkout = 'refs/tags/%s' % ref
+        elif ref in self._repository.listall_references():
+            ref_to_checkout = ref
+        return ref_to_checkout
+
     def update(self, ref):
         """Inherited method
         :func:`~repoman.repository.Repository.update`
         """
-        # As the library doesn't not allow you to checkout a remote branch,
-        # checking if it's already created, if so, change to that branch,
-        # otherwise, create the branch pointing to the remote hex
-        remote_ref_prefix = 'refs/remotes/origin/'
-        local_ref_prefix = 'refs/heads/'
-
-        try:
-            self._clean()
-            if ref == 'HEAD':
-                return self.tip()
-            # Let's assume the ref is branch name
-            branch = ref
-            try:
-                if not self._repository.lookup_branch(branch):
-                    branch_head = self._repository.lookup_reference(
-                        remote_ref_prefix + branch).get_object()
-                    self._repository.create_branch(branch, branch_head)
-                self._repository.checkout(local_ref_prefix + branch,
-                                          pygit2.GIT_CHECKOUT_FORCE)
-                return self.tip()
-            except KeyError:
-                # Ref is a hash so this must update to a detached head
-                rev_hash = ref
-            sh.git('checkout', rev_hash, _cwd=self.path)
-            return self[rev_hash]
-        except (pygit2.GitError, sh.ErrorReturnCode) as e:
-            logger.exception(e)
-            raise RepositoryError(e)
+        ref_to_checkout = self._find_checkout_reference(ref)
+        tmp_ref = None
+        if not ref_to_checkout:
+            # pygit2 doesn't support to checkout an specific changeset,
+            # only references, we create here a temporal reference to checkout
+            tmp_ref = self._create_tmp_reference(ref)
+            ref_to_checkout = tmp_ref.name
+        self._clean()
+        self._repository.checkout(ref_to_checkout, pygit2.GIT_CHECKOUT_FORCE)
+        if tmp_ref:
+            tmp_ref.delete()
+        return self.tip()
 
     def _clean(self):
         """

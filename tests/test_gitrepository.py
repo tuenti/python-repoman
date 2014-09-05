@@ -431,6 +431,20 @@ class TestGitRepository(unittest.TestCase):
         self.assertEquals(
             gitrepo.get_branch_tip('master').hash, repo.head.get_object().hex)
 
+    def _check_update(self, gitrepo, expected):
+        new_head = gitrepo.update(expected)
+        expected_object = gitrepo._repository.revparse_single(expected)
+        if hasattr(expected_object, 'target'):
+            # revparse_single returns tags created by repoman as Tag objects
+            # other references are returned directly as commits
+            expected_sha1 = expected_object.target.hex
+        else:
+            expected_sha1 = expected_object.hex
+
+        head_sha1 = gitrepo._repository.head.get_object().hex
+        self.assertEquals(new_head.hash, head_sha1)
+        self.assertEquals(new_head.hash, expected_sha1)
+
     def test_update(self):
         repo_name = 'fixture-3'
         self.add_content_to_repo(
@@ -438,7 +452,7 @@ class TestGitRepository(unittest.TestCase):
             os.path.join(self.environment_path, repo_name))
         gitrepo = Repository(os.path.join(self.environment_path, repo_name))
 
-        gitrepo.update("master")
+        self._check_update(gitrepo, "master")
         self.assertFalse(os.path.isfile(os.path.join(self.environment_path,
                                                      repo_name, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
@@ -447,7 +461,7 @@ class TestGitRepository(unittest.TestCase):
                                                      repo_name, 'file3.txt')))
         self.assertFalse(gitrepo._repository.head_is_detached)
 
-        gitrepo.update("branch-1")
+        self._check_update(gitrepo, "branch-1")
         self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
                                                     repo_name, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
@@ -456,7 +470,10 @@ class TestGitRepository(unittest.TestCase):
                                                      repo_name, 'file3.txt')))
         self.assertFalse(gitrepo._repository.head_is_detached)
 
-        gitrepo.update("branch-2")
+        self._check_update(gitrepo, "HEAD")
+        self.assertFalse(gitrepo._repository.head_is_detached)
+
+        self._check_update(gitrepo, "branch-2")
         self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
                                                     repo_name, 'file3.txt')))
         self.assertFalse(os.path.isfile(os.path.join(self.environment_path,
@@ -465,13 +482,29 @@ class TestGitRepository(unittest.TestCase):
                                                     repo_name, 'file1.txt')))
         self.assertFalse(gitrepo._repository.head_is_detached)
 
-        gitrepo.update("08b952ae66e59b216b1171c0c57082353bc80863")
+        self._check_update(gitrepo,
+                "08b952ae66e59b216b1171c0c57082353bc80863")
         self.assertFalse(os.path.isfile(os.path.join(self.environment_path,
                                                      repo_name, 'file3.txt')))
         self.assertFalse(os.path.isfile(os.path.join(self.environment_path,
                                                      repo_name, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
                                                     repo_name, 'file1.txt')))
+        self.assertTrue(gitrepo._repository.head_is_detached)
+
+        test_tag_name = "test-tag"
+        gitrepo.tag(test_tag_name,
+                revision="3a5b9b844a9bcb671955ed15f851a5f2904b5e01")
+        self._check_update(gitrepo, test_tag_name)
+        self.assertFalse(os.path.isfile(os.path.join(self.environment_path,
+                                                     repo_name, 'file3.txt')))
+        self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
+                                                     repo_name, 'file2.txt')))
+        self.assertTrue(os.path.isfile(os.path.join(self.environment_path,
+                                                    repo_name, 'file1.txt')))
+        self.assertTrue(gitrepo._repository.head_is_detached)
+
+        self._check_update(gitrepo, "HEAD")
         self.assertTrue(gitrepo._repository.head_is_detached)
 
     def test_update_failures(self):
