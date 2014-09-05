@@ -1,15 +1,3 @@
-# testing
-pytest
-pytest-cov
-mox
-unittest2
-python-coveralls
-
-# documentation
-sphinx
-sphinx-bootstrap-theme
-
-# production
 sh
 ordereddict
 python-hglib<=1.2
