@@ -181,9 +181,8 @@ class TestGitRepository(unittest.TestCase):
 
         repo = pygit2.Repository(self.main_repo)
         repo.reset(repo.head.target.hex, pygit2.GIT_RESET_HARD)
-        repo.checkout_head(
-            pygit2.GIT_CHECKOUT_FORCE |
-            pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
+        repo.checkout_head(strategy=pygit2.GIT_CHECKOUT_FORCE |
+                                    pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
 
         self.assertTrue(os.path.exists(file_path))
         with open(file_path) as fd:
@@ -201,9 +200,8 @@ class TestGitRepository(unittest.TestCase):
 
         repo = pygit2.Repository(self.main_repo)
         repo.reset(repo.head.target.hex, pygit2.GIT_RESET_HARD)
-        repo.checkout_head(
-            pygit2.GIT_CHECKOUT_FORCE |
-            pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
+        repo.checkout_head(strategy=pygit2.GIT_CHECKOUT_FORCE |
+                                    pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED)
 
         self.assertTrue(os.path.exists(file_path))
 

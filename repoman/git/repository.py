@@ -315,7 +315,7 @@ class Repository(BaseRepo):
                     'fetch_remote', remote)
 
         try:
-            remote_to_fetch.set_fetch_refspecs(['+refs/*:refs/*'])
+            remote_to_fetch.fetch_refspecs = ['+refs/*:refs/*']
             remote_to_fetch.save()
             remote_to_fetch.fetch()
 
@@ -516,7 +516,7 @@ class Repository(BaseRepo):
             for f in files:
                 self._repository.index.add(f)
             self._repository.index.write()
-        except KeyError, e:
+        except IOError as e:
             raise RepositoryError('File %s doesn\'t exist' % e)
 
     def commit(self, message, custom_parent=None,
@@ -593,7 +593,7 @@ class Repository(BaseRepo):
                         remote_ref_prefix + branch).get_object()
                     self._repository.create_branch(branch, branch_head)
                 self._repository.checkout(local_ref_prefix + branch,
-                                          pygit2.GIT_CHECKOUT_FORCE)
+                                          strategy=pygit2.GIT_CHECKOUT_FORCE)
                 return self.tip()
             except KeyError:
                 # Ref is a hash so this must update to a detached head

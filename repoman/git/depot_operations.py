@@ -189,6 +189,6 @@ class DepotOperations(BaseDepotOps):
         elif origin.url != url:
             origin.url = url
         # Reset all refspecs
-        origin.set_fetch_refspecs(['+refs/*:refs/*'])
+        origin.fetch_refspecs = ['+refs/*:refs/*']
         origin.save()
         return origin
