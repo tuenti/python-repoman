@@ -27,10 +27,135 @@ import pygit2
 from repoman.repository import Repository as BaseRepo, \
     RepositoryError, MergeConflictError
 from repoman.changeset import Changeset
+from repoman.merge import MergeStrategy
 from repoman.reference import Reference
 from repoman.repo_indexer import RepoIndexerError
 
 logger = logging.getLogger(__name__)
+
+
+class GitMerge(MergeStrategy):
+    def __init__(self, *args, **kwargs):
+        super(GitMerge, self).__init__(*args, **kwargs)
+        self.other_oid = None
+        self.pygit_repository = self.repository._repository
+        self.pygit_local_branch = None
+        self._analysis = None
+
+    @property
+    def analysis(self):
+        if self.other_oid is None:
+            logger.warning("Calling GitMerge.analysis before validation")
+            return pygit2.GIT_MERGE_ANALYSIS_NONE
+        if self._analysis is None:
+            self._analysis, _ = self.pygit_repository.merge_analysis(
+                self.other_oid)
+        return self._analysis
+
+    def _validate_parameters(self):
+        if self.local_branch is None:
+            self.local_branch = self.repository._get_local_branch()
+
+        if not type(self.local_branch) == Reference:
+            raise RepositoryError(
+                ("local_branch (%s) parameter must be a " +
+                 "Reference instead of %s") % (
+                    self.local_branch, type(self.local_branch)))
+
+        self.pygit_local_branch = self.pygit_repository.lookup_branch(
+                self.local_branch.name)
+        if self.pygit_local_branch is None:
+            raise RepositoryError("Wrong local branch in merge")
+
+        if not self.other_rev:
+            raise RepositoryError("No revision to merge")
+        try:
+            other = self.repository._get_pygit_revision(self.other_rev.hash)
+            self.other_oid = other.oid
+        except (pygit2.GitError, TypeError, KeyError) as e:
+            logger.exception("Unknown revision '%s'" % self.other_rev)
+            raise RepositoryError(e)
+
+    def _is_uptodate(self):
+        if self.analysis & pygit2.GIT_MERGE_ANALYSIS_UP_TO_DATE:
+            message = "Cannot merge %s@%s into %s, nothing to merge"
+            logger.info(message % (
+                self.other_branch_name,
+                self.other_rev.hash,
+                self.local_branch.name))
+            return True
+        return False
+
+    def _check_conflicts(self):
+        conflicts = dict((key, value) for (key, value)
+                         in self.pygit_repository.status().iteritems()
+                         if value == 132)
+        if conflicts:
+            raise MergeConflictError("Conflicts found: merging %s failed" %
+                                     ", ".join(conflicts.keys()))
+
+    def _merge_trees(self):
+        self.pygit_repository.merge(self.other_oid)
+        self._check_conflicts()
+
+    def perform(self):
+        self._validate_parameters()
+        self.repository.update(self.local_branch.name)
+        if self._is_uptodate():
+            return
+        self._merge_trees()
+
+    def abort(self):
+        self.update(self.local_branch.name)
+
+    def commit(self):
+        commit_message = self.repository.message_builder.merge(
+            other_branch=self.other_branch_name,
+            other_revision=self.other_rev.shorthash,
+            local_branch=self.local_branch.name,
+            local_revision=self.local_branch.get_changeset().shorthash
+        )
+        return self.repository.commit(message=commit_message)
+
+
+class GitMergeFastForward(GitMerge):
+    def __init__(self, *args, **kwargs):
+        super(GitMergeFastForward, self).__init__(*args, **kwargs)
+        self._previous_ref = None
+        self._commit = None
+
+    def _check_fastforward(self):
+        return self.analysis & pygit2.GIT_MERGE_ANALYSIS_FASTFORWARD
+
+    def perform(self):
+        self._validate_parameters()
+
+        self.repository.update(self.local_branch.name)
+        if self._is_uptodate():
+            return
+
+        if not self._check_fastforward():
+            self._merge_trees()
+            return
+
+        self.pygit_repository.checkout_tree(
+            self.pygit_repository[self.other_oid],
+            strategy=pygit2.GIT_CHECKOUT_SAFE_CREATE)
+        self._previous_target = self.pygit_local_branch.target
+        self.pygit_local_branch.set_target(self.other_oid)
+        self._commit = self.pygit_repository.git_object_lookup_prefix(
+            self.other_oid)
+
+    def abort(self):
+        if self._previous_target is not None:
+            self.pygit_local_branch.set_target(self._previous_target)
+        super(GitMergeFastForward, self).abort()
+
+    def commit(self):
+        if self._commit is None:
+            super(GitMergeFastForward, self).commit()
+        else:
+            return self.repository._new_changeset_object(self._commit)
 
 
 class Repository(BaseRepo):
@@ -263,10 +388,8 @@ class Repository(BaseRepo):
         return pygit_branch.target
 
     def _is_ancestor(self, revision, ancestor):
-        common_ancestor = self.get_ancestor(
-            self[revision],
-            self[ancestor]).hash
-        return common_ancestor.startswith(ancestor)
+        common_ancestor = self.get_ancestor(self[revision], self[ancestor])
+        return common_ancestor.hash.startswith(ancestor)
 
     def get_revset(self, cs_from=None, cs_to=None, branch=None):
         """Inherited method
@@ -319,7 +442,7 @@ class Repository(BaseRepo):
                     'fetch_remote', remote)
 
         try:
-            remote_to_fetch.set_fetch_refspecs(['+refs/*:refs/*'])
+            remote_to_fetch.fetch_refspecs = ['+refs/*:refs/*']
             remote_to_fetch.save()
             remote_to_fetch.fetch()
 
@@ -363,155 +486,33 @@ class Repository(BaseRepo):
         except sh.ErrorReturnCode as e:
             raise RepositoryError('Push to %s failed (%s)' % (ref_name, e))
 
+    def _merge(self, local_branch=None, other_rev=None,
+               other_branch_name=None, dry_run=False, strategy=GitMerge):
+        merge = strategy(self, local_branch, other_rev, other_branch_name)
+        merge.perform()
+        if dry_run:
+            merge.abort()
+            return None
+        return merge.commit()
+
     def merge(self, local_branch=None, other_rev=None,
-              other_branch_name=None, dry_run=False):
+              other_branch_name=None,
+              dry_run=False):
         """Inherited method
         :func:`~repoman.repository.Repository.merge`
         """
-        if not local_branch:
-            local_branch = self._get_local_branch_name()
-
-        merge_result = self._get_merge_result(other_rev, local_branch,
-                                              other_branch_name, dry_run)
-
-        if self._check_uptodate(merge_result, other_branch_name, other_rev,
-                                local_branch):
-            return None
-
-        custom_parent = None
-        if merge_result.is_fastforward:
-            self._repository.checkout_tree(
-                self._repository[merge_result.fastforward_oid],
-                pygit2.GIT_CHECKOUT_SAFE_CREATE)
-            custom_parent = merge_result.fastforward_oid
-        else:
-            self._check_merge_conflicts()
-
-        return self._perform_merge(other_rev, local_branch,
-                                   other_branch_name, dry_run, custom_parent)
+        return self._merge(local_branch, other_rev, other_branch_name, dry_run,
+                           strategy=GitMerge)
 
     def merge_fastforward(self, local_branch=None, other_rev=None,
                           other_branch_name=None,
                           dry_run=False):
-        """
-        .. deprecated:: 0.5.1
-           No alternative provided, but this method does not match the
-           :py:class:`repoman.repository.Repository` interface.
-        """
-        return self._merge_fastforward(local_branch, other_rev,
-                                       other_branch_name, dry_run)
+        return self._merge(local_branch, other_rev, other_branch_name, dry_run,
+                           strategy=GitMergeFastForward)
 
-    def _merge_fastforward(self, local_branch=None, other_rev=None,
-                           other_branch_name=None,
-                           dry_run=False):
-        """
-        Merges two revision and commits the result using fastforward if
-        possible
-
-        :param local_branch: branch object to merge to - optional, if None,
-            it takes current branch
-        :type local_branch: :py:class:`~repoman.changeset.Changeset`
-        :param other_rev: changeset object to merge with - mandatory
-        :type other_rev: :py:class:`~repoman.changeset.Changeset`
-        :param other_branch_name: name of the branch the other_rev changeset
-                                  belongs to
-        :type other_branch_name: string
-        :param dry_run: option to simulate the merge, it assuer the repository
-                        is restored to the previous state
-        :type dry_run: bool
-        """
-        if not local_branch:
-            local_branch = self._get_local_branch_name()
-
-        merge_result = self._get_merge_result(other_rev, local_branch,
-                                              other_branch_name, dry_run)
-
-        if self._check_uptodate(merge_result, other_branch_name, other_rev,
-                                local_branch):
-            return None
-
-        if merge_result.is_fastforward:
-            self._repository.checkout_tree(
-                self._repository[merge_result.fastforward_oid],
-                pygit2.GIT_CHECKOUT_SAFE_CREATE)
-            # If it's fastforward, update the branch reference to the
-            # fastforward oid
-            ref_name = "refs/heads/%s" % local_branch.name
-            ff_oid = merge_result.fastforward_oid
-            ref = self._repository.lookup_reference(ref_name)
-            ref.target = ff_oid
-            ff_commit = self._repository.git_object_lookup_prefix(ff_oid)
-            return self._new_changeset_object(ff_commit)
-        else:
-            self._check_merge_conflicts()
-
-        return self._perform_merge(other_rev, local_branch,
-                                   other_branch_name, dry_run)
-
-    def _get_local_branch_name(self):
+    def _get_local_branch(self):
         branch_name = self._repository.head.shorthand
         return self._new_branch_object(branch_name)
-
-    def _check_merge_conflicts(self):
-        # Files merged, check if there are conflicts before commiting
-        conflicts = dict((key, value) for (key, value)
-                         in self._repository.status().iteritems()
-                         if value == 132)
-        if conflicts:
-            raise MergeConflictError("Conflicts found: merging %s failed"
-                                     % ", ".join(conflicts.keys()))
-
-    def _check_uptodate(self, merge_result, other_branch_name, other_rev,
-                        local_branch):
-        if merge_result.is_uptodate:
-            message = "Cannot merge %s@%s into %s, nothing to merge, " +\
-                "already uptodate"
-            logger.info(message % (
-                other_branch_name, other_rev.hash, local_branch.name))
-            return True
-        return False
-
-    def _perform_merge(self, other_rev, local_branch,
-                       other_branch_name, dry_run, custom_parent):
-        if not dry_run:
-            # Do the commit
-            commit_message = self.message_builder.merge(
-                other_branch=other_branch_name,
-                other_revision=other_rev.shorthash,
-                local_branch=local_branch.name,
-                local_revision=local_branch.get_changeset().shorthash,
-            )
-            return self.commit(message=commit_message,
-                               custom_parent=custom_parent)
-        else:
-            self.update(local_branch.name)
-            return None
-
-    def _get_merge_result(self, other_rev, local_branch, other_branch_name,
-                          dry_run):
-        if not other_rev:
-            raise RepositoryError("No revision to merge with specified")
-        if not type(local_branch) == Reference:
-            raise RepositoryError(
-                "local_branch (%s) parameter must be a " +
-                "Reference instead of %s" % (
-                    local_branch, type(local_branch)))
-
-        self.update(local_branch.name)
-
-        try:
-            oid = self._get_pygit_revision(other_rev.hash).oid
-            merge_result = self._repository.merge(oid)
-            return merge_result
-        except (pygit2.GitError, TypeError, KeyError) as e:
-            logger.exception(
-                "Error merging %s@%s into %s" % (
-                    other_branch_name,
-                    other_rev.hash,
-                    local_branch.name))
-            if dry_run:
-                self.update(local_branch.name)
-            raise RepositoryError(e)
 
     def add(self, files):
         if isinstance(files, basestring):
@@ -520,7 +521,7 @@ class Repository(BaseRepo):
             for f in files:
                 self._repository.index.add(f)
             self._repository.index.write()
-        except KeyError, e:
+        except IOError as e:
             raise RepositoryError('File %s doesn\'t exist' % e)
 
     def commit(self, message, custom_parent=None,
@@ -578,7 +579,7 @@ class Repository(BaseRepo):
     def _lookup_remote_branch(self, branch):
         matching_remote_branches = []
         for remote in self._repository.remotes:
-            for refspec in remote.get_fetch_refspecs():
+            for refspec in remote.fetch_refspecs:
                 _, local_refspec = refspec.split(':')
                 remote_ref = local_refspec.replace('*', branch)
                 if remote_ref in self._repository.listall_references():
@@ -627,7 +628,8 @@ class Repository(BaseRepo):
             tmp_ref = self._create_tmp_reference(ref)
             ref_to_checkout = tmp_ref.name
         self._clean()
-        self._repository.checkout(ref_to_checkout, pygit2.GIT_CHECKOUT_FORCE)
+        self._repository.checkout(ref_to_checkout,
+                                  strategy=pygit2.GIT_CHECKOUT_FORCE)
         if tmp_ref:
             tmp_ref.delete()
         return self.tip()
