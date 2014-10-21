@@ -9,8 +9,8 @@ before_install:
   - sudo apt-get install -y --force-yes libgit2-0 libgit2-dev
   - sudo apt-get install -y --force-yes mercurial
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements.txt -r requirements-dev.txt
 script:
-  - py.test --cov repoman tests
+  - make coverage
 after_success:
   - coveralls
