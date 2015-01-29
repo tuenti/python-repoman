@@ -48,8 +48,7 @@ class DepotOperations(BaseDepotOps):
         """
         Inherited method :func:`~DepotOperations.grab_changesets`
         """
-        logger.debug('Grabbing changesets %s from %s to %s' % (
-            ",".join(changesets), url, path))
+        logger.debug('Grabbing changesets from %s to %s' % (url, path))
         git_repo = pygit2.Repository(path)
         try:
             origin = self._set_origin_source(git_repo, url)
