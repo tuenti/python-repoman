@@ -37,6 +37,7 @@ class Repository(BaseRepo):
     """
     NEW_REMOTE_HEAD_LITERAL = "creates new remote head"
     MERGING_WITH_ANCESTOR_LITERAL = "working directory ancestor has no effect"
+    ONE_HEAD = "has one head"
 
     class with_repo(object):
         """
@@ -289,9 +290,10 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.push`
         """
         def update_repo(repo, orig):
-            command_config = ["--config", "extensions.rebase="]
-            command = ["pull", "--rebase", orig, "--tool=false"]
-            repo.rawcommand(command_config + command)
+            logger.debug("Rebasing...")
+            command = ["pull", "-u", "--rebase", "--tool=false",
+                       "--config", "extensions.rebase=", orig]
+            repo.rawcommand(command)
             return self._new_changeset_object(repo.tip()).hash
 
         # Push method should always be ready for the case where there is a new
@@ -323,18 +325,21 @@ class Repository(BaseRepo):
             except hglib.error.CommandError as e:
                 last_exception = e
                 logger.exception("Push didn't work, why?")
-                logger.debug(e.__str__())
-                if self.NEW_REMOTE_HEAD_LITERAL not in str(e):
-                    logger.error("Error pushing: %s" % e)
-                    raise RepositoryError("Error pushing: %s" % e)
-                logger.debug("Error pushing, maybe two heads...")
+                if self.NEW_REMOTE_HEAD_LITERAL not in e.err:
+                    logger.debug("Error pushing: %s" % e.err)
+                    raise RepositoryError("Error pushing: %s" % e.err)
+                logger.warning("Error pushing, maybe two heads...")
                 try:
                     rev_hash = update_repo(repo, orig)
+                    repo.update()
+                    repo.merge()
+                    repo.commit("Merging heads")
                 except hglib.error.CommandError as ex:
-                    # Conflicts??
-                    logger.exception("Error merging!")
-                    raise RepositoryError(
-                        "Error merging: %s (%s)" % (e, ex))
+                    if self.ONE_HEAD not in ex.out:
+                        # Conflicts??
+                        logger.exception("Error merging!")
+                        raise RepositoryError(
+                            "Error merging: %s (%s)" % (e, ex))
         if not push_succeded:
             raise RepositoryError(
                 "Five attempts for pushing failed: %s" %
