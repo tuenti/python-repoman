@@ -285,7 +285,7 @@ class Repository(BaseRepo):
             repo.pull(source=remote)
 
     @with_repo()
-    def push(self, repo, orig, dest, rev=None, ref_name=None):
+    def push(self, repo, orig=None, dest=None, rev=None, ref_name=None):
         """ Inherited method
         :func:`~repoman.repository.Repository.push`
         """
@@ -390,9 +390,9 @@ class Repository(BaseRepo):
                 basic_error_msg = \
                     'Found an error during merge. local: %s, remote: %s@%s' % \
                     (local_branch.name, other_branch_name, other_rev.hash)
-                if "merging" in str(e) and "failed" in str(e):
+                if "merging" in str(e.out) and "failed" in str(e.out):
                     logger.exception("Merging failed with conflicts:")
-                    raise MergeConflictError(e.out)
+                    raise MergeConflictError(e.err)
                 elif self.MERGING_WITH_ANCESTOR_LITERAL in e.err:
                     # Ugly way to detect this error, but the e.ret is not
                     # correct

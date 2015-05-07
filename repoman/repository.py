@@ -348,7 +348,7 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def push(self, orig, dest, rev=None, ref_name=None):
+    def push(self, orig=None, dest=None, rev=None, ref_name=None):
         """
         Pushes changesets to remote repo from local repo. It will also pull,
             merge and commit if two remote heads are found

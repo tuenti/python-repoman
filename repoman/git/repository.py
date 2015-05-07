@@ -323,7 +323,7 @@ class Repository(BaseRepo):
             logger.exception(e)
             raise RepositoryError(e)
 
-    def push(self, orig, dest, rev=None, ref_name=None):
+    def push(self, orig=None, dest=None, rev=None, ref_name=None):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
