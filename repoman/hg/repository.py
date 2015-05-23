@@ -292,7 +292,7 @@ class Repository(BaseRepo):
         def update_repo(repo, orig):
             logger.debug("Rebasing...")
             command = ["pull", "-u", "--rebase", "--tool=false",
-                       "--config", "extensions.rebase=", orig]
+                       "--config", "extensions.rebase=", orig or ""]
             repo.rawcommand(command)
             return self._new_changeset_object(repo.tip()).hash
 
@@ -390,7 +390,7 @@ class Repository(BaseRepo):
                 basic_error_msg = \
                     'Found an error during merge. local: %s, remote: %s@%s' % \
                     (local_branch.name, other_branch_name, other_rev.hash)
-                if "merging" in str(e.out) and "failed" in str(e.out):
+                if "merging" in str(e.err) and "failed" in str(e.err):
                     logger.exception("Merging failed with conflicts:")
                     raise MergeConflictError(e.err)
                 elif self.MERGING_WITH_ANCESTOR_LITERAL in e.err:
