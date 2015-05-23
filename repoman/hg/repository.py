@@ -319,7 +319,7 @@ class Repository(BaseRepo):
                         self.path)
                     last_exception = "hglib.push returned False..."
                     time.sleep(1)
-                    rev_hash = update_repo(repo, orig)
+                    rev_hash = update_repo(repo, dest)
                 else:
                     push_succeded = True
             except hglib.error.CommandError as e:
@@ -330,10 +330,10 @@ class Repository(BaseRepo):
                     raise RepositoryError("Error pushing: %s" % e.err)
                 logger.warning("Error pushing, maybe two heads...")
                 try:
-                    rev_hash = update_repo(repo, orig)
-                    repo.update()
+                    repo.pull()
+                    repo.update(repo.branch())
                     repo.merge()
-                    repo.commit("Merging heads")
+                    rev_hash = repo.commit("Merging heads")[1]
                 except hglib.error.CommandError as ex:
                     if self.ONE_HEAD not in ex.out:
                         # Conflicts??
