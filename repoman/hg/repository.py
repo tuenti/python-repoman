@@ -372,7 +372,6 @@ class Repository(BaseRepo):
                 "local_branch (%s) parameter must be a Reference " +
                 "instead of %s" % (local_branch, type(local_branch)))
 
-        commit = None
         repo = None
         try:
             repo = hglib.open(self.path)
@@ -390,9 +389,9 @@ class Repository(BaseRepo):
                 basic_error_msg = \
                     'Found an error during merge. local: %s, remote: %s@%s' % \
                     (local_branch.name, other_branch_name, other_rev.hash)
-                if "merging" in str(e.err) and "failed" in str(e.err):
+                if "merging" in str(e) and "failed" in str(e):
                     logger.exception("Merging failed with conflicts:")
-                    raise MergeConflictError(e.err)
+                    raise MergeConflictError(e.out)
                 elif self.MERGING_WITH_ANCESTOR_LITERAL in e.err:
                     # Ugly way to detect this error, but the e.ret is not
                     # correct
@@ -435,7 +434,6 @@ class Repository(BaseRepo):
         finally:
             if repo:
                 repo.close()
-        return commit
 
     def add(self, files):
         """ Inherited method
