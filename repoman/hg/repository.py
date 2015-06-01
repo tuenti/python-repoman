@@ -291,7 +291,7 @@ class Repository(BaseRepo):
         """
         def update_repo(repo, orig):
             logger.debug("Rebasing...")
-            command = ["pull", "-u", "--rebase", "--tool=false",
+            command = ["pull", "-b .", "-u", "--rebase", "--tool=false",
                        "--config", "extensions.rebase=", orig or ""]
             repo.rawcommand(command)
             return self._new_changeset_object(repo.tip()).hash
@@ -330,7 +330,7 @@ class Repository(BaseRepo):
                     raise RepositoryError("Error pushing: %s" % e.err)
                 logger.warning("Error pushing, maybe two heads...")
                 try:
-                    repo.pull()
+                    repo.pull(branch=".")
                     repo.update(repo.branch())
                     repo.merge()
                     rev_hash = repo.commit("Merging heads")[1]
