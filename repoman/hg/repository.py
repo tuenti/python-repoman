@@ -291,7 +291,7 @@ class Repository(BaseRepo):
         """
         def update_repo(repo, orig):
             logger.debug("Rebasing...")
-            command = ["pull", "-b .", "-u", "--rebase", "--tool=false",
+            command = ["pull", "-b", repo.branch(), "-u", "--rebase", "--tool=false",
                        "--config", "extensions.rebase=", orig or ""]
             repo.rawcommand(command)
             return self._new_changeset_object(repo.tip()).hash
