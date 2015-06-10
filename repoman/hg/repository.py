@@ -332,8 +332,9 @@ class Repository(BaseRepo):
                 try:
                     repo.pull(branch=".")
                     repo.update(repo.branch())
+                    log_message = repo.parents()[0][5]
                     repo.merge()
-                    rev_hash = repo.commit("Merging heads")[1]
+                    rev_hash = repo.commit("%s - Merging heads" % log_message)[1]
                 except hglib.error.CommandError as ex:
                     if self.ONE_HEAD not in ex.out:
                         # Conflicts??
