@@ -369,12 +369,17 @@ class TestHgRepository(unittest.TestCase):
             repo2.push(self.main_repo, "inexistent_destination")
 
         repo2.push(self.main_repo, self.main_repo)
-
         logs = [changeset[5] for changeset in repo.log()]
         self.assertTrue('TICKET-10' in logs)
         self.assertTrue('TICKET-11' in logs)
         self.assertTrue('TICKET-12' in logs)
         self.assertTrue('TICKET-13' in logs)
+
+        #now try to push with two local heads in the branch
+        repo2.update(4)
+        self.commit_in_repo(
+            self.second_repo, ['f1', 'f2'], ['TICKET-14', 'TICKET-15'])
+        repo2.push(self.main_repo, self.main_repo)
 
         repo.update()
         self.commit_in_repo(

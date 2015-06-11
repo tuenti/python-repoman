@@ -38,6 +38,7 @@ class Repository(BaseRepo):
     NEW_REMOTE_HEAD_LITERAL = "creates new remote head"
     MERGING_WITH_ANCESTOR_LITERAL = "working directory ancestor has no effect"
     ONE_HEAD = "has one head"
+    NOTHING_TO_REBASE_LITERAL = "nothing to rebase"
 
     class with_repo(object):
         """
@@ -289,11 +290,19 @@ class Repository(BaseRepo):
         """ Inherited method
         :func:`~repoman.repository.Repository.push`
         """
-        def update_repo(repo, orig):
-            logger.debug("Rebasing...")
-            command = ["pull", "-b", repo.branch(), "-u", "--rebase", "--tool=false",
-                       "--config", "extensions.rebase=", orig or ""]
-            repo.rawcommand(command)
+        def update_repo(repo):
+            repo.pull(branch=".")
+            command = ["rebase", "--config", "extensions.rebase="]
+            try:
+                repo.rawcommand(command)
+            except hglib.error.CommandError as e:
+                if self.NOTHING_TO_REBASE_LITERAL in e.out:
+                    repo.update(repo.branch())
+                    log_message = repo.parents()[0][5]
+                    repo.merge()
+                    repo.commit("%s - Merging heads" % log_message)[1]
+                else:
+                    raise e
             return self._new_changeset_object(repo.tip()).hash
 
         # Push method should always be ready for the case where there is a new
@@ -319,7 +328,7 @@ class Repository(BaseRepo):
                         self.path)
                     last_exception = "hglib.push returned False..."
                     time.sleep(1)
-                    rev_hash = update_repo(repo, dest)
+                    rev_hash = update_repo(repo)
                 else:
                     push_succeded = True
             except hglib.error.CommandError as e:
@@ -330,11 +339,7 @@ class Repository(BaseRepo):
                     raise RepositoryError("Error pushing: %s" % e.err)
                 logger.warning("Error pushing, maybe two heads...")
                 try:
-                    repo.pull(branch=".")
-                    repo.update(repo.branch())
-                    log_message = repo.parents()[0][5]
-                    repo.merge()
-                    rev_hash = repo.commit("%s - Merging heads" % log_message)[1]
+                    update_repo(repo)
                 except hglib.error.CommandError as ex:
                     if self.ONE_HEAD not in ex.out:
                         # Conflicts??
