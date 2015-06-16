@@ -351,6 +351,8 @@ class Repository(BaseRepo):
             except pygit2.GitError, e:
                 if e.__str__() == 'Unsupported URL protocol':
                     raise RepositoryError(e.__str__())
+        if not ref_name:
+            ref_name = "--all"
         try:
             sh.git('push', remote_to_push.name, ref_name,
                    _cwd=self._repository.path)

@@ -299,10 +299,11 @@ class Repository(BaseRepo):
                 if self.NOTHING_TO_REBASE_LITERAL in e.out:
                     repo.update(repo.branch())
                     log_message = repo.parents()[0][5]
-                    repo.merge()
-                    repo.commit("%s - Merging heads" % log_message)[1]
-                else:
-                    raise e
+                    try:
+                        repo.merge()
+                        repo.commit("%s - Merging heads" % log_message)
+                    except hglib.error.CommandError:
+                        pass
             return self._new_changeset_object(repo.tip()).hash
 
         # Push method should always be ready for the case where there is a new
@@ -339,7 +340,7 @@ class Repository(BaseRepo):
                     raise RepositoryError("Error pushing: %s" % e.err)
                 logger.warning("Error pushing, maybe two heads...")
                 try:
-                    update_repo(repo)
+                    rev_hash = update_repo(repo)
                 except hglib.error.CommandError as ex:
                     if self.ONE_HEAD not in ex.out:
                         # Conflicts??
