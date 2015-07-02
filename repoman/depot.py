@@ -20,6 +20,7 @@ import logging
 from repoman.repository import repository_factory
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class Depot(object):
