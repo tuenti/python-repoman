@@ -14,12 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
+import subprocess
 from itertools import ifilter
 import os
 import shutil
 import logging
-
 import pygit2
 from repoman.depot_operations import DepotOperations as BaseDepotOps
 
@@ -52,12 +51,22 @@ class DepotOperations(BaseDepotOps):
         git_repo = pygit2.Repository(path)
         try:
             origin = self._set_origin_source(git_repo, url)
+            #this may fail against github
             result = origin.fetch()
-            logger.debug('GIT Done grabbing changesets (%s)' % (result))
-            self._save_state(path)
         except pygit2.GitError as e:
             logger.exception('Error Grabbing changesets: %s' % e)
-            return False
+            logger.info("Retrying using process")
+            try:
+                from ipdb import set_trace; set_trace()
+                subprocess.call('git fetch %s' % url, cwd=path, shell=True)
+                #this second fetch is needed to set HEAD
+                subprocess.call('git fetch', cwd=path, shell=True)
+                return True
+            except Exception:
+                logger.exception("Error running git fetch")
+                return False
+        logger.debug('GIT Done grabbing changesets (%s)' % (result))
+        self._save_state(path)
         return True
 
     def init_depot(self, path, parent=None, source=None):
