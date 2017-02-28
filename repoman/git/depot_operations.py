@@ -57,7 +57,6 @@ class DepotOperations(BaseDepotOps):
             logger.exception('Error Grabbing changesets: %s' % e)
             logger.info("Retrying using process")
             try:
-                from ipdb import set_trace; set_trace()
                 subprocess.call('git fetch %s' % url, cwd=path, shell=True)
                 #this second fetch is needed to set HEAD
                 subprocess.call('git fetch', cwd=path, shell=True)
