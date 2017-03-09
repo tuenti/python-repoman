@@ -53,7 +53,7 @@ class DepotOperations(BaseDepotOps):
             origin = self._set_origin_source(git_repo, url)
             #this may fail against github
             result = origin.fetch()
-        except pygit2.GitError as e:
+        except (pygit2.GitError, OSError) as e:
             logger.exception('Error Grabbing changesets: %s' % e)
             logger.info("Retrying using process")
             try:
