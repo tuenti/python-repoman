@@ -320,9 +320,9 @@ class Repository(BaseRepo):
             try:
                 remote_to_fetch.fetch()
             except (pygit2.GitError, OSError) as e:
-                sh.call('fetch', remote_to_fetch.url, _cwd=self.path)
+                sh.git('fetch', remote_to_fetch.url, _cwd=self.path)
                 # this second fetch is needed to set HEAD
-                sh.call('fetch', _cwd=self.path)
+                sh.git('fetch', _cwd=self.path)
                 return True
 
         except pygit2.GitError as e:
