@@ -317,7 +317,13 @@ class Repository(BaseRepo):
         try:
             remote_to_fetch.set_fetch_refspecs(['+refs/*:refs/*'])
             remote_to_fetch.save()
-            remote_to_fetch.fetch()
+            try:
+                remote_to_fetch.fetch()
+            except (pygit2.GitError, OSError) as e:
+                sh.call('fetch', remote_to_fetch.url, _cwd=self.path)
+                # this second fetch is needed to set HEAD
+                sh.call('fetch', _cwd=self.path)
+                return True
 
         except pygit2.GitError as e:
             logger.exception(e)
