@@ -60,7 +60,6 @@ class DepotOperations(BaseDepotOps):
                 subprocess.call('git fetch %s' % url, cwd=path, shell=True)
                 #this second fetch is needed to set HEAD
                 subprocess.call('git fetch', cwd=path, shell=True)
-                return True
             except Exception:
                 logger.exception("Error running git fetch")
                 return False
