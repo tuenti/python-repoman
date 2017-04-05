@@ -528,6 +528,10 @@ class Repository(BaseRepo):
         """Inherited method
         :func:`~repoman.repository.Repository.commit`
         """
+        #This function sometimes returns empty event thought there are
+        # modified files in the repo. A "git status" before doing it seems to
+        # fix it, but we do not know why :/
+        sh.git("status", _cwd=self.path)
         status = self._repository.status()
 
         if not status and not custom_parent and not allow_empty:
