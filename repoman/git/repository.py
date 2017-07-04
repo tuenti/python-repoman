@@ -621,7 +621,7 @@ class Repository(BaseRepo):
             # Clean index to avoid unmerged files
             sh.git('read-tree', '--empty', _cwd=self.path)
             sh.git('reset', '--hard', _cwd=self.path)
-            sh.git('clean', '-f', _cwd=self.path)
+            sh.git('clean', '-d', '-fx','" "', _cwd=self.path)
         except Exception:
             logger.exception('The cache could not be correctly cleaned.'
                              ' Continuing')
