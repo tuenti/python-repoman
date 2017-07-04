@@ -358,6 +358,8 @@ class Repository(BaseRepo):
         try:
             sh.git('push', remote_to_push.name, ref_name,
                    _cwd=self._repository.path)
+            sh.git('push', remote_to_push.name, ref_name, '--tags',
+                   _cwd=self._repository.path)
             return self.tip()
 
         except sh.ErrorReturnCode as e:
