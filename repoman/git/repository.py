@@ -623,10 +623,11 @@ class Repository(BaseRepo):
             # Clean index to avoid unmerged files
             sh.git('read-tree', '--empty', _cwd=self.path)
             sh.git('reset', '--hard', _cwd=self.path)
-            sh.git('clean', '-d', '-fx','" "', _cwd=self.path)
         except Exception:
             logger.exception('The cache could not be correctly cleaned.'
                              ' Continuing')
+        finally:
+            sh.git('clean', '-d', '-fx', '" "', _cwd=self.path)
 
     def _get_branch_tip(self, branch):
         """
