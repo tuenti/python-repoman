@@ -31,7 +31,7 @@ class DepotOperations(object):
             ConcreteDepotOperations = getattr(mod, 'DepotOperations')
             return ConcreteDepotOperations()
         except:
-            raise NotImplementedError
+            raise NotImplementedError("repoman.%s.depot_operations not found" % (repo_kind))
 
     def check_changeset_availability(self, path, changesets):
         """ Check for changesets are already in the specified depot path.
