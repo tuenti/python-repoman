@@ -105,11 +105,14 @@ class DepotOperations(BaseDepotOps):
         refs_dir = os.path.join(git_path, self._REFS_DIR)
         refs_previous_dir = os.path.join(git_path, self._REFS_PREVIOUS_DIR)
         if os.path.isdir(refs_previous_dir):
-            try:
-                shutil.rmtree(refs_previous_dir)
-            except OSError:
-                #retry, bug in shutil: http://code.activestate.com/lists/python-list/159050/
-                shutil.rmtree(refs_previous_dir)
+            removed = False
+            while not removed:
+                try:
+                    shutil.rmtree(refs_previous_dir)
+                    removed = True
+                except OSError:
+                    #retry, bug in shutil: http://code.activestate.com/lists/python-list/159050/
+                    pass
         shutil.copytree(refs_dir, refs_previous_dir)
 
     def _restore_state_refs(self, git_path):
