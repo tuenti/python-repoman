@@ -356,10 +356,16 @@ class Repository(BaseRepo):
                 if e.__str__() == 'Unsupported URL protocol':
                     raise RepositoryError(e.__str__())
         try:
-            sh.git('push', '-f' if force else '', remote_to_push.name, ref_name,
-                   _cwd=self._repository.path)
-            sh.git('push', '-f' if force else '', remote_to_push.name, ref_name, '--tags',
-                   _cwd=self._repository.path)
+            if force:
+                sh.git('push', '-f', remote_to_push.name, ref_name,
+                       _cwd=self._repository.path)
+                sh.git('push', '-f', remote_to_push.name, ref_name, '--tags',
+                       _cwd=self._repository.path)
+            else:
+                sh.git('push', remote_to_push.name, ref_name,
+                       _cwd=self._repository.path)
+                sh.git('push', remote_to_push.name, ref_name, '--tags',
+                       _cwd=self._repository.path)
             return self.tip()
 
         except sh.ErrorReturnCode as e:
