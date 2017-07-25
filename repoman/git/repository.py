@@ -327,7 +327,7 @@ class Repository(BaseRepo):
             logger.exception(e)
             raise RepositoryError(e)
 
-    def push(self, orig=None, dest=None, rev=None, ref_name=None):
+    def push(self, orig=None, dest=None, rev=None, ref_name=None, force=False):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
@@ -356,9 +356,9 @@ class Repository(BaseRepo):
                 if e.__str__() == 'Unsupported URL protocol':
                     raise RepositoryError(e.__str__())
         try:
-            sh.git('push', remote_to_push.name, ref_name,
+            sh.git('push', '-f' if force else '', remote_to_push.name, ref_name,
                    _cwd=self._repository.path)
-            sh.git('push', remote_to_push.name, ref_name, '--tags',
+            sh.git('push', '-f' if force else '', remote_to_push.name, ref_name, '--tags',
                    _cwd=self._repository.path)
             return self.tip()
 
