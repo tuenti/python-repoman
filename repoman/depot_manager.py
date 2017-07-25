@@ -118,7 +118,8 @@ class DepotManager(object):
             logger.debug('roster: %s' % roster_entry)
             clone = self.dvcs.get_depot_from_path(
                 roster_entry.path, parent=self.main_cache)
-        except RosterError:
+        except RosterError as e:
+            logger.debug('Exception found %s' % e)
             logger.debug('no roster entry found, cloning')
             # Create a new clone in the squadron if none are free
             clone = self._provision_new_clone()
