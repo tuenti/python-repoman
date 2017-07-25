@@ -104,13 +104,13 @@ class DepotOperations(BaseDepotOps):
     def _save_state_refs(self, git_path):
         refs_dir = os.path.join(git_path, self._REFS_DIR)
         refs_previous_dir = os.path.join(git_path, self._REFS_PREVIOUS_DIR)
-        if os.path.isdir(refs_previous_dir):
-            while os.path.exists(refs_previous_dir):
-                try:
-                    shutil.rmtree(refs_previous_dir)
-                except OSError:
-                    #retry, bug in shutil: http://code.activestate.com/lists/python-list/159050/
-                    pass
+        while os.path.exists(refs_previous_dir):
+            try:
+                shutil.rmtree(refs_previous_dir)
+            except OSError:
+                #retry, bug in shutil: http://code.activestate.com/lists/python-list/159050/
+                logger.debug("Something went wrong when rmtree-ing, retrying removing %s" %
+                             refs_previous_dir)
         shutil.copytree(refs_dir, refs_previous_dir)
 
     def _restore_state_refs(self, git_path):
