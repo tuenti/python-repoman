@@ -101,17 +101,28 @@ class DepotOperations(BaseDepotOps):
         logger.info(' %s is_a_depot %s' % (path, is_depot))
         return is_depot
 
-    def _save_state_refs(self, git_path):
-        refs_dir = os.path.join(git_path, self._REFS_DIR)
-        refs_previous_dir = os.path.join(git_path, self._REFS_PREVIOUS_DIR)
-        while os.path.exists(refs_previous_dir):
+    @staticmethod
+    def _remove_folder_avoiding_shutil_errors(folder):
+        while os.path.exists(folder):
             try:
-                shutil.rmtree(refs_previous_dir)
+                shutil.rmtree(folder)
             except OSError:
                 #retry, bug in shutil: http://code.activestate.com/lists/python-list/159050/
                 logger.debug("Something went wrong when rmtree-ing, retrying removing %s" %
-                             refs_previous_dir)
-        shutil.copytree(refs_dir, refs_previous_dir)
+                             folder)
+
+    def _save_state_refs(self, git_path):
+        refs_dir = os.path.join(git_path, self._REFS_DIR)
+        refs_previous_dir = os.path.join(git_path, self._REFS_PREVIOUS_DIR)
+
+        self._remove_folder_avoiding_shutil_errors(refs_previous_dir)
+
+        while not os.path.exists(refs_previous_dir):
+            try:
+                #incredibly this fails sometimes because refs_previous_dir still exists...
+                shutil.copytree(refs_dir, refs_previous_dir)
+            except OSError:
+                self._remove_folder_avoiding_shutil_errors(refs_previous_dir)
 
     def _restore_state_refs(self, git_path):
         refs_dir = os.path.join(git_path, self._REFS_DIR)
