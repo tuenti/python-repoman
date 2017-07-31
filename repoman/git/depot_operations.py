@@ -121,7 +121,7 @@ class DepotOperations(BaseDepotOps):
             try:
                 #incredibly this fails sometimes because refs_previous_dir still exists...
                 shutil.copytree(refs_dir, refs_previous_dir)
-            except OSError:
+            except:
                 self._remove_folder_avoiding_shutil_errors(refs_previous_dir)
 
     def _restore_state_refs(self, git_path):
