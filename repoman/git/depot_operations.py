@@ -67,7 +67,7 @@ class DepotOperations(BaseDepotOps):
                 subprocess.call('git fetch', cwd=path, shell=True)
                 subprocess.call('git checkout %s' % previous_branch, cwd=path,
                                 shell=True)
-                logger.debug('GIT Done grabbing changesets from github')
+                logger.debug('GIT Done grabbing changesets')
         except Exception:
             logger.exception("Error running git fetch")
             return False
