@@ -50,23 +50,30 @@ class DepotOperations(BaseDepotOps):
         logger.debug('Grabbing changesets from %s to %s' % (url, path))
         git_repo = pygit2.Repository(path)
         try:
-            origin = self._set_origin_source(git_repo, url)
-            #this may fail against github
-            result = origin.fetch()
-            logger.debug('GIT Done grabbing changesets (%s)' % (result))
-        except (pygit2.GitError, OSError) as e:
-            logger.exception('Error Grabbing changesets: %s' % e)
-            logger.info("Retrying using process")
-            try:
+            self._set_origin_source(git_repo, url)
+        except pygit2.GitError as e:
+            logger.exception('Error setting source %s: %s' % (url, e))
+            return False
+
+        try:
+            if git_repo.is_bare:
                 subprocess.call('git fetch %s' % url, cwd=path, shell=True)
                 #this second fetch is needed to set HEAD
                 subprocess.call('git fetch', cwd=path, shell=True)
                 logger.debug('GIT Done grabbing changesets from github')
-            except Exception:
-                logger.exception("Error running git fetch")
-                return False
+            else:
+                previous_branch = git_repo.head.shorthand
+                subprocess.call('git checkout --detach', cwd=path, shell=True)
+                subprocess.call('git fetch', cwd=path, shell=True)
+                subprocess.call('git checkout %s' % previous_branch, cwd=path,
+                                shell=True)
+                logger.debug('GIT Done grabbing changesets from github')
+        except Exception:
+            logger.exception("Error running git fetch")
+            return False
         self._save_state(path)
         return True
+
 
     def init_depot(self, path, parent=None, source=None):
         """
