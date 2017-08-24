@@ -63,8 +63,9 @@ class DepotOperations(BaseDepotOps):
                 logger.debug('GIT Done grabbing changesets from github')
             else:
                 previous_branch = git_repo.head.shorthand
+                subprocess.call('git reset --hard', cwd=path, shell=True)
                 subprocess.call('git checkout --detach', cwd=path, shell=True)
-                subprocess.call('git fetch', cwd=path, shell=True)
+                subprocess.call('git fetch origin', cwd=path, shell=True)
                 subprocess.call('git checkout %s' % previous_branch, cwd=path,
                                 shell=True)
                 logger.debug('GIT Done grabbing changesets')
