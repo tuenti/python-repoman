@@ -58,23 +58,31 @@ class DepotOperations(BaseDepotOps):
         try:
             if git_repo.is_bare:
                 subprocess.call('git fetch %s' % url, cwd=path, shell=True)
-                #this second fetch is needed to set HEAD
+                # this second fetch is needed to set HEAD
                 subprocess.call('git fetch', cwd=path, shell=True)
                 logger.debug('GIT Done grabbing changesets from github')
             else:
-                previous_branch = git_repo.head.shorthand
-                subprocess.call('git reset --hard', cwd=path, shell=True)
+                previous_branch = None
+                if not git_repo.head_is_detached and not git_repo.head_is_unborn:
+                    previous_branch = git_repo.head.shorthand
+
                 subprocess.call('git checkout --detach', cwd=path, shell=True)
                 subprocess.call('git fetch origin', cwd=path, shell=True)
-                subprocess.call('git checkout %s' % previous_branch, cwd=path,
+
+                if not previous_branch:
+                    previous_branch = git_repo.listall_branches()[0]
+
+                subprocess.call('git checkout -f %s' % previous_branch,
+                                cwd=path,
                                 shell=True)
+                subprocess.call('git clean -d -fx ""', cwd=path, shell=True)
+
                 logger.debug('GIT Done grabbing changesets')
         except Exception:
             logger.exception("Error running git fetch")
             return False
         self._save_state(path)
         return True
-
 
     def init_depot(self, path, parent=None, source=None):
         """
