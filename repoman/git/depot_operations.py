@@ -85,7 +85,9 @@ class DepotOperations(BaseDepotOps):
                         path, parent))
             bare = not parent
 
-            pygit2.init_repository(path, bare)
+            pygit2.clone_repository(source if bare else parent.path,
+                                    path,
+                                    bare)
 
             result = self.get_depot_from_path(path, parent)
             logger.info('Done initializing Depot.')
