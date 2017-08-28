@@ -22,10 +22,8 @@ try:
 except ImportError:
     import unittest
 import shutil
-import pygit2
 import sh
 from repoman.git.depot_operations import DepotOperations
-from repoman.git import pygitext
 
 SELF_DIRECTORY_PATH = os.path.dirname(__file__)
 FIXTURE_PATH = 'fixtures'
@@ -45,7 +43,7 @@ class TestGitDepotOperations(unittest.TestCase):
             os.path.join(self.environment_path, name))
 
     def add_content_to_repo(self, fixture, name):
-        pygitext.clone(
+        sh.git('clone',
             os.path.join(SELF_DIRECTORY_PATH, fixture),
             os.path.join(self.environment_path, name),
             bare=True)
@@ -101,12 +99,37 @@ class TestGitDepotOperations(unittest.TestCase):
             os.path.join(FIXTURE_PATH, 'fixture-1.git.bundle'), 'repo1')
         dcvs = DepotOperations()
 
-        # It is not there
+        # It is there
         self.assertEquals(
-            ['52109e71fd7f16cb366acfcbb140d6d7f2fc50c9'],
+            [],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
                 ['52109e71fd7f16cb366acfcbb140d6d7f2fc50c9']))
+
+        # It is not there
+        self.assertEquals(
+            ['deadbeef'],
+            dcvs.check_changeset_availability(
+                os.path.join(self.environment_path, 'repo1'),
+                ['deadbeef']))
+
+        # Multiple changesets
+        self.assertEquals(
+            ['deadbeef'],
+            dcvs.check_changeset_availability(
+                os.path.join(self.environment_path, 'repo1'),
+                ['deadbeef', '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9']))
+
+        # All changesets
+        self.assertEquals(
+            [],
+            dcvs.check_changeset_availability(
+                os.path.join(self.environment_path, 'repo1'),
+                [
+                    'master',
+                    'e3b1fc907ea8b3482e29eb91520c0e2eee2b4cdb',
+                    '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9',
+                ]))
 
     def test_master_grab_changesets(self):
         # Grabs branch from a "remote" depot.

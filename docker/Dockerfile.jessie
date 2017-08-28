@@ -1,9 +1,6 @@
 FROM debian:jessie
 
-# libgit2 > 0.18 required, only available in experimental by now
-RUN echo deb http://ftp.debian.org/debian experimental main > /etc/apt/sources.list.d/experimental.list
 RUN apt-get update
-RUN apt-get install -y --force-yes -t experimental libgit2-0 libgit2-dbg libgit2-dev
 RUN apt-get install -y --force-yes mercurial git
 RUN apt-get install -y --force-yes python-dev build-essential python-pip
 RUN pip install pip
