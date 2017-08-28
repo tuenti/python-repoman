@@ -19,8 +19,8 @@ from itertools import ifilter
 import os
 import shutil
 import logging
+import sh
 
-import pygit2
 from repoman.depot_operations import DepotOperations as BaseDepotOps
 
 
@@ -42,6 +42,7 @@ class DepotOperations(BaseDepotOps):
         """
         Inherited method :func:`~DepotOperations.check_changeset_availability`
         """
+        # TODO: Check if changesets are really in path
         return changesets
 
     def grab_changesets(self, path, url, changesets):
@@ -49,49 +50,31 @@ class DepotOperations(BaseDepotOps):
         Inherited method :func:`~DepotOperations.grab_changesets`
         """
         logger.debug('Grabbing changesets from %s to %s' % (url, path))
-        git_repo = pygit2.Repository(path)
-        try:
-            origin = self._set_origin_source(git_repo, url)
-            result = origin.fetch()
-            logger.debug('GIT Done grabbing changesets (%s)' % (result))
-            self._save_state(path)
-        except pygit2.GitError as e:
-            logger.exception('Error Grabbing changesets: %s' % e)
-            return False
+        sh.git("fetch", url, "+refs/heads/*:refs/remotes/origin/*", _cwd=path)
+        self._save_state(path)
         return True
 
     def init_depot(self, path, parent=None, source=None):
         """
         Inherited method :func:`~DepotOperations.init_depot`
         """
-        try:
-            logger.info('Initializing Depot %s with parent %s' % (
-                        path, parent))
-            bare = not parent
+        logger.info('Initializing Depot %s with parent %s' % (
+                    path, parent))
+ 
+        sh.git('init', path, bare=not parent)
 
-            pygit2.init_repository(path, bare)
-
-            result = self.get_depot_from_path(path, parent)
-            logger.info('Done initializing Depot.')
-        except Exception:
-            logger.exception('Error Initializing Depot.')
-            return False
-        return result
+        logger.info('Done initializing depot')
+        return self.get_depot_from_path(path, parent)
 
     def is_a_depot(self, path):
         """
         Inherited method :func:`~DepotOperations.is_a_depot`
         """
-        is_depot = False
-        if os.path.isdir(path):
-            try:
-                pygit2.Repository(path)
-                is_depot = True
-            except KeyError:
-                logger.debug("KeyError initializing pygit2 repo at %s", path)
-
-        logger.info(' %s is_a_depot %s' % (path, is_depot))
-        return is_depot
+        try:
+            sh.git('rev-parse', _cwd=path)
+            return True
+        except:
+            return False
 
     def _save_state_refs(self, git_path):
         refs_dir = os.path.join(git_path, self._REFS_DIR)
@@ -137,57 +120,40 @@ class DepotOperations(BaseDepotOps):
         """
         Inherited method :func:`~DepotOperations._locks_cleanup`
         """
-        repository = pygit2.Repository(path)
-        index_lock_path = os.path.join(repository.path, 'index.lock')
+        index_lock_path = os.path.join(self._git_path(path), 'index.lock')
         if os.path.exists(index_lock_path):
             os.remove(index_lock_path)
 
     def _clear_working_copy(self, path):
-        repository = pygit2.Repository(path)
-        if repository.head_is_unborn:
-            for dirty_file in os.listdir(path):
-                if dirty_file != '.git':
-                    dirty_file_path = os.path.join(path, dirty_file)
-                    if os.path.isdir(dirty_file_path):
-                        shutil.rmtree(dirty_file_path)
-                    else:
-                        os.remove(dirty_file_path)
-        else:
-            repository.reset(repository.head.target, pygit2.GIT_RESET_HARD)
-            repository.checkout_head(strategy=(
-                pygit2.GIT_CHECKOUT_FORCE |
-                pygit2.GIT_CHECKOUT_REMOVE_UNTRACKED))
+        sh.git("reset", "--hard", _cwd=path)
+        sh.git("clean", "-fdx", _cwd=path)
+
+    def _git_path(self, path):
+        git_dir = sh.git('rev-parse', '--git-dir', _cwd=path).strip()
+        return os.path.join(path, git_dir)
 
     def clear_depot(self, path):
         """
         Inherited method :func:`~DepotOperations.clear_depot`
         """
         logger.debug("Clearing depot %s" % path)
-        repository = pygit2.Repository(path)
-        self._restore_state_refs(repository.path)
-        self._restore_state_head(repository.path)
+        self._restore_state(path)
         self._clear_working_copy(path)
 
     def _save_state(self, path):
-        repository = pygit2.Repository(path)
-        self._save_state_refs(repository.path)
-        self._save_state_head(repository.path)
+        self._save_state_refs(self._git_path(path))
+        self._save_state_head(self._git_path(path))
+
+    def _restore_state(self, path):
+        self._restore_state_refs(self._git_path(path))
+        self._restore_state_head(self._git_path(path))
 
     def set_source(self, path, source):
         """
         Inherited method :func:`~DepotOperations.set_source`
         """
-        git_repo = pygit2.Repository(path)
-        self._set_origin_source(git_repo, source)
-
-    def _set_origin_source(self, git_repo, url):
-        remotes = git_repo.remotes
-        origin = next(ifilter(lambda r: r.name == 'origin', remotes), None)
-        if len(remotes) == 0 or origin is None:
-            origin = git_repo.create_remote('origin', url)
-        elif origin.url != url:
-            origin.url = url
-        # Reset all refspecs
-        origin.fetch_refspecs = ['+refs/*:refs/*']
-        origin.save()
-        return origin
+        remotes = sh.git("remote")
+        if "origin" in remotes:
+            sh.git("remote", "set-url", "origin", source)
+        else:
+            sh.git("remote", "add", "origin", source)

@@ -2,7 +2,6 @@ FROM fedora:rawhide
 
 RUN yum -y install mercurial
 RUN yum -y install git
-RUN yum -y install libgit2 libgit2-devel
 RUN yum -y install python2-devel
 RUN yum -y install make automake gcc gcc-c++
 RUN yum -y install python-pip

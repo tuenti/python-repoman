@@ -22,10 +22,8 @@ try:
 except ImportError:
     import unittest
 import shutil
-import pygit2
 import sh
 from repoman.git.depot_operations import DepotOperations
-from repoman.git import pygitext
 
 SELF_DIRECTORY_PATH = os.path.dirname(__file__)
 FIXTURE_PATH = 'fixtures'
@@ -45,7 +43,7 @@ class TestGitDepotOperations(unittest.TestCase):
             os.path.join(self.environment_path, name))
 
     def add_content_to_repo(self, fixture, name):
-        pygitext.clone(
+        sh.git('clone',
             os.path.join(SELF_DIRECTORY_PATH, fixture),
             os.path.join(self.environment_path, name),
             bare=True)
