@@ -58,7 +58,7 @@ class DepotOperations(BaseDepotOps):
         try:
             if git_repo.is_bare:
                 subprocess.call('git fetch %s' % url, cwd=path, shell=True)
-                # this second fetch is needed to set HEAD
+                # This second fetch is needed to set HEAD
                 subprocess.call('git fetch', cwd=path, shell=True)
                 logger.debug('GIT Done grabbing changesets from github')
             else:
