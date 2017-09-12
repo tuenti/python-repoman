@@ -132,8 +132,6 @@ class TestGitDepotOperations(unittest.TestCase):
                 ]))
 
     def test_master_grab_changesets(self):
-        # Grabs branch from a "remote" depot.
-
         # Remote repository
         self.add_content_to_repo(
             os.path.join(FIXTURE_PATH, 'fixture-2.git.bundle'), 'remote')
@@ -157,21 +155,12 @@ class TestGitDepotOperations(unittest.TestCase):
                _cwd=os.path.join(self.environment_path, 'master'))
 
         # Changesets not there
-        self.assertTrue(
+        self.assertFalse(
             dcvs.grab_changesets(
                 os.path.join(self.environment_path, 'master'),
                 os.path.join(self.environment_path, 'remote'),
                 ['c377d40d21153bdcc4ec0b24bba48af3899fcc7x',
                     'b93d349f220d892047817f7ab29b2e8bfc5569bx']))
-
-        # TODO: Optimize this so we fetch only specific refspecs
-        # (and don't fetch all of them)
-        #
-        # Check availability (not fetched)
-        # self.assertEquals(['b0955744aa0b796a2b810ee7b9a79fcbd43849b9'],
-        #                  dcvs.check_changeset_availability(
-        #                      os.path.join(self.environment_path, 'master'),
-        #                      ['b0955744aa0b796a2b810ee7b9a79fcbd43849b9']))
 
     def test_request_refresh_git(self):
         dcvs = DepotOperations()
@@ -195,3 +184,102 @@ class TestGitDepotOperations(unittest.TestCase):
 
         self.assertTrue(workspace1.request_refresh({
             os.path.join(self.environment_path, 'remote'): ['my-branch1']}))
+
+    def _test_request_refresh(self, f):
+        dcvs = DepotOperations()
+
+        # Remote repository
+        self.add_content_to_repo(
+            os.path.join(FIXTURE_PATH, 'fixture-2.git.bundle'),
+            'remote')
+
+        # Master cache
+        master = dcvs.init_depot(
+            os.path.join(self.environment_path, 'master'),
+            parent=None,
+            source=os.path.join(self.environment_path, 'remote'))
+
+        # Workspace depot
+        workspace1 = dcvs.init_depot(
+            os.path.join(self.environment_path, 'workspace1'),
+            parent=master,
+            source=os.path.join(self.environment_path, 'master'))
+
+        self.assertTrue(workspace1.request_refresh({
+            os.path.join(self.environment_path, 'remote'): ['my-branch1']}))
+
+        f(workspace1)
+
+        # Other remote repository with additional references
+        self.add_content_to_repo(
+            os.path.join(FIXTURE_PATH, 'fixture-4.git.bundle'),
+            'other')
+
+        with self.assertRaises(sh.ErrorReturnCode):
+            sh.git('rev-parse', 'newbranch', _cwd=workspace1.path)
+
+        self.assertTrue(workspace1.request_refresh({
+            os.path.join(self.environment_path, 'other'): ['newbranch']}))
+
+        self.assertEquals(
+            sh.git('rev-parse', 'newbranch', _cwd=workspace1.path).strip(),
+            "a277468c9cc0088ba69e0a4b085822d067e360ff")
+
+    def test_request_refresh_git_workspace_clean(self):
+        self._test_request_refresh(lambda w: None)
+
+    def test_request_refresh_git_dirty_workspace(self):
+        def taint(workspace):
+            f = open(os.path.join(workspace.path, 'test1.txt'), 'w')
+            f.write('taint!')
+            f.close()
+        self._test_request_refresh(taint)
+
+    def test_request_refresh_git_untracked_file(self):
+        def untracked(workspace):
+            f = open(os.path.join(workspace.path, 'untracked.txt'), 'w')
+            f.write('untracked!')
+            f.close()
+        self._test_request_refresh(untracked)
+
+    def test_request_refresh_git_detached_workspace(self):
+        def detach(workspace):
+            sh.git('checkout', detach=True, _cwd=workspace.path)
+        self._test_request_refresh(detach)
+
+    def test_request_refresh_git_all_dirty_workspace(self):
+        def taint_all(workspace):
+            f = open(os.path.join(workspace.path, 'test1.txt'), 'w')
+            f.write('taint!')
+            f.close()
+            f = open(os.path.join(workspace.path, 'untracked.txt'), 'w')
+            f.write('untracked!')
+            f.close()
+            sh.git('checkout', detach=True, _cwd=workspace.path)
+        self._test_request_refresh(taint_all)
+
+    def test_request_refresh_not_existing_reference(self):
+        dcvs = DepotOperations()
+
+        # Remote repository
+        self.add_content_to_repo(
+            os.path.join(FIXTURE_PATH, 'fixture-2.git.bundle'),
+            'remote')
+
+        # Master cache
+        master = dcvs.init_depot(
+            os.path.join(self.environment_path, 'master'),
+            parent=None,
+            source=os.path.join(self.environment_path, 'remote'))
+
+        # Workspace depot
+        workspace1 = dcvs.init_depot(
+            os.path.join(self.environment_path, 'workspace1'),
+            parent=master,
+            source=os.path.join(self.environment_path, 'master'))
+
+        with self.assertRaises(sh.ErrorReturnCode):
+            sh.git('rev-parse', 'notexists', _cwd=workspace1.path)
+
+        self.assertFalse(workspace1.request_refresh({
+            os.path.join(self.environment_path, 'remote'): ['notexists']}))

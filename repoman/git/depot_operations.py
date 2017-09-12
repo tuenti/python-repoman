@@ -64,6 +64,12 @@ class DepotOperations(BaseDepotOps):
         if sh.git('rev-parse', '--is-bare-repository', _cwd=path).strip() == 'false':
             self._clear_working_copy(path)
         self._save_state(path)
+
+        for c in changesets:
+            try:
+                sh.git('log', '-1', c, _cwd=path)
+            except sh.ErrorReturnCode:
+                return False
         return True
 
     def init_depot(self, path, parent=None, source=None):
