@@ -79,7 +79,7 @@ class DepotManager(object):
 
             self.roster = Roster(self.squadron_roster_path)
 
-        except Exception, e:
+        except Exception as e:
             raise CloneProvisionError(e)
 
     def _provision_new_clone(self):
