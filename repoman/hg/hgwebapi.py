@@ -16,7 +16,7 @@
 #
 
 import logging
-import urllib2
+import urllib
 import urlparse
 
 logger = logging.getLogger(__name__)
@@ -65,11 +65,11 @@ class HGWebApi(object):
     @property
     def opener(self):
         if not self._opener:
-            password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+            password_mgr = urllib.HTTPPasswordMgrWithDefaultRealm()
             password_mgr.add_password(None, self._base_url, self._user,
                                       self._password)
-            auth_handler = urllib2.HTTPBasicAuthHandler()
+            auth_handler = urllib.HTTPBasicAuthHandler()
             auth_handler.passwd = password_mgr
-            self._opener = urllib2.build_opener(auth_handler,
-                                                urllib2.HTTPHandler())
+            self._opener = urllib.build_opener(auth_handler,
+                                                urllib.HTTPHandler())
         return self._opener
