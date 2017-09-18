@@ -386,8 +386,20 @@ class Repository(BaseRepo):
             logger.debug("Nothing to commit, repository clean")
             return None
 
-        if custom_parent:
-            raise RepositoryError("What to do with this custom parent?")
+        # TODO: If custom_parent is deprecated, we can remove this code
+        # and use git commit directly instead of write-tree and commit-tree
+        parents = []
+        for head in ('HEAD', custom_parent, 'MERGE_HEAD'):
+            try:
+                parent = self[head].hash
+                if parent not in parents:
+                    parents.append(parent)
+            except:
+                pass
+
+        parent_args = []
+        for parent in parents:
+            parent_args += ['-p', parent]
 
         # TODO: It currently mimics previous implementation, not sure if
         # this is what we want. It automatically adds modified files only, with
@@ -401,9 +413,17 @@ class Repository(BaseRepo):
                 modified.append(path)
         self.add(modified)
 
-        self._git('commit', allow_empty=allow_empty,
-            m=message,
-            author=str(self.signature))
+        tree = self._git('write-tree').strip()
+
+        env = os.environ.copy().update({
+            'GIT_AUTHOR_NAME': self.signature.user,
+            'GIT_AUTHOR_EMAIL': self.signature.email,
+            'GIT_COMMITTER_NAME': self.signature.user,
+            'GIT_COMMITTER_EMAIL': self.signature.email,
+        })
+
+        commit = self._git('commit-tree', tree, '-m', message, *parent_args, _env=env).strip()
+        self._git('reset', '--hard', commit)
         return self.tip()
 
     def update(self, ref):
