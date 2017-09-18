@@ -45,7 +45,7 @@ class DepotOperations(BaseDepotOps):
         missing = []
         for c in changesets:
             try:
-                sh.git('rev-parse', c, _cwd=path)
+                sh.git('rev-parse', c, '--', _cwd=path)
             except sh.ErrorReturnCode:
                 missing.append(c)
         return missing

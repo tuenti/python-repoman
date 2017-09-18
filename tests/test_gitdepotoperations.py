@@ -131,6 +131,34 @@ class TestGitDepotOperations(unittest.TestCase):
                     '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9',
                 ]))
 
+    def test_check_changeset_availability_on_workspace(self):
+        dcvs = DepotOperations()
+
+        # Remote repository
+        self.add_content_to_repo(
+            os.path.join(FIXTURE_PATH, 'fixture-2.git.bundle'),
+            'remote')
+
+        # Master cache
+        master = dcvs.init_depot(
+            os.path.join(self.environment_path, 'master'),
+            parent=None,
+            source=os.path.join(self.environment_path, 'remote'))
+
+        # Workspace depot
+        workspace1 = dcvs.init_depot(
+            os.path.join(self.environment_path, 'workspace1'),
+            parent=master,
+            source=os.path.join(self.environment_path, 'master'))
+
+        # There are commands that can accept files and changesets,
+        # check that we are not mixing files with changesets when checking
+        # available changesets in working copies
+        open(os.path.join(workspace1.path, 'deadbeef'), 'w').close()
+        self.assertEquals(
+            ['deadbeef'],
+            dcvs.check_changeset_availability(workspace1.path, ['deadbeef']))
+
     def test_master_grab_changesets(self):
         # Remote repository
         self.add_content_to_repo(
