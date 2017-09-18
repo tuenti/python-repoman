@@ -215,6 +215,17 @@ class TestGitRepository(unittest.TestCase):
 
         self.assertTrue(os.path.exists(file_path))
 
+    def test_commit_custom_parent(self):
+        gitrepo = Repository(self.main_repo)
+        gitrepo.update('master')
+        c1 = gitrepo.commit('A commit', allow_empty=True)
+        c2 = gitrepo.commit('Other commit', allow_empty=True)
+        gitrepo.commit('Commit with custom parent', allow_empty=True,
+            custom_parent=c1.hash)
+        self.assertEquals(
+            [p.hash for p in gitrepo.parents()],
+            [c2.hash, c1.hash])
+
     def test_merge_wrong_revision(self):
         gitrepo = Repository(self.cloned_from_repo)
         with self.assertRaises(RepositoryError):
@@ -245,9 +256,10 @@ class TestGitRepository(unittest.TestCase):
         gitrepo.add(file_to_conflict_name)
         conflict_cs = gitrepo.commit("Provoking conflict")
         gitrepo.update('master')
+
         try:
             gitrepo.merge(other_rev=conflict_cs)
-            self.fail()
+            self.fail('Merge with conflict should have failed')
         except MergeConflictError as exp:
             print exp
             self.assertTrue('Conflicts found: merging test1.txt failed' in exp)
