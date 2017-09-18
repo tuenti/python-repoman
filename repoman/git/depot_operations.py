@@ -15,7 +15,6 @@
 # limitations under the License.
 #
 
-from itertools import ifilter
 import os
 import shutil
 import logging
