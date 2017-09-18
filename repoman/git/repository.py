@@ -42,7 +42,7 @@ class GitCmd(object):
             return cmd
 
         # For convenience, remove last new line of command output
-        return re.sub('(\n|\n\r)$', '', cmd.stdout)
+        return re.sub('(\n|\n\r)$', '', cmd.stdout.decode('utf-8'))
 
 class GitMerge(MergeStrategy):
     def __init__(self, *args, **kwargs):
