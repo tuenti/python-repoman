@@ -19,17 +19,12 @@ import re
 import os.path
 import logging
 import datetime
-import calendar
-from collections import namedtuple
-
 import sh
-
 from repoman.repository import Repository as BaseRepo, \
     RepositoryError, MergeConflictError
 from repoman.changeset import Changeset
 from repoman.merge import MergeStrategy
 from repoman.reference import Reference
-from repoman.repo_indexer import RepoIndexerError
 
 logger = logging.getLogger(__name__)
 
@@ -272,7 +267,7 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.get_branch`
         """
         if not branch_name:
-            branch_name = self._git('rev-parse', '--abbrev-ref', 'HEAD')
+            branch_name = self._git("rev-parse", "--abbrev-ref", "HEAD")
         else:
             if not self.branch_exists(branch_name):
                 raise RepositoryError('Branch %s does not exist in repo %s'
@@ -284,6 +279,7 @@ class Repository(BaseRepo):
         """Inherited method
         :func:`~repoman.repository.Repository.get_revset`
         """
+
         if branch is not None:
             b = self.get_branch(branch)
             if cs_to is None:

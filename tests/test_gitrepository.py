@@ -56,6 +56,7 @@ class TestGitRepository(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.environment_path)
 
+
     def add_content_to_repo(self, fixture, repo_path, bare=False):
         if bare:
             sh.git("clone",
@@ -70,6 +71,10 @@ class TestGitRepository(unittest.TestCase):
                 mirror=True)
             sh.git('config', 'core.bare', 'false', _cwd=repo_path)
             sh.git('reset', '--hard', _cwd=repo_path)
+
+    def clone_repo_from(self, dest, origin):
+        sh.git('clone', origin, '+refs/*:refs/*', dest)
+
 
     def test_pull(self):
         gitrepo1 = GitCmd(self.main_repo)
@@ -115,6 +120,7 @@ class TestGitRepository(unittest.TestCase):
     def test_get_branches(self):
         gitrepo = Repository(self.cloned_from_repo)
         branches = [b.name for b in gitrepo.get_branches()]
+
         self.assertListEqual(branches, ['master', 'newbranch'])
 
     def test_add_files(self):
@@ -216,6 +222,7 @@ class TestGitRepository(unittest.TestCase):
 
     def test_merge_no_conflicts(self):
         git = GitCmd(self.cloned_from_repo)
+
         headnewbranch = git('rev-parse', 'refs/heads/newbranch')
         gitrepo = Repository(self.cloned_from_repo)
         # Checkout to master
