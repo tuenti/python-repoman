@@ -19,7 +19,7 @@ import tempfile
 import unittest
 import shutil
 
-import mox
+from mox3 import mox
 
 from repoman.depot import Depot
 from repoman.depot_operations import DepotOperations

@@ -261,7 +261,7 @@ class TestGitRepository(unittest.TestCase):
             gitrepo.merge(other_rev=conflict_cs)
             self.fail('Merge with conflict should have failed')
         except MergeConflictError as exp:
-            print exp
+            print(exp)
             self.assertTrue('Conflicts found: merging test1.txt failed' in exp)
 
     def test_merge_fastforward(self):

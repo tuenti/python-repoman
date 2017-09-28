@@ -87,7 +87,7 @@ class MultiRepoIndexer(object):
         return sorted_indexers
 
     def _call_indexers(self, func, *args):
-        for (priority, indexer) in self._indexers.iteritems():
+        for (priority, indexer) in self._indexers.items():
             try:
                 logger.info("Calling %s from\
                              %s" % (func, indexer.__class__.__name__))

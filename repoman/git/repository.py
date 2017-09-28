@@ -366,7 +366,7 @@ class Repository(BaseRepo):
                            strategy=GitMergeFastForward)
 
     def add(self, files):
-        if isinstance(files, basestring):
+        if isinstance(files, str):
             files = [files]
         if len(files) > 0:
             self._git("add", *files)

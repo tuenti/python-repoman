@@ -19,7 +19,7 @@ import os
 import shutil
 import tempfile
 
-import mox
+from mox3 import mox
 
 from repoman.changeset import Changeset
 from repoman.hg import hglibext as hglib

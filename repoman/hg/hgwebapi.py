@@ -17,7 +17,6 @@
 
 import logging
 import urllib
-import urlparse
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +55,7 @@ class HGWebApi(object):
             yield line[1].split('\t')[0]
 
     def _build_url(self, url_params):
-        url = urlparse.urljoin(self._base_url,
+        url = urllib.parse.urljoin(self._base_url,
                                "%s%s" % (url_params, self._raw_style))
 
         logger.info("HGWebUrl: %s" % url)

@@ -20,7 +20,7 @@ try:
 except ImportError:
     import unittest
 
-import mox
+from mox3 import mox
 import os.path
 
 from repoman.hg.hgwebapi import HGWebApi

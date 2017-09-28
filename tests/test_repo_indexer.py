@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-import mox
+from mox3 import mox
 
 try:
     import unittest2 as unittest
