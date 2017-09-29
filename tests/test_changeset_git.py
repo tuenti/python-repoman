@@ -18,17 +18,15 @@
 import os
 import tempfile
 import shutil
+import sh
 
 try:
     import unittest2 as unittest
 except ImportError:
     import unittest
 
-import pygit2
-
-from repoman.git import pygitext
 from repoman.changeset import Changeset
-from repoman.git.repository import Repository
+from repoman.git.repository import Repository, GitCmd
 
 FIXTURE_PATH = 'fixtures'
 SELF_DIRECTORY_PATH = os.path.dirname(__file__)
@@ -45,50 +43,48 @@ class TestGitChangeset(unittest.TestCase):
         shutil.rmtree(self.environment_path)
 
     def create_repo(self, name):
-        return pygit2.init_repository(
+        sh.git("init",
             os.path.join(self.environment_path, name))
 
     def add_content_to_repo(self, fixture, name):
-        pygitext.clone(
+        sh.git("clone",
             os.path.join(SELF_DIRECTORY_PATH, fixture),
             os.path.join(self.environment_path, name),
             bare=True)
 
     def test_init(self):
-        clone = pygit2.Repository(
-            os.path.join(self.environment_path, 'remote'))
+        git = GitCmd(os.path.join(self.environment_path, 'remote'))
         gitrepo = Repository(os.path.join(self.environment_path, 'remote'))
-        gitcs = gitrepo[clone.head.get_object().hex]
+        gitcs = gitrepo[git('rev-parse', 'HEAD')]
         self.assertEquals(gitcs.author, "Jose Plana")
         self.assertEquals(
             gitcs.hash, "52109e71fd7f16cb366acfcbb140d6d7f2fc50c9")
         self.assertEquals(
             gitcs.desc.rstrip('\n'), "Second changeset".rstrip('\n'))
         self.assertFalse(gitcs.merge)
+        print gitrepo.get_parents("52109e71fd7f16cb366acfcbb140d6d7f2fc50c9")
         self.assertEquals(
             gitcs.parents[0].hash, "e3b1fc907ea8b3482e29eb91520c0e2eee2b4cdb")
 
     def test_create_branch(self):
         non_bare_repo_path = os.path.join(
             self.environment_path, 'remote-non-bare')
-        pygit2.clone_repository(
+        sh.git("clone",
             os.path.join(self.environment_path, 'remote'),
             non_bare_repo_path,
         )
-        clone = pygit2.Repository(non_bare_repo_path)
+        git = GitCmd(non_bare_repo_path)
         gitrepo = Repository(non_bare_repo_path)
-        gitcs = gitrepo[clone.head.get_object().hex]
+        gitcs = gitrepo[git('rev-parse', 'HEAD')]
         branch = gitcs.create_branch('fakebranch')
         self.assertEquals(branch.get_changeset(), gitrepo.tip())
-        self.assertIsNotNone(clone.lookup_branch('fakebranch'))
         self.assertEquals(
-            'fakebranch', clone.lookup_branch('fakebranch').branch_name)
+            'fakebranch', git('rev-parse', '--abbrev-ref', 'fakebranch'))
 
     def test___str__(self):
-        clone = pygit2.Repository(
-            os.path.join(self.environment_path, 'remote'))
+        git = GitCmd(os.path.join(self.environment_path, 'remote'))
         gitrepo = Repository(os.path.join(self.environment_path, 'remote'))
-        gitcs = gitrepo[clone.head.get_object().hex]
+        gitcs = gitrepo[git('rev-parse', 'HEAD')]
         self.assertEquals(
             gitcs.__str__(),
-            clone.head.get_object().hex[:Changeset.SHORT_HASH_COUNT])
+            git('rev-parse', 'HEAD')[:Changeset.SHORT_HASH_COUNT])

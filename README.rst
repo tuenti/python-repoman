@@ -89,12 +89,6 @@ Fedora.
 As a general rule, ``pip install -r requirements.txt`` is able to
 install everything, but some things need to be taken into account.
 
-``pygit2`` needs to be compiled, for that you need a ``gcc`` toolchain
-and the development files of ``libgit2`` (see `pygit2 installation notes`_).
-You have to use the same version of ``pygit2`` and ``libgit2``. Currently
-repoman only works with 0.20 series. It's recommended to prepare your own
-set of pre-built packages for your production enviroment.
-
 ``mercurial`` > 2.1 is also required, as well as ``python-hglib``, the
 version specified in the ``requirements.txt`` file should be fine.
 
@@ -132,7 +126,6 @@ file for more info.
 
 
 .. _`API reference`: http://tuenti.github.io/python-repoman
-.. _`pygit2 installation notes`: http://www.pygit2.org/install.html
 .. _Travis: https://travis-ci.org/tuenti/python-repoman
 .. _Coveralls: https://coveralls.io/r/tuenti/python-repoman
 .. _`@tuentieng`: http://twitter.com/tuentieng

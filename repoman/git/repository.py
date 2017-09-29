@@ -16,13 +16,13 @@
 #
 
 import re
+import os.path
 import logging
 import datetime
 import calendar
 from collections import namedtuple
 
 import sh
-import pygit2
 
 from repoman.repository import Repository as BaseRepo, \
     RepositoryError, MergeConflictError
@@ -33,129 +33,93 @@ from repoman.repo_indexer import RepoIndexerError
 
 logger = logging.getLogger(__name__)
 
+class GitCmd(object):
+    def __init__(self, path):
+        self.path = path
+
+    def __call__(self, *args, **kwargs):
+        try:
+            cmd = sh.git(_cwd=self.path, _tty_out=False, *args, **kwargs)
+        except sh.ErrorReturnCode as e:
+            raise RepositoryError("'%s' failed in %s: %s" % (e.full_cmd, self.path, e.message))
+
+        if '_iter' in kwargs and kwargs['_iter'] != None:
+            return cmd
+
+        # For convenience, remove last new line of command output
+        return re.sub('(\n|\n\r)$', '', cmd.stdout)
 
 class GitMerge(MergeStrategy):
     def __init__(self, *args, **kwargs):
         super(GitMerge, self).__init__(*args, **kwargs)
-        self.other_oid = None
-        self.pygit_repository = self.repository._repository
-        self.pygit_local_branch = None
-        self._analysis = None
+        self._git = GitCmd(self.repository.path)
 
-    @property
-    def analysis(self):
-        if self.other_oid is None:
-            logger.warning("Calling GitMerge.analysis before validation")
-            return pygit2.GIT_MERGE_ANALYSIS_NONE
-        if self._analysis is None:
-            self._analysis, _ = self.pygit_repository.merge_analysis(
-                self.other_oid)
-        return self._analysis
-
-    def _validate_parameters(self):
+    def _validate_local_branch(self):
         if self.local_branch is None:
-            self.local_branch = self.repository._get_local_branch()
+            self.local_branch = self.repository.get_branch()
+            return
 
-        if not type(self.local_branch) == Reference:
+        if not isinstance(self.local_branch, Reference):
             raise RepositoryError(
-                ("local_branch (%s) parameter must be a " +
-                 "Reference instead of %s") % (
-                    self.local_branch, type(self.local_branch)))
+                    "In merge, local branch must be a Reference object")
 
-        self.pygit_local_branch = self.pygit_repository.lookup_branch(
-                self.local_branch.name)
-        if self.pygit_local_branch is None:
-            raise RepositoryError("Wrong local branch in merge")
-
-        if not self.other_rev:
-            raise RepositoryError("No revision to merge")
-        try:
-            other = self.repository._get_pygit_revision(self.other_rev.hash)
-            self.other_oid = other.oid
-        except (pygit2.GitError, TypeError, KeyError) as e:
-            logger.exception("Unknown revision '%s'" % self.other_rev)
-            raise RepositoryError(e)
-
-    def _is_uptodate(self):
-        if self.analysis & pygit2.GIT_MERGE_ANALYSIS_UP_TO_DATE:
-            message = "Cannot merge %s@%s into %s, nothing to merge"
-            logger.info(message % (
-                self.other_branch_name,
-                self.other_rev.hash,
-                self.local_branch.name))
-            return True
-        return False
-
-    def _check_conflicts(self):
-        conflicts = dict((key, value) for (key, value)
-                         in self.pygit_repository.status().iteritems()
-                         if value == 132)
-        if conflicts:
-            raise MergeConflictError("Conflicts found: merging %s failed" %
-                                     ", ".join(conflicts.keys()))
-
-    def _merge_trees(self):
-        self.pygit_repository.merge(self.other_oid)
-        self._check_conflicts()
+        self._git('checkout', self.local_branch.name)
 
     def perform(self):
-        self._validate_parameters()
-        self.repository.update(self.local_branch.name)
-        if self._is_uptodate():
-            return
-        self._merge_trees()
+        self._validate_local_branch()
+
+        self._git('merge', '--no-ff', '--no-commit',
+            self.other_rev.hash,
+            _ok_code=[0, 1])
+
+        conflicts = self._git('diff', name_only=True, diff_filter='U').split()
+
+        if conflicts:
+            raise MergeConflictError("Conflicts found: merging %s failed" %
+                                     ", ".join(conflicts))
 
     def abort(self):
-        self.update(self.local_branch.name)
+        self._git('merge', '--abort')
 
     def commit(self):
+        if len(self._git('status', porcelain=True, _iter=True)) == 0:
+            return None
         commit_message = self.repository.message_builder.merge(
             other_branch=self.other_branch_name,
             other_revision=self.other_rev.shorthash,
             local_branch=self.local_branch.name,
             local_revision=self.local_branch.get_changeset().shorthash
         )
-        return self.repository.commit(message=commit_message)
+        author = str(self.repository.signature)
+        self._git("commit", m=commit_message, author=author)
+        return self.repository.tip()
 
 
 class GitMergeFastForward(GitMerge):
     def __init__(self, *args, **kwargs):
         super(GitMergeFastForward, self).__init__(*args, **kwargs)
-        self._previous_ref = None
-        self._commit = None
-
-    def _check_fastforward(self):
-        return self.analysis & pygit2.GIT_MERGE_ANALYSIS_FASTFORWARD
+        self._ff_merged = False
 
     def perform(self):
-        self._validate_parameters()
+        self._validate_local_branch()
 
-        self.repository.update(self.local_branch.name)
-        if self._is_uptodate():
-            return
-
-        if not self._check_fastforward():
-            self._merge_trees()
-            return
-
-        self.pygit_repository.checkout_tree(
-            self.pygit_repository[self.other_oid],
-            strategy=pygit2.GIT_CHECKOUT_SAFE_CREATE)
-        self._previous_target = self.pygit_local_branch.target
-        self.pygit_local_branch.set_target(self.other_oid)
-        self._commit = self.pygit_repository.git_object_lookup_prefix(
-            self.other_oid)
+        try:
+            self._git('merge', '--ff-only', self.other_rev.hash)
+            self._ff_merged = True
+        except:
+            # TODO: Is this what we want? log something in any case
+            super(GitMergeFastForward, self).perform()
 
     def abort(self):
-        if self._previous_target is not None:
-            self.pygit_local_branch.set_target(self._previous_target)
+        if self._ff_merged:
+            self._git('reset', 'HEAD^', hard=True)
+            return
         super(GitMergeFastForward, self).abort()
 
     def commit(self):
-        if self._commit is None:
-            super(GitMergeFastForward, self).commit()
-        else:
-            return self.repository._new_changeset_object(self._commit)
+        if not self._ff_merged:
+            return super(GitMergeFastForward, self).commit()
+        return self.repository.tip()
 
 
 class Repository(BaseRepo):
@@ -164,78 +128,37 @@ class Repository(BaseRepo):
     """
     def __init__(self, *args, **kwargs):
         super(Repository, self).__init__(*args, **kwargs)
-        self._internal_repository = None
+        self._git = GitCmd(self.path)
 
     def __getitem__(self, key):
         """
         Implements access thorugh [] operator for changesets
         key -- changeset hash or branch name
         """
-        item = None
-        try:
-            item = self._repository.lookup_branch(key)
-        except KeyError:
-            pass
+        return self._new_changeset_object(key)
 
-        try:
-            item = self._repository.lookup_reference('refs/tags/%s' % key)
-        except KeyError:
-            pass
-
-        if item:
-            revision = item.get_object().hex
-        else:
-            revision = key
-
-        return self._new_changeset_object(self._get_pygit_revision(revision))
-
-    def _get_pygit_revision(self, revision):
-        pygit2rev = self._repository.get(revision)
-        if not pygit2rev:
-            raise RepositoryError("Revision %s not found in repository" %
-                                  revision)
-        return pygit2rev
-
-    def _get_pygit_committer(self):
-        return pygit2.Signature(self.signature.user, self.signature.email)
-
-    def _get_pygit_author(self):
-        return pygit2.Signature(self.signature.author,
-                                self.signature.author_email)
-
-    @property
-    def _repository(self):
-        """ Lazy property with a reference to the real git repository."""
-        if self._internal_repository is None:
-            self._internal_repository = pygit2.Repository(self.path)
-        return self._internal_repository
-
-    def _new_changeset_object(self, changeset_info):
+    def _new_changeset_object(self, refname):
         """
         Return a new Changeset object with the provided info
-
-        :param changeset_info: data needed to build a Changeset object, if
-                is a git commit provided by pygit2
-        :type tuple
         """
-        # In GIT, the commit is not a tuple (unlike Mercurial), so
-        # transforming it, into tuple with the same order parameters
-        if hasattr(changeset_info, 'tags'):
-            tags = changeset_info.tags
-        else:
-            tags = ' '.join(self.get_changeset_tags(changeset_info.hex))
+        tags = ' '.join(self.get_changeset_tags(refname))
+        info, body = self._git("log", "-1",
+                "--pretty=%H,%ct,%cn%n%B",
+                refname).split("\n", 1)
+        sha1, committer_time, committer_name = info.split(",", 2)
 
         initial_values = [
             None,  # Local changeset that does not exist in GIT
-            changeset_info.hex,
+            sha1,
             tags,
             None,
-            changeset_info.committer.name,
-            changeset_info.message,
-            datetime.datetime.utcfromtimestamp(changeset_info.commit_time),
+            committer_name,
+            body,
+            datetime.datetime.utcfromtimestamp(float(committer_time)),
         ]
 
-        return Changeset(self, tuple(initial_values))
+        c = Changeset(self, tuple(initial_values))
+        return c
 
     def get_changeset_branches(self, changeset):
         """ Inherited method
@@ -249,51 +172,39 @@ class Repository(BaseRepo):
 
     def branch(self, name):
         """Inherited method :func:`~repoman.repository.Repository.branch` """
-        commit = self._repository.head.get_object()
-        self._repository.create_branch(name, commit, True)
-        # GIT does not checkout the branch when created, this method must
-        # switch to the new branch
-        self.update(name)
+        self._git("checkout", "-B", name)
         return self._new_branch_object(name)
 
     def tag(self, name, revision=None, message=None):
         """Inherited method :func:`~repoman.repository.Repository.tag` """
         if not revision:
-            commit = self._repository.head.get_object()
-        else:
-            commit = self._get_pygit_revision(revision)
-        self._repository.create_tag(name, commit.oid, pygit2.GIT_OBJ_COMMIT,
-                                    self._get_pygit_committer(),
-                                    message if message else '')
+            revision = 'HEAD'
+        args = ["tag", name, revision]
+        if message:
+            args += ["-m", message]
+        self._git(*args)
         return self._new_tag_object(name)
 
     def strip(self, changeset):
         """Inherited method :func:`~repoman.repository.Repository.strip` """
-        parents = self._get_pygit_revision(changeset.hash).parents
-        reset_to = parents[0].hex
-        self._repository.reset(reset_to, pygit2.GIT_RESET_HARD)
+        self._git('reset', '--hard', '%s^' % changeset.hash)
 
     def branch_exists(self, branch_name):
         """Inherited method :func:`~repoman.repository.Repository.branch_exists`
         """
-        if branch_name == self._repository.head.shorthand:
-            return True
-        else:
-            references = [
-                re.sub(".*\/", "", r) for r in
-                self._repository.listall_references()
-            ]
-            return branch_name in references
+        for branch in self.get_branches():
+            if branch.name == branch_name:
+                return True
+        return False
 
     def tag_exists(self, tag_name):
         """Inherited method :func:`~repoman.repository.Repository.tag_exists`
         """
-        tag_reference = 'refs/tags/%s' % tag_name
-        return tag_reference in self._repository.listall_references()
+        return tag_name in self.tags()
 
     def tip(self):
         """Inherited method :func:`~Repository.tip` """
-        return self._new_changeset_object(self._repository.head.get_object())
+        return self['HEAD']
 
     def get_ancestor(self, cs1, cs2):
         """Inherited method :func:`~repoman.repository.Repository.get_ancestor`
@@ -303,27 +214,29 @@ class Repository(BaseRepo):
                 "either rev1 or rev2 are None: %s , %s" % (cs1, cs2)
             logger.error(error)
             raise RepositoryError(error)
-        ancestor_oid = self._repository.merge_base(cs1.hash, cs2.hash)
-        revision = self._get_pygit_revision(ancestor_oid.hex)
-        return self._new_changeset_object(revision)
+        return self[self._git('merge-base', cs1.hash, cs2.hash)]
 
     def get_branches(self, active=False, closed=False):
         """Inherited method :func:`~repoman.repository.Repository.get_branches`
         """
-        if self._repo_indexer:
-            try:
-                branches = self._repo_indexer.get_branches()
-                if branches:
-                    for branch in branches:
-                        yield self._new_branch_object(branch)
-            except RepoIndexerError:
-                logger.exception(
-                    "Could not retrieve branches from RepoIndexer, "
-                    "polling repository...")
-
-        # In Git, ignoring active and closed, they don't exist
-        for branch in self._repository.listall_branches():
-            yield self._new_branch_object(branch)
+        branches = list([
+            branch_name.strip() for branch_name in
+                self._git(
+                   "for-each-ref",
+                   "refs/heads",
+                   format="%(refname:short)",
+                   _iter=True,
+                )
+        ])
+        try:
+            # Add current branch even if it doesn't have commits
+            current = self.get_branch()
+            if current.name not in branches:
+                branches.append(current.name)
+        except:
+            # TODO: Better handle error cases here, related with HEAD not existing
+            pass
+        return [self._new_branch_object(branch) for branch in branches if branch != 'HEAD']
 
     def exterminate_branch(self, branch_name, repo_origin, repo_dest):
         """Inherited method
@@ -332,21 +245,26 @@ class Repository(BaseRepo):
         if not self.terminate_branch(branch_name, repo_origin, repo_dest):
             return
         # Deleting remotely
-        self.push(repo_origin, repo_dest, ref_name=":%s" % branch_name)
+        self.push(repo_origin, repo_dest, rev='', ref_name=branch_name)
 
     def terminate_branch(self, branch_name, repo_origin, repo_dest):
         """Inherited method
         :func:`~repoman.repository.Repository.terminate_branch`
         """
-        branch = self._repository.lookup_branch(branch_name)
-        if not branch or self._repository.is_empty:
+        if not self.branch_exists(branch_name):
             return False
-        if (not self._repository.head_is_unborn and
-                self._repository.head.shorthand == branch_name):
-            self.update('master')
 
-        # Deleting locally
-        branch.delete()
+        current = None
+        try:
+            current = self._git('rev-parse', '--abbrev-ref', 'HEAD')
+        except:
+            pass
+
+        if current != None and current == branch_name:
+            self._git('checkout', '--detach')
+
+        self._git('branch', '-D', branch_name)
+
         return True
 
     def get_branch(self, branch_name=None):
@@ -354,133 +272,78 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.get_branch`
         """
         if not branch_name:
-            if self._repository.head_is_unborn:
-                raise RepositoryError(
-                    "Empty repository or orphaned branch: "
-                    "branch_name required")
-            branch_name = self._repository.head.shorthand
+            branch_name = self._git('rev-parse', '--abbrev-ref', 'HEAD')
         else:
             if not self.branch_exists(branch_name):
-                raise RepositoryError("Branch %s does not exist in repo %s"
+                raise RepositoryError('Branch %s does not exist in repo %s'
                                       % (branch_name, self.path))
 
         return self._new_branch_object(branch_name)
-
-    def _find_head_oid(self, branch=None):
-        if branch is None:
-            return self._repository.head.target
-        try:
-            pygit_branch = self._repository.lookup_branch(branch)
-        except KeyError:
-            pass
-        if not pygit_branch:
-            reference = "refs/remotes/origin/%s" % branch
-            pygit_branch = self._repository.lookup_reference(reference)
-        if not pygit_branch:
-            error_message = "Cannot get revset, branch %s not found" %\
-                branch
-            logger.exception(error_message)
-            raise RepositoryError(error_message)
-        return pygit_branch.target
-
-    def _is_ancestor(self, revision, ancestor):
-        common_ancestor = self.get_ancestor(self[revision], self[ancestor])
-        return common_ancestor.hash.startswith(ancestor)
 
     def get_revset(self, cs_from=None, cs_to=None, branch=None):
         """Inherited method
         :func:`~repoman.repository.Repository.get_revset`
         """
-        starting_commit_oid = self._find_head_oid(branch)
+        if branch is not None:
+            b = self.get_branch(branch)
+            if cs_to is None:
+                cs_to = b.get_changeset().hash
+            else:
+                cs_to = self.get_ancestor(self[cs_to], b.get_changeset()).hash
 
-        if cs_to is not None:
-            common_ancestor = self.get_ancestor(
-                self[starting_commit_oid.hex],
-                self[cs_to]).hash
-            starting_commit_oid = self._get_pygit_revision(common_ancestor).oid
+        if cs_to is None:
+            cs_to = 'HEAD'
 
-        if cs_from is not None:
-            # If cs_from is not an ancestor of the starting commit, we'll never
-            # reach it.
-            if not self._is_ancestor(starting_commit_oid.hex, cs_from):
+        if cs_from is None:
+            cs = self._git(
+                'log', '--pretty=%H', '--reverse',
+                cs_to,
+                _iter=True)
+        else:
+            try:
+                # If cs_from is not an ancestor of cs_to we shouldn't output
+                # anything
+                self._git('merge-base', '--is-ancestor', cs_from, cs_to)
+            except:
                 return
 
-        # NOTE: maybe the order of the log is different here than in
-        # Mercurial we cannot set pygit2.GIT_SORT_REVERSE policy because
-        # we need to break the loop when cs_from is found, and in reverse
-        # order that's not possible
-        commits = self._repository.walk(starting_commit_oid,
-                                        pygit2.GIT_SORT_TOPOLOGICAL)
-        for commit in commits:
-            yield self._new_changeset_object(commit)
-            if cs_from is not None and commit.hex.startswith(cs_from):
-                break
+            rev_range = "%s..%s" % (cs_from, cs_to)
+            cs = self._git(
+                'log', '--pretty=%H', '--reverse', '--ancestry-path',
+                rev_range,
+                _iter=True)
+            # When printing git log ranges, it doesn't include the root one
+            yield self._new_changeset_object(cs_from)
+
+        for c in cs:
+            yield self._new_changeset_object(c.strip())
 
     def pull(self, remote, revision=None, branch=None):
         """Inherited method
         :func:`~repoman.repository.Repository.pull`
         """
-        remote_to_fetch = None
-
-        remotes = dict([(r.name, r) for r in self._repository.remotes])
-
-        for r in remotes.values():
-            if r.url == remote:
-                remote_to_fetch = r
-
-        if remote_to_fetch is None:
-            # There were no matches.
-            if 'fetch_remote' in remotes:
-                remote_to_fetch = remotes['fetch_remote']
-                remote_to_fetch.url = remote
-            else:
-                remote_to_fetch = self._repository.create_remote(
-                    'fetch_remote', remote)
-
-        try:
-            remote_to_fetch.fetch_refspecs = ['+refs/*:refs/*']
-            remote_to_fetch.save()
-            remote_to_fetch.fetch()
-
-        except pygit2.GitError as e:
-            logger.exception(e)
-            raise RepositoryError(e)
+        git_dir = os.path.join(
+            self.path, sh.git('rev-parse', '--git-dir', _cwd=self.path).strip())
+        git = GitCmd(git_dir)
+        git('-c', 'core.bare=true', 'fetch', remote)
+        self._clean()
 
     def push(self, orig, dest, rev=None, ref_name=None):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
-        remote_to_push = None
+        if rev == None and ref_name == None:
+            # Push everything
+            refspec = "refs/*:refs/*"
+        elif rev == None:
+            refspec = "%s:%s" % (ref_name, ref_name)
+        elif ref_name == None:
+            raise RepositoryError("When pushing, revision specified but not reference name")
+        else:
+            refspec = "%s:%s" % (rev, ref_name)
 
-        # Check if any of the available remotes matches the url.
-        remotes = dict([
-            (remote.name, remote) for remote in self._repository.remotes])
-
-        for r in remotes.values():
-            if r.url == dest:
-                remote_to_push = r
-
-        if remote_to_push is None:
-            # There were no matches.
-            if 'push_remote' in remotes:
-                remote_to_push = remotes['push_remote']
-                remote_to_push.url = dest
-            else:
-                remote_to_push = self._repository.create_remote(
-                    'push_remote', dest)
-
-            try:
-                remote_to_push.save()
-            except pygit2.GitError, e:
-                if e.__str__() == 'Unsupported URL protocol':
-                    raise RepositoryError(e.__str__())
-        try:
-            sh.git('push', remote_to_push.name, ref_name,
-                   _cwd=self._repository.path)
-            return self.tip()
-
-        except sh.ErrorReturnCode as e:
-            raise RepositoryError('Push to %s failed (%s)' % (ref_name, e))
+        self._git("push", dest, refspec)
+        return self.tip()
 
     def _merge(self, local_branch=None, other_rev=None,
                other_branch_name=None, dry_run=False, strategy=GitMerge):
@@ -506,104 +369,70 @@ class Repository(BaseRepo):
         return self._merge(local_branch, other_rev, other_branch_name, dry_run,
                            strategy=GitMergeFastForward)
 
-    def _get_local_branch(self):
-        branch_name = self._repository.head.shorthand
-        return self._new_branch_object(branch_name)
-
     def add(self, files):
         if isinstance(files, basestring):
             files = [files]
-        try:
-            for f in files:
-                self._repository.index.add(f)
-            self._repository.index.write()
-        except IOError as e:
-            raise RepositoryError('File %s doesn\'t exist' % e)
+        if len(files) > 0:
+            self._git("add", *files)
 
     def commit(self, message, custom_parent=None,
                allow_empty=False):
         """Inherited method
         :func:`~repoman.repository.Repository.commit`
         """
-        status = self._repository.status()
+        status = self._git('status', porcelain=True, _iter=True)
 
         if not status and not custom_parent and not allow_empty:
             logger.debug("Nothing to commit, repository clean")
             return None
 
-        # if the working copy is dirty, adds all modified files (git commit -a)
-        if status:
-            for filename, filestatus in status.items():
-                if filestatus & pygit2.GIT_STATUS_WT_MODIFIED:
-                    self._repository.index.add(filename)
+        # TODO: If custom_parent is deprecated, we can remove this code
+        # and use git commit directly instead of write-tree and commit-tree
+        parents = []
+        for head in ('HEAD', custom_parent, 'MERGE_HEAD'):
+            try:
+                parent = self[head].hash
+                if parent not in parents:
+                    parents.append(parent)
+            except:
+                pass
 
-        # Write the index to disk
-        oid = self._repository.index.write_tree()
+        parent_args = []
+        for parent in parents:
+            parent_args += ['-p', parent]
 
-        # Parent (OID) of our commit
-        if self._repository.head_is_unborn:
-            # This is an initial commit, won't have parents, creating it
-            # under master, we'd need more logic to support other kinds of
-            # orphaned branches
-            parents = []
-            reference = 'refs/heads/master'
-        else:
-            reference = self._repository.head.name
-            parent = self._repository.lookup_reference(reference).target
-            parents = [parent]
+        # TODO: It currently mimics previous implementation, not sure if
+        # this is what we want. It automatically adds modified files only, with
+        # other statuses it may generate an empty commit even if it was not
+        # allowed.
+        allow_empty = True
+        modified = []
+        for s in status:
+            status, path = s.split()
+            if status == 'M':
+                modified.append(path)
+        self.add(modified)
 
-        if custom_parent:
-            parents.append(custom_parent)
+        tree = self._git('write-tree').strip()
 
-        # Check if it's an uncommitted merge and add the second parent
-        try:
-            merge_parent_ref = self._repository.lookup_reference("MERGE_HEAD")
-            parents.append(merge_parent_ref.target)
-        except KeyError:
-            pass
+        env = os.environ.copy().update({
+            'GIT_AUTHOR_NAME': self.signature.user,
+            'GIT_AUTHOR_EMAIL': self.signature.email,
+            'GIT_COMMITTER_NAME': self.signature.user,
+            'GIT_COMMITTER_EMAIL': self.signature.email,
+        })
 
-        oid = self._repository.create_commit(
-            reference,
-            self._get_pygit_author(),
-            self._get_pygit_committer(),
-            str(self.message_builder.commit(message)),
-            oid,
-            parents)
-        commit = self._repository.git_object_lookup_prefix(oid)
-        return self._new_changeset_object(commit)
+        commit = self._git('commit-tree', tree, '-m', message, *parent_args, _env=env).strip()
+        self._git('reset', '--hard', commit)
+        return self.tip()
 
     def update(self, ref):
         """Inherited method
         :func:`~repoman.repository.Repository.update`
         """
-        # As the library doesn't not allow you to checkout a remote branch,
-        # checking if it's already created, if so, change to that branch,
-        # otherwise, create the branch pointing to the remote hex
-        remote_ref_prefix = 'refs/remotes/origin/'
-        local_ref_prefix = 'refs/heads/'
-
-        try:
-            self._clean()
-            if ref == 'HEAD':
-                return self.tip()
-            # Let's assume the ref is branch name
-            branch = ref
-            try:
-                if not self._repository.lookup_branch(branch):
-                    branch_head = self._repository.lookup_reference(
-                        remote_ref_prefix + branch).get_object()
-                    self._repository.create_branch(branch, branch_head)
-                self._repository.checkout(local_ref_prefix + branch,
-                                          strategy=pygit2.GIT_CHECKOUT_FORCE)
-                return self.tip()
-            except KeyError:
-                # Ref is a hash so this must update to a detached head
-                rev_hash = ref
-            sh.git('checkout', rev_hash, _cwd=self.path)
-            return self[rev_hash]
-        except (pygit2.GitError, sh.ErrorReturnCode) as e:
-            logger.exception(e)
-            raise RepositoryError(e)
+        self._clean()
+        self._git("checkout", ref)
+        return self.tip()
 
     def _clean(self):
         """
@@ -612,9 +441,9 @@ class Repository(BaseRepo):
         """
         try:
             # Clean index to avoid unmerged files
-            sh.git('read-tree', '--empty', _cwd=self.path)
-            sh.git('reset', '--hard', _cwd=self.path)
-            sh.git('clean', '-f', _cwd=self.path)
+            self._git('read-tree', '--empty')
+            self._git('reset', '--hard')
+            self._git('clean', '-fdx')
         except Exception:
             logger.exception('The cache could not be correctly cleaned.'
                              ' Continuing')
@@ -626,138 +455,57 @@ class Repository(BaseRepo):
         :param branch: name of the branch
         :type string
         """
-        try:
-            branch_ref = self._repository.lookup_branch(branch)
-            if not branch_ref:
-                branch_ref = self._repository.lookup_reference(
-                    "refs/remotes/origin/%s" % branch)
-            repository = self._repository[branch_ref.target]
-            return self._new_changeset_object(repository)
-        except pygit2.GitError as e:
-            logger.exception("Error getting branch '%s' tip: %s" % (branch, e))
-            raise RepositoryError(e)
+        sha1 = self._git("rev-parse", branch)
+        return self[sha1]
 
     def get_changeset_tags(self, changeset_hash):
         """Inherited method
         :func:`~repoman.repository.Repository.get_changeset_tags`
         """
-        # TODO: pygit2 do not have (yet) a tag listing functionality, use the
-        # references, and filter by name.
-        tag_reference_regexp = re.compile('^refs/tags/')
-        tag_names = [
-            ref for ref in self._repository.listall_references()
-            if tag_reference_regexp.match(ref)
+        ref_tags = [
+            tag.split() for tag in
+            # Error code can be 1 on empty output
+            self._git("show-ref", "--tags", _ok_code=[0, 1]).split("\n")
+            if tag
         ]
 
-        # Finally filter that list for tags pointing to the desidered changeset
-        tags = map(lambda tag_name:
-                   self._repository.lookup_reference(tag_name), tag_names)
-        tags = filter(lambda tag:
-                      tag.get_object().oid.hex.startswith(changeset_hash),
-                      tags)
-        return map(lambda tag:
-                   tag_reference_regexp.sub('', tag.name), tags)
+        ref_tags = filter(lambda ref_tag: ref_tag[0].startswith(changeset_hash),
+                          ref_tags)
+
+        tag_reference_regexp = re.compile('^refs/tags/')
+        return map(lambda ref_tag: tag_reference_regexp.sub('', ref_tag[1]),
+                   ref_tags)
 
     def compare_branches(self, revision_to_check_hash, branch_base_name):
         """Inherited method
         :func:`~repoman.repository.Repository.compare_branches`
         """
-        # Not efficient way of implementing this but pygit2.walk does not help.
-        # There is no way to do "git log master..integration" and you can't
-        # stop the walk method by searching by the ancestor (merge-base).
-        # This method gets the commits in branch_base and the commits in
-        # revision_to_check_hash and substract them.
-        revision_to_check_oid = self._get_pygit_revision(
-            revision_to_check_hash).oid
-        branch_head = self.get_branch_tip(branch_base_name)
-        branch_head_oid = self._get_pygit_revision(branch_head.hash).oid
-        branch_commits = list(
-            self._repository.walk(
-                branch_head_oid,
-                pygit2.GIT_SORT_TOPOLOGICAL))
-        revision_commits = list(self._repository.walk(
-            revision_to_check_oid,
-            pygit2.GIT_SORT_TOPOLOGICAL))
+        hashes = self._git("log", "--pretty=%H",
+            "%s..%s" % (branch_base_name, revision_to_check_hash)).split()
 
-        revision_hashes = set([c.hex for c in revision_commits])
-        branch_hashes = set([c.hex for c in branch_commits])
-        logdiff_hashes = list(revision_hashes - branch_hashes)
-
-        return [
-            self._new_changeset_object(self._get_pygit_revision(cs))
-            for cs in logdiff_hashes
-        ]
+        return [self._new_changeset_object(h) for h in hashes]
 
     def tags(self):
         """Inherited method
         :func:`~repoman.repository.Repository.tags`
         """
-        for ref in self._repository.listall_references():
-            if ref.startswith('refs/tags'):
-                yield ref.replace('refs/tags/', '')
+        return self._git('tag', '-l').split()
 
     def is_merge(self, changeset_hash):
         """Inherited method
         :func:`~repoman.repository.Repository.is_merge`
         """
-        commit = self._get_pygit_revision(changeset_hash)
-        return len(commit.parents) > 1
+        return len(self.get_parents(changeset_hash)) > 1
 
     def parents(self):
         """Inherited method
         :func:`~repoman.repository.Repository.parents`
         """
-        return [
-            self._new_changeset_object(cs)
-            for cs in self._repository.head.get_object().parents
-        ]
+        return self.get_parents('HEAD')
 
     def get_parents(self, changeset_hash):
         """Inherited method
         :func:`~repoman.repository.Repository.get_parents`
         """
-        commit = self._get_pygit_revision(changeset_hash)
-        return [self._new_changeset_object(cs) for cs in commit.parents]
-
-    def _changeset_indexer2repo(self, indexer_changeset):
-        """
-        Converts an indexer changeset to an Changeset
-        """
-        class PyGit2CommitAbstraction(object):
-            """
-            There is no a way to create arbitrary commits in Pygit2 so
-            this class simulates a Pygit2 commit to be used in the
-            the changeset constructor
-            """
-            hex = None
-            committer = None
-            message = None
-            tags = None
-            branches = None
-            commit_time = None
-
-            def __init__(self, hex, commiter, tags, branches,
-                         message, commit_time):
-                self.hex = hex
-                self.tags = tags
-                Committer = namedtuple('Commiter', ['name'])
-                self.committer = Committer(name=commiter)
-                self.branches = branches
-                self.message = message
-                self.commit_time = commit_time
-
-        fixed_date = re.match(
-            "(.*)[\+|\-]", indexer_changeset.date).groups(0)[0]
-        # The date format provided by fecru is: 2013-05-09T15:11:44+02:00
-        cs_datetime = datetime.datetime.strptime(
-            fixed_date, "%Y-%m-%dT%H:%M:%S")
-        commit_time = calendar.timegm(cs_datetime.utctimetuple())
-
-        git_commit = PyGit2CommitAbstraction(indexer_changeset.csid,
-                                             indexer_changeset.author,
-                                             indexer_changeset.tags,
-                                             indexer_changeset.branches,
-                                             indexer_changeset.comment,
-                                             commit_time)
-
-        return self._new_changeset_object(git_commit)
+        parents = self._git("log", "--pretty=%P", "-1", changeset_hash.strip()).split()
+        return [self[cs.strip()] for cs in parents]
