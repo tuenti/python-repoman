@@ -36,7 +36,7 @@ class GitCmd(object):
         try:
             cmd = sh.git(_cwd=self.path, _tty_out=False, *args, **kwargs)
         except sh.ErrorReturnCode as e:
-            raise RepositoryError("'%s' failed in %s: %s" % (e.full_cmd, self.path, e.message))
+            raise RepositoryError("'%s' failed in %s: %s" % (e.full_cmd, self.path, e))
 
         if '_iter' in kwargs and kwargs['_iter'] != None:
             return cmd
