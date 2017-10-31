@@ -336,7 +336,7 @@ class Repository(BaseRepo):
         elif ref_name == None:
             raise RepositoryError("When pushing, revision specified but not reference name")
         else:
-            refspec = "%s:%s" % (rev, ref_name)
+            refspec = "%s:%s" % (rev, 'refs/heads/' + ref_name)
 
         self._git("push", dest, refspec)
         return self.tip()
