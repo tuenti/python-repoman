@@ -328,7 +328,7 @@ class Repository(BaseRepo):
         git('-c', 'core.bare=true', 'fetch', remote)
         self._clean()
 
-    def push(self, orig, dest, rev=None, ref_name=None):
+    def push(self, orig, dest, rev=None, ref_name=None, force=False):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
@@ -340,9 +340,21 @@ class Repository(BaseRepo):
         elif ref_name == None:
             raise RepositoryError("When pushing, revision specified but not reference name")
         else:
+            remote_refs = list(
+                self._git("ls-remote", "--tags", "--heads",
+                          dest, ref_name,
+                          _iter=True))
+            if len(remote_refs) == 0:
+                # Reference is not qualified
+                if self.tag_exists(ref_name):
+                    # We don't know what this ref is in remote, but here it is a tag
+                    ref_name = "refs/tags/%s" % ref_name
+                else:
+                    # In any other case, we assume it is a branch
+                    ref_name = "refs/heads/%s" % ref_name
             refspec = "%s:%s" % (rev, ref_name)
 
-        self._git("push", dest, refspec)
+        self._git("push", dest, refspec, f=force)
         return self.tip()
 
     def _merge(self, local_branch=None, other_rev=None,
