@@ -87,6 +87,13 @@ class TestGitRepository(unittest.TestCase):
             gitrepo1('rev-list', all=True).split().sort(),
             gitrepo2('rev-list', all=True).split().sort())
 
+        gitrepo1_refs = list(gitrepo1('show-ref', _iter=True))
+        gitrepo2_refs = list(gitrepo2('show-ref', _iter=True))
+
+        # Check that all remote refs have been fetched
+        for ref in gitrepo2_refs:
+            self.assertIn(ref, gitrepo1_refs)
+
         with self.assertRaises(RepositoryError):
             repo.pull(remote='wrong repo')
 

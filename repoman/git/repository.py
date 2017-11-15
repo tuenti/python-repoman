@@ -325,7 +325,7 @@ class Repository(BaseRepo):
         git_dir = os.path.join(
             self.path, sh.git('rev-parse', '--git-dir', _cwd=self.path).strip())
         git = GitCmd(git_dir)
-        git('-c', 'core.bare=true', 'fetch', remote)
+        git('-c', 'core.bare=true', 'fetch', remote, '+refs/*:refs/*')
         self._clean()
 
     def push(self, orig, dest, rev=None, ref_name=None):
