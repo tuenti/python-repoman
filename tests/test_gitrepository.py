@@ -81,6 +81,12 @@ class TestGitRepository(unittest.TestCase):
 
         repo = Repository(self.main_repo)
 
+        # Pulling a branch
+        self.assertNotIn('newbranch', [b.name for b in repo.get_branches()])
+        repo.pull(remote=self.cloned_from_repo, branch='newbranch')
+        self.assertIn('newbranch', [b.name for b in repo.get_branches()])
+
+        # Pulling everything
         repo.pull(remote=self.cloned_from_repo)
 
         self.assertEqual(
@@ -94,13 +100,9 @@ class TestGitRepository(unittest.TestCase):
         for ref in gitrepo2_refs:
             self.assertIn(ref, gitrepo1_refs)
 
+        # Pulling from a non existing remote
         with self.assertRaises(RepositoryError):
             repo.pull(remote='wrong repo')
-
-        # Fetching specific revisions is not supported by libgit2
-        # with self.assertRaises(RepositoryError):
-        #     repo.pull(
-        #         remote=self.cloned_from_repo, revision="fake revision")
 
     def test_get_ancestor(self):
         # According to the bundle
