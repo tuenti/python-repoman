@@ -169,8 +169,8 @@ class DepotOperations(BaseDepotOps):
         """
         Inherited method :func:`~DepotOperations.set_source`
         """
-        remotes = sh.git("remote")
+        remotes = sh.git("remote", _cwd=path)
         if "origin" in remotes:
-            sh.git("remote", "set-url", "origin", source)
+            sh.git("remote", "set-url", "origin", source, _cwd=path)
         else:
-            sh.git("remote", "add", "origin", source)
+            sh.git("remote", "add", "origin", source, _cwd=path)

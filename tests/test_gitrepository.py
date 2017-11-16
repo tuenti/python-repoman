@@ -86,19 +86,28 @@ class TestGitRepository(unittest.TestCase):
 
         repo = Repository(self.main_repo)
 
+        # Pulling a branch
+        self.assertNotIn('newbranch', [b.name for b in repo.get_branches()])
+        repo.pull(remote=self.cloned_from_repo, branch='newbranch')
+        self.assertIn('newbranch', [b.name for b in repo.get_branches()])
+
+        # Pulling everything
         repo.pull(remote=self.cloned_from_repo)
 
         self.assertEqual(
             gitrepo1('rev-list', all=True).split().sort(),
             gitrepo2('rev-list', all=True).split().sort())
 
+        gitrepo1_refs = list(gitrepo1('show-ref', _iter=True))
+        gitrepo2_refs = list(gitrepo2('show-ref', _iter=True))
+
+        # Check that all remote refs have been fetched
+        for ref in gitrepo2_refs:
+            self.assertIn(ref, gitrepo1_refs)
+
+        # Pulling from a non existing remote
         with self.assertRaises(RepositoryError):
             repo.pull(remote='wrong repo')
-
-        # Fetching specific revisions is not supported by libgit2
-        # with self.assertRaises(RepositoryError):
-        #     repo.pull(
-        #         remote=self.cloned_from_repo, revision="fake revision")
 
     def test_get_ancestor(self):
         # According to the bundle
@@ -357,6 +366,37 @@ class TestGitRepository(unittest.TestCase):
         changesets1 = list(git1('log', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', pretty='oneline', _iter=True))
         self.assertEquals(len(changesets1), len(changesets2))
+
+    def test_push_to_unqualified_destination(self):
+        git1 = GitCmd(self.main_repo_bare)
+        git2 = GitCmd(self.cloned_from_repo)
+
+        repo2 = Repository(self.cloned_from_repo)
+        cs = repo2.commit('A commit', allow_empty=True)
+
+        # Pushing a revision to a reference name that doesn't exist is
+        # considered a push to an unqualified destination
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='unqualified')
+
+        changesets1 = list(git1('log', 'unqualified', pretty='oneline', _iter=True))
+        changesets2 = list(git2('log', cs.hash, pretty='oneline', _iter=True))
+        self.assertEquals(changesets1, changesets2)
+
+    def test_push_tag_to_unqualified_destination(self):
+        git1 = GitCmd(self.main_repo_bare)
+        git2 = GitCmd(self.cloned_from_repo)
+
+        repo2 = Repository(self.cloned_from_repo)
+        cs = repo2.commit('A commit', allow_empty=True)
+        repo2.tag('unqualified', revision=cs.hash)
+
+        # Pushing a revision to a reference name that doesn't exist is
+        # considered a push to an unqualified destination
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='unqualified')
+
+        changesets1 = list(git1('log', 'unqualified', pretty='oneline', _iter=True))
+        changesets2 = list(git2('log', 'unqualified', pretty='oneline', _iter=True))
+        self.assertEquals(changesets1, changesets2)
 
     def test_get_branch(self):
         repo = Repository(self.cloned_from_repo)

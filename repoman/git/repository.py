@@ -321,10 +321,15 @@ class Repository(BaseRepo):
         git_dir = os.path.join(
             self.path, sh.git('rev-parse', '--git-dir', _cwd=self.path).strip())
         git = GitCmd(git_dir)
-        git('-c', 'core.bare=true', 'fetch', remote)
+
+        refspec = '+refs/*:refs/*'
+        if branch != None:
+            refspec = '+refs/heads/%s:refs/heads/%s' % (branch, branch)
+
+        git('-c', 'core.bare=true', 'fetch', remote, refspec)
         self._clean()
 
-    def push(self, orig, dest, rev=None, ref_name=None):
+    def push(self, orig, dest, rev=None, ref_name=None, force=False):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
@@ -336,9 +341,21 @@ class Repository(BaseRepo):
         elif ref_name == None:
             raise RepositoryError("When pushing, revision specified but not reference name")
         else:
-            refspec = "%s:%s" % (rev, 'refs/heads/' + ref_name)
+            remote_refs = list(
+                self._git("ls-remote", "--tags", "--heads",
+                          dest, ref_name,
+                          _iter=True))
+            if len(remote_refs) == 0:
+                # Reference is not qualified
+                if self.tag_exists(ref_name):
+                    # We don't know what this ref is in remote, but here it is a tag
+                    ref_name = "refs/tags/%s" % ref_name
+                else:
+                    # In any other case, we assume it is a branch
+                    ref_name = "refs/heads/%s" % ref_name
+            refspec = "%s:%s" % (rev, ref_name)
 
-        self._git("push", dest, refspec)
+        self._git("push", dest, refspec, f=force)
         return self.tip()
 
     def _merge(self, local_branch=None, other_rev=None,
