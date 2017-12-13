@@ -95,6 +95,8 @@ class TestGitDepotOperations(unittest.TestCase):
         # index 0000000..e69de29
         #
 
+        missing_changeset = '52109e71fd7f16cb366acfcbb140d6d7f2fc50c8'
+
         self.add_content_to_repo(
             os.path.join(FIXTURE_PATH, 'fixture-1.git.bundle'), 'repo1')
         dcvs = DepotOperations()
@@ -108,17 +110,26 @@ class TestGitDepotOperations(unittest.TestCase):
 
         # It is not there
         self.assertEquals(
-            ['deadbeef'],
+            [missing_changeset],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
-                ['deadbeef']))
+                [missing_changeset]))
+
+        # Missing branches and changesets
+        self.assertEquals(
+            ['missing_branch', missing_changeset, 'deadbeef'],
+            dcvs.check_changeset_availability(
+                os.path.join(self.environment_path, 'repo1'),
+                ['missing_branch', missing_changeset, 'deadbeef']))
+
 
         # Multiple changesets
         self.assertEquals(
-            ['deadbeef'],
+            [missing_changeset],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
-                ['deadbeef', '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9']))
+                [missing_changeset,
+                 '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9']))
 
         # All changesets
         self.assertEquals(
