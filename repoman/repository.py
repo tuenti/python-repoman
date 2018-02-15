@@ -167,6 +167,12 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
+    def notes(self, note, revision=None):
+        """
+        Creates a note in the repository
+        """
+        raise NotImplementedError("Abstract method")
+
     def strip(self, changeset):
         """
         Strips the given changeset
