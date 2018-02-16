@@ -271,7 +271,8 @@ class TestGitRepository(unittest.TestCase):
             self.fail('Merge with conflict should have failed')
         except MergeConflictError as exp:
             print(exp)
-            self.assertTrue('Conflicts found: merging test1.txt failed' in exp)
+            self.assertIn('Conflicts found: merging test1.txt failed',
+                          str(exp))
 
     def test_merge_fastforward(self):
         git = GitCmd(self.cloned_from_repo)
@@ -560,7 +561,7 @@ class TestGitRepository(unittest.TestCase):
         gitrepo.tag("test_tag", revision=rev.hash)
         gitrepo.tag("test_tag2", revision=rev.hash)
         tags = gitrepo.get_changeset_tags(rev.hash)
-        self.assertListEqual(tags, ["test_tag", "test_tag2"])
+        self.assertListEqual(list(tags), ["test_tag", "test_tag2"])
 
     def test_compare_branches(self):
         gitrepo = Repository(self.cloned_from_repo)

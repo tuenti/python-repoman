@@ -56,7 +56,7 @@ class TestRepoIndexer(unittest.TestCase):
         res = repo_indexer._indexers
         ordered_keys = iter([1, 10, 13])
         for i in res.items():
-            self.assertEquals(i[0], ordered_keys.next())
+            self.assertEquals(i[0], ordered_keys.__next__())
 
     def test_get_branches_first_bad_second_good(self):
         expected = ['a', 'b']

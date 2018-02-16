@@ -134,11 +134,11 @@ class AbstractTestDepotManager(object):
         self.assertTrue(not os.path.exists(a_file_path))
 
     def test_list_clones(self):
-        self.assertListEqual([], self.rman.roster.values())
+        self.assertListEqual([], list(self.rman.roster.values()))
         repo = self.rman.give_me_depot(
             '1', 'bla', {}, self.rman.main_cache_path)
         self.assertListEqual(
-            [self.rman.roster[repo.path]], self.rman.roster.values())
+            [self.rman.roster[repo.path]], list(self.rman.roster.values()))
 
     def test_available_clones(self):
         self.assertSequenceEqual([], self.rman.roster.get_available())
@@ -182,19 +182,3 @@ class TestGitDepotManager(AbstractTestDepotManager, unittest.TestCase):
     def mock_lock(path):
         index_lock_path = os.path.join(path, '.git/index.lock')
         open(index_lock_path, 'w').close()
-
-
-class TestHgDepotManager(AbstractTestDepotManager, unittest.TestCase):
-    REPO_KIND = 'hg'
-
-    @staticmethod
-    def _get_tag_names(tags):
-        for tag in tags:
-            yield tag[0]
-
-    @staticmethod
-    def mock_lock(path):
-        wlock_path = os.path.join(path, '.hg/wlock')
-        lock_path = os.path.join(path, '.hg/store/lock')
-        for path in (wlock_path, lock_path):
-            open(path, 'w').close()

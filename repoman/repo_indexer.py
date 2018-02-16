@@ -79,7 +79,7 @@ class MultiRepoIndexer(object):
 
     def _sort_by_priority(self, indexers):
         sorted_indexers = OrderedDict()
-        keys = indexers.keys()
+        keys = list(indexers.keys())
         keys.sort(key=int)
         for key in keys:
             sorted_indexers[key] = indexers[key]

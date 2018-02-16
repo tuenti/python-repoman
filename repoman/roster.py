@@ -152,7 +152,10 @@ class Roster(collections.MutableMapping):
         with self.__cursor() as cursor:
             cursor.execute('SELECT path FROM clones')
             while True:
-                yield cursor.next()[0]
+                row = cursor.fetchone()
+                if row is None:
+                    raise StopIteration()
+                yield row[0]
 
     def __len__(self):
         with self.__cursor() as cursor:
