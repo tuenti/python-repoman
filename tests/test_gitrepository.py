@@ -561,7 +561,7 @@ class TestGitRepository(unittest.TestCase):
         gitrepo.tag("test_tag", revision=rev.hash)
         gitrepo.tag("test_tag2", revision=rev.hash)
         tags = gitrepo.get_changeset_tags(rev.hash)
-        self.assertListEqual(list(tags), ["test_tag", "test_tag2"])
+        self.assertListEqual(tags, ["test_tag", "test_tag2"])
 
     def test_compare_branches(self):
         gitrepo = Repository(self.cloned_from_repo)
