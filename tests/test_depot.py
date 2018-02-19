@@ -65,11 +65,11 @@ class TestDepot(unittest.TestCase):
         # Record
         self.dvcs.check_changeset_availability(
             self.environment_path,
-            range(1, 6)).AndReturn(range(1, 6))
+            range(1, 6)).InAnyOrder().AndReturn(range(1, 6))
 
         self.dvcs.check_changeset_availability(
             self.environment_path,
-            range(8, 13)).AndReturn([8])
+            range(8, 13)).InAnyOrder().AndReturn([8])
 
         # Replay
         self.mox.ReplayAll()
@@ -88,12 +88,12 @@ class TestDepot(unittest.TestCase):
         # Record
         self.dvcs.grab_changesets(
             self.environment_path, 'a', range(1, 6)
-        ).InAnyOrder().AndReturn(True)
+        ).InAnyOrder('ok').AndReturn(True)
         self.dvcs.grab_changesets(
             self.environment_path, 'b', range(8, 13)
-        ).InAnyOrder().AndReturn(True)
+        ).InAnyOrder('ok').AndReturn(True)
         self.dvcs.grab_changesets(
-            self.environment_path, 'a', range(1, 6)
+            self.environment_path, mox.IgnoreArg(), mox.IgnoreArg()
         ).InAnyOrder().AndReturn(False)
 
         # Replay

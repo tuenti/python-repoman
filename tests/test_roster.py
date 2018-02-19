@@ -112,7 +112,7 @@ class TestRoster(unittest.TestCase):
         r3 = self.roster.add('/test3', 1, 'test')
         repo_list = [u'/test1', u'/test2', u'/test3']
         self.assertListEqual(repo_list, list(self.roster))
-        self.assertListEqual([r1, r2, r3], self.roster.values())
+        self.assertListEqual([r1, r2, r3], list(self.roster.values()))
 
     def test_get_available(self):
         self.assertListEqual([], self.roster.get_available())

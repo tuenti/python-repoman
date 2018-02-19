@@ -486,8 +486,10 @@ class Repository(BaseRepo):
                           ref_tags)
 
         tag_reference_regexp = re.compile('^refs/tags/')
-        return map(lambda ref_tag: tag_reference_regexp.sub('', ref_tag[1]),
-                   ref_tags)
+        return list(
+            map(lambda ref_tag: tag_reference_regexp.sub('', ref_tag[1]),
+                ref_tags)
+        )
 
     def compare_branches(self, revision_to_check_hash, branch_base_name):
         """Inherited method
