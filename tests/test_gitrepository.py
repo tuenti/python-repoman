@@ -618,3 +618,19 @@ class TestGitRepository(unittest.TestCase):
         # Terminating a branch already terminated
         # it shouldn't do anything but warning with a message
         gitrepo.exterminate_branch(branch_name, None, self.main_repo)
+
+    def test_append_get_and_has_notes(self):
+        gitrepo = Repository(self.cloned_from_repo)
+        gitrepo.update('master')
+        changeset = gitrepo.commit('A new commit!', allow_empty=True)
+
+        gitrepo.append_note('Hello note 1', revision=changeset.hash)
+        gitrepo.append_note('Goodbye note 2')
+
+        notes = gitrepo.get_changeset_notes(changeset.hash)
+        self.assertEqual(['Hello note 1', 'Goodbye note 2'], notes)
+
+        self.assertTrue(gitrepo.has_note('Hello note 1'))
+        self.assertTrue(gitrepo.has_note('Goodbye note 2', changeset.hash))
+        self.assertFalse(gitrepo.has_note(''))
+        self.assertFalse(gitrepo.has_note('\n'))

@@ -524,3 +524,32 @@ class Repository(BaseRepo):
         """
         parents = self._git("log", "--pretty=%P", "-1", changeset_hash.strip()).split()
         return [self[cs.strip()] for cs in parents]
+
+    def append_note(self, note, revision=None):
+        """Inherited method :func:`~repoman.repository.Repository.append_note`
+        """
+        if not revision:
+            revision = 'HEAD'
+        args = ['notes', 'append', '-m', note, revision]
+        self._git(*args)
+
+    def get_changeset_notes(self, revision=None):
+        """Inherited method
+        :func:`~repoman.repository.Repository.get_changeset_notes`
+        """
+        notes = []
+        if not revision:
+            revision = 'HEAD'
+        args = ['notes', 'show', revision]
+        raw_notes = self._git(*args)
+        notes = list(
+            map(lambda n: n,
+                filter(lambda n: len(n) > 0, raw_notes.split('\n')))
+        )
+        return notes
+
+    def has_note(self, note, revision=None):
+        """Inherited method :func:`~repoman.repository.Repository.has_note`
+        """
+        notes = self.get_changeset_notes(revision)
+        return note in notes
