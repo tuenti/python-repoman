@@ -167,12 +167,6 @@ class Repository(object):
         """
         raise NotImplementedError("Abstract method")
 
-    def notes(self, note, revision=None):
-        """
-        Creates a note in the repository
-        """
-        raise NotImplementedError("Abstract method")
-
     def strip(self, changeset):
         """
         Strips the given changeset
@@ -481,6 +475,34 @@ class Repository(object):
         :param message: Message used in commit message (ignored)
         :type message: string
         """
+        raise NotImplementedError("Abstract method")
+
+    def append_note(self, note, revision=None):
+        '''Append a note to the given revision
+
+        :param note: text to append as a note
+        :type note: string
+        :param revision: hash of the changeset to apply the note to
+        :type note: string
+        '''
+        raise NotImplementedError("Abstract method")
+
+    def get_changeset_notes(self, revision=None):
+        '''Return all notes of a changeset
+
+        :param revision: hash of the changeset
+        :type note: string
+        '''
+        raise NotImplementedError("Abstract method")
+
+    def has_note(self, note, revision=None):
+        '''Check if a note exists on a changeset
+
+        :param note: text of the note to check
+        :type note: string
+        :param revision: hash of the changeset
+        :type note: string
+        '''
         raise NotImplementedError("Abstract method")
 
     ###########################
