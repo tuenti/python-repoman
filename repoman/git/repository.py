@@ -540,8 +540,7 @@ class Repository(BaseRepo):
         notes = []
         if not revision:
             revision = 'HEAD'
-        args = ['notes', 'show', revision]
-        raw_notes = self._git(*args)
+        raw_notes = self._git('notes', 'show', revision, _ok_code=[0, 1])
         notes = list(
             map(lambda n: n,
                 filter(lambda n: len(n) > 0, raw_notes.split('\n')))

@@ -634,3 +634,14 @@ class TestGitRepository(unittest.TestCase):
         self.assertTrue(gitrepo.has_note('Goodbye note 2', changeset.hash))
         self.assertFalse(gitrepo.has_note(''))
         self.assertFalse(gitrepo.has_note('\n'))
+
+    def test_no_notes_go_fine(self):
+        gitrepo = Repository(self.cloned_from_repo)
+        gitrepo.update('master')
+        changeset = gitrepo.commit('A new commit!', allow_empty=True)
+
+        notes = gitrepo.get_changeset_notes(changeset.hash)
+        self.assertEqual([], notes)
+
+        notes = gitrepo.get_changeset_notes()
+        self.assertEqual([], notes)
