@@ -326,7 +326,9 @@ class Repository(BaseRepo):
         if branch != None:
             refspec = '+refs/heads/%s:refs/heads/%s' % (branch, branch)
 
-        git('-c', 'core.bare=true', 'fetch', remote, refspec)
+        logger.debug("Executing git -c core.bare=true fetch %s %s" % (remote, refspec))
+        output = git('-c', 'core.bare=true', 'fetch', remote, refspec, _err_to_out=True)
+        logger.debug("Output:\n%s" % output)
         self._clean()
 
     def push(self, orig, dest, rev=None, ref_name=None, force=False):
