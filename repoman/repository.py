@@ -377,7 +377,7 @@ class Repository(object):
                              with this parameter you can specify a custom one
                              like when there was a fastforward merge and you
                              want to perform a commit anyway
-        :type custom_parent: pygit2.Oid
+        :type custom_parent: DEPRECATED?
         :param allow_empty: allows empty commits
         :type allow_empty: bool
         """

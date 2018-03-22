@@ -21,9 +21,9 @@ from repoman.signature import Signature
 from repoman.repository import Repository
 
 
-class TestRepository(Repository):
+class DummyRepository(Repository):
     def __init__(self, test_case, *args, **kwargs):
-        super(TestRepository, self).__init__(repo_path='fake', *args, **kwargs)
+        super(DummyRepository, self).__init__(repo_path='fake', *args, **kwargs)
         self.test_case = test_case
         self.expected_signature = None
 
@@ -67,7 +67,7 @@ class TestSignature(unittest.TestCase):
 
     def testRepositorySignature(self):
         a_signature = Signature()
-        repository = TestRepository(self, signature=a_signature)
+        repository = DummyRepository(self, signature=a_signature)
         self.assertEquals(repository.signature, a_signature)
         repository.expected_signature = a_signature
         repository.tag('foo')
@@ -75,7 +75,7 @@ class TestSignature(unittest.TestCase):
     def testRepositoryDoAsSignature(self):
         a_signature = Signature(user='a_user')
         other_signature = Signature(user='other_user')
-        repository = TestRepository(self, signature=a_signature)
+        repository = DummyRepository(self, signature=a_signature)
 
         repository.expected_signature = a_signature
         repository.tag('foo')

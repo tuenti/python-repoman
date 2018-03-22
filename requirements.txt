@@ -1,4 +1,3 @@
 sh
 ordereddict
 python-hglib<=1.2
-pygit2==0.21.3
