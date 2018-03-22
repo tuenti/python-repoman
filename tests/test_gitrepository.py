@@ -56,6 +56,7 @@ class TestGitRepository(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.environment_path)
 
+
     def add_content_to_repo(self, fixture, repo_path, bare=False):
         if bare:
             sh.git("clone",
@@ -70,6 +71,10 @@ class TestGitRepository(unittest.TestCase):
                 mirror=True)
             sh.git('config', 'core.bare', 'false', _cwd=repo_path)
             sh.git('reset', '--hard', _cwd=repo_path)
+
+    def clone_repo_from(self, dest, origin):
+        sh.git('clone', origin, '+refs/*:refs/*', dest)
+
 
     def test_pull(self):
         gitrepo1 = GitCmd(self.main_repo)
@@ -124,6 +129,7 @@ class TestGitRepository(unittest.TestCase):
     def test_get_branches(self):
         gitrepo = Repository(self.cloned_from_repo)
         branches = [b.name for b in gitrepo.get_branches()]
+
         self.assertListEqual(branches, ['master', 'newbranch'])
 
     def test_add_files(self):
@@ -236,6 +242,7 @@ class TestGitRepository(unittest.TestCase):
 
     def test_merge_no_conflicts(self):
         git = GitCmd(self.cloned_from_repo)
+
         headnewbranch = git('rev-parse', 'refs/heads/newbranch')
         gitrepo = Repository(self.cloned_from_repo)
         # Checkout to master
@@ -263,8 +270,9 @@ class TestGitRepository(unittest.TestCase):
             gitrepo.merge(other_rev=conflict_cs)
             self.fail('Merge with conflict should have failed')
         except MergeConflictError as exp:
-            print exp
-            self.assertTrue('Conflicts found: merging test1.txt failed' in exp)
+            print(exp)
+            self.assertIn('Conflicts found: merging test1.txt failed',
+                          str(exp))
 
     def test_merge_fastforward(self):
         git = GitCmd(self.cloned_from_repo)
@@ -610,3 +618,30 @@ class TestGitRepository(unittest.TestCase):
         # Terminating a branch already terminated
         # it shouldn't do anything but warning with a message
         gitrepo.exterminate_branch(branch_name, None, self.main_repo)
+
+    def test_append_get_and_has_notes(self):
+        gitrepo = Repository(self.cloned_from_repo)
+        gitrepo.update('master')
+        changeset = gitrepo.commit('A new commit!', allow_empty=True)
+
+        gitrepo.append_note('Hello note 1', revision=changeset.hash)
+        gitrepo.append_note('Goodbye note 2')
+
+        notes = gitrepo.get_changeset_notes(changeset.hash)
+        self.assertEqual(['Hello note 1', 'Goodbye note 2'], notes)
+
+        self.assertTrue(gitrepo.has_note('Hello note 1'))
+        self.assertTrue(gitrepo.has_note('Goodbye note 2', changeset.hash))
+        self.assertFalse(gitrepo.has_note(''))
+        self.assertFalse(gitrepo.has_note('\n'))
+
+    def test_no_notes_go_fine(self):
+        gitrepo = Repository(self.cloned_from_repo)
+        gitrepo.update('master')
+        changeset = gitrepo.commit('A new commit!', allow_empty=True)
+
+        notes = gitrepo.get_changeset_notes(changeset.hash)
+        self.assertEqual([], notes)
+
+        notes = gitrepo.get_changeset_notes()
+        self.assertEqual([], notes)

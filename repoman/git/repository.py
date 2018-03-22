@@ -19,17 +19,12 @@ import re
 import os.path
 import logging
 import datetime
-import calendar
-from collections import namedtuple
-
 import sh
-
 from repoman.repository import Repository as BaseRepo, \
     RepositoryError, MergeConflictError
 from repoman.changeset import Changeset
 from repoman.merge import MergeStrategy
 from repoman.reference import Reference
-from repoman.repo_indexer import RepoIndexerError
 
 logger = logging.getLogger(__name__)
 
@@ -41,13 +36,13 @@ class GitCmd(object):
         try:
             cmd = sh.git(_cwd=self.path, _tty_out=False, *args, **kwargs)
         except sh.ErrorReturnCode as e:
-            raise RepositoryError("'%s' failed in %s: %s" % (e.full_cmd, self.path, e.message))
+            raise RepositoryError("'%s' failed in %s: %s" % (e.full_cmd, self.path, e))
 
         if '_iter' in kwargs and kwargs['_iter'] != None:
             return cmd
 
         # For convenience, remove last new line of command output
-        return re.sub('(\n|\n\r)$', '', cmd.stdout)
+        return re.sub('(\n|\n\r)$', '', cmd.stdout.decode('utf-8'))
 
 class GitMerge(MergeStrategy):
     def __init__(self, *args, **kwargs):
@@ -272,7 +267,7 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.get_branch`
         """
         if not branch_name:
-            branch_name = self._git('rev-parse', '--abbrev-ref', 'HEAD')
+            branch_name = self._git("rev-parse", "--abbrev-ref", "HEAD")
         else:
             if not self.branch_exists(branch_name):
                 raise RepositoryError('Branch %s does not exist in repo %s'
@@ -284,6 +279,7 @@ class Repository(BaseRepo):
         """Inherited method
         :func:`~repoman.repository.Repository.get_revset`
         """
+
         if branch is not None:
             b = self.get_branch(branch)
             if cs_to is None:
@@ -330,7 +326,9 @@ class Repository(BaseRepo):
         if branch != None:
             refspec = '+refs/heads/%s:refs/heads/%s' % (branch, branch)
 
-        git('-c', 'core.bare=true', 'fetch', remote, refspec)
+        logger.debug("Executing git -c core.bare=true fetch %s %s" % (remote, refspec))
+        output = git('-c', 'core.bare=true', 'fetch', remote, refspec, _err_to_out=True)
+        logger.debug("Output:\n%s" % output)
         self._clean()
 
     def push(self, orig, dest, rev=None, ref_name=None, force=False):
@@ -387,7 +385,7 @@ class Repository(BaseRepo):
                            strategy=GitMergeFastForward)
 
     def add(self, files):
-        if isinstance(files, basestring):
+        if isinstance(files, str):
             files = [files]
         if len(files) > 0:
             self._git("add", *files)
@@ -490,8 +488,10 @@ class Repository(BaseRepo):
                           ref_tags)
 
         tag_reference_regexp = re.compile('^refs/tags/')
-        return map(lambda ref_tag: tag_reference_regexp.sub('', ref_tag[1]),
-                   ref_tags)
+        return list(
+            map(lambda ref_tag: tag_reference_regexp.sub('', ref_tag[1]),
+                ref_tags)
+        )
 
     def compare_branches(self, revision_to_check_hash, branch_base_name):
         """Inherited method
@@ -526,3 +526,31 @@ class Repository(BaseRepo):
         """
         parents = self._git("log", "--pretty=%P", "-1", changeset_hash.strip()).split()
         return [self[cs.strip()] for cs in parents]
+
+    def append_note(self, note, revision=None):
+        """Inherited method :func:`~repoman.repository.Repository.append_note`
+        """
+        if not revision:
+            revision = 'HEAD'
+        args = ['notes', 'append', '-m', note, revision]
+        self._git(*args)
+
+    def get_changeset_notes(self, revision=None):
+        """Inherited method
+        :func:`~repoman.repository.Repository.get_changeset_notes`
+        """
+        notes = []
+        if not revision:
+            revision = 'HEAD'
+        raw_notes = self._git('notes', 'show', revision, _ok_code=[0, 1])
+        notes = list(
+            map(lambda n: n,
+                filter(lambda n: len(n) > 0, raw_notes.split('\n')))
+        )
+        return notes
+
+    def has_note(self, note, revision=None):
+        """Inherited method :func:`~repoman.repository.Repository.has_note`
+        """
+        notes = self.get_changeset_notes(revision)
+        return note in notes

@@ -1,7 +1,7 @@
 # testing
 pytest
 pytest-cov
-mox
+mox3
 unittest2
 python-coveralls
 

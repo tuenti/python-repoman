@@ -15,7 +15,6 @@
 # limitations under the License.
 #
 
-from itertools import ifilter
 import os
 import shutil
 import logging
@@ -61,7 +60,13 @@ class DepotOperations(BaseDepotOps):
         git_path = os.path.join(
             path,
             sh.git('rev-parse', '--git-dir', _cwd=path).strip())
-        sh.git('-c', 'core.bare=true', 'fetch', url, '+refs/*:refs/*', _cwd=git_path)
+        logger.debug("Executing git -c core.bare=true fetch " + url + " +refs/*:refs/* on " + git_path)
+        output = sh.git('-c', 'core.bare=true', 'fetch',
+                        url,
+                        '+refs/*:refs/*',
+                        _cwd=git_path,
+                        _err_to_out=True)
+        logger.debug("Output:\n%s" % output)
         if sh.git('rev-parse', '--is-bare-repository', _cwd=path).strip() == 'false':
             self._clear_working_copy(path)
         self._save_state(path)

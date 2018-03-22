@@ -79,7 +79,7 @@ class MultiRepoIndexer(object):
 
     def _sort_by_priority(self, indexers):
         sorted_indexers = OrderedDict()
-        keys = indexers.keys()
+        keys = list(indexers.keys())
         keys.sort(key=int)
         for key in keys:
             sorted_indexers[key] = indexers[key]
@@ -87,7 +87,7 @@ class MultiRepoIndexer(object):
         return sorted_indexers
 
     def _call_indexers(self, func, *args):
-        for (priority, indexer) in self._indexers.iteritems():
+        for (priority, indexer) in self._indexers.items():
             try:
                 logger.info("Calling %s from\
                              %s" % (func, indexer.__class__.__name__))
