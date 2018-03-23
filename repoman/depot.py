@@ -51,10 +51,7 @@ class Depot(object):
         :returns: True is successfull.
         """
         logger.info('Requested refresh of %s' % (self.path))
-        actually_required = self._filter_missing_changesets(requirements)
-        logger.debug('Actually required changesets: %s' %
-                     actually_required.values())
-        return self.grab_changesets_from_upstream(actually_required)
+        return self.grab_changesets_from_upstream(requirements)
 
     def grab_changesets_from_upstream(self, requirements):
         """
