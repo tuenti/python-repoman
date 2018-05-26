@@ -73,7 +73,7 @@ class DepotOperations(BaseDepotOps):
 
         for c in changesets:
             try:
-                sh.git('log', '-1', c, _cwd=path)
+                sh.git('log', '-1', c, _cwd=path, _tty_out=False)
             except sh.ErrorReturnCode:
                 return False
         return True
