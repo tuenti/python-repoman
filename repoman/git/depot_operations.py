@@ -74,7 +74,8 @@ class DepotOperations(BaseDepotOps):
         for c in changesets:
             try:
                 sh.git('log', '-1', c, _cwd=path, _tty_out=False)
-            except sh.ErrorReturnCode:
+            except sh.ErrorReturnCode as e:
+                logger.debug('Error checking changeset %s: %s', c, e)
                 return False
         return True
 
@@ -84,7 +85,7 @@ class DepotOperations(BaseDepotOps):
         """
         logger.info('Initializing Depot %s with parent %s' % (
                     path, parent))
- 
+
         sh.git('init', path, bare=not parent)
 
         logger.info('Done initializing depot')
