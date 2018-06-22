@@ -82,7 +82,7 @@ generate your own packages, usual tools can be used for that, e.g:
 Requirements
 ------------
 
-Repoman should play well with any Linux distribution with Python > 2.6,
+Repoman should play well with any Linux distribution with Python >= 3.4,
 it's daily used in Debian, and has been also tested in Ubuntu and
 Fedora.
 

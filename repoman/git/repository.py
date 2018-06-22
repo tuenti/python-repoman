@@ -360,6 +360,9 @@ class Repository(BaseRepo):
         self._git("push", dest, refspec, f=force)
         return self.tip()
 
+    def push_notes(self, dest):
+        self._git("push", dest, "refs/notes/*")
+
     def _merge(self, local_branch=None, other_rev=None,
                other_branch_name=None, dry_run=False, strategy=GitMerge):
         merge = strategy(self, local_branch, other_rev, other_branch_name)
@@ -534,6 +537,7 @@ class Repository(BaseRepo):
             revision = 'HEAD'
         args = ['notes', 'append', '-m', note, revision]
         self._git(*args)
+        return self._git('notes', 'list', revision)
 
     def get_changeset_notes(self, revision=None):
         """Inherited method

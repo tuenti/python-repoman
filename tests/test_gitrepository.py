@@ -399,6 +399,23 @@ class TestGitRepository(unittest.TestCase):
         changesets2 = list(git2('log', 'unqualified', pretty='oneline', _iter=True))
         self.assertEquals(changesets1, changesets2)
 
+    def test_push_notes(self):
+        git1 = GitCmd(self.main_repo_bare)
+        git2 = GitCmd(self.cloned_from_repo)
+
+        repo2 = Repository(self.cloned_from_repo)
+        cs = repo2.commit('A commit', allow_empty=True)
+        notes_ref = repo2.append_note('some note dude', cs.hash)
+
+        repo2.push_notes(self.main_repo_bare)
+
+        notes_ref_repo1, commit_ref_repo1 = git1('notes', 'list').split()
+        notes_ref_repo2, commit_ref_repo2 = git2('notes', 'list').split()
+
+        self.assertEqual(commit_ref_repo1, commit_ref_repo2)
+        self.assertEqual(notes_ref_repo1, notes_ref_repo2)
+        self.assertEqual(notes_ref, notes_ref_repo1)
+
     def test_get_branch(self):
         repo = Repository(self.cloned_from_repo)
         branch = repo.get_branch('newbranch')
