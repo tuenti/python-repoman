@@ -355,9 +355,6 @@ class Repository(BaseRepo):
                   f=force)
         return self.tip()
 
-    def push_notes(self, dest):
-        self._git("push", dest, "refs/notes/*")
-
     def _merge(self, local_branch=None, other_rev=None,
                other_branch_name=None, dry_run=False, strategy=GitMerge):
         merge = strategy(self, local_branch, other_rev, other_branch_name)
