@@ -399,15 +399,17 @@ class TestGitRepository(unittest.TestCase):
         changesets2 = list(git2('log', 'unqualified', pretty='oneline', _iter=True))
         self.assertEquals(changesets1, changesets2)
 
-    def test_push_notes(self):
+    def test_push_all_with_no_reference(self):
         git1 = GitCmd(self.main_repo_bare)
         git2 = GitCmd(self.cloned_from_repo)
 
         repo2 = Repository(self.cloned_from_repo)
-        cs = repo2.commit('A commit', allow_empty=True)
+        repo2.commit('A commit', allow_empty=True)
+        cs = repo2.commit('A second commit', allow_empty=True)
+        repo2.tag('unqualified', revision=cs.hash)
         notes_ref = repo2.append_note('some note dude', cs.hash)
 
-        repo2.push_notes(self.main_repo_bare)
+        repo2.push(self.main_repo, self.main_repo_bare)
 
         notes_ref_repo1, commit_ref_repo1 = git1('notes', 'list').split()
         notes_ref_repo2, commit_ref_repo2 = git2('notes', 'list').split()
@@ -415,6 +417,33 @@ class TestGitRepository(unittest.TestCase):
         self.assertEqual(commit_ref_repo1, commit_ref_repo2)
         self.assertEqual(notes_ref_repo1, notes_ref_repo2)
         self.assertEqual(notes_ref, notes_ref_repo1)
+
+        changesets1 = list(git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        changesets2 = list(git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        self.assertEquals(changesets1, changesets2)
+
+    def test_push_all_with_reference_and_revision(self):
+        git1 = GitCmd(self.main_repo_bare)
+        git2 = GitCmd(self.cloned_from_repo)
+
+        repo2 = Repository(self.cloned_from_repo)
+        repo2.commit('A commit', allow_empty=True)
+        cs = repo2.commit('A second commit', allow_empty=True)
+        repo2.tag('unqualified', revision=cs.hash)
+        notes_ref = repo2.append_note('some note dude', cs.hash)
+
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='master')
+
+        notes_ref_repo1, commit_ref_repo1 = git1('notes', 'list').split()
+        notes_ref_repo2, commit_ref_repo2 = git2('notes', 'list').split()
+
+        self.assertEqual(commit_ref_repo1, commit_ref_repo2)
+        self.assertEqual(notes_ref_repo1, notes_ref_repo2)
+        self.assertEqual(notes_ref, notes_ref_repo1)
+
+        changesets1 = list(git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        changesets2 = list(git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        self.assertEquals(changesets1, changesets2)
 
     def test_get_branch(self):
         repo = Repository(self.cloned_from_repo)
