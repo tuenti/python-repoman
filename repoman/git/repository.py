@@ -335,6 +335,9 @@ class Repository(BaseRepo):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
+        all_tags_option = "--tags"
+        all_notes_refspec = "refs/notes/*:refs/notes/*"
+
         if rev is None and ref_name is None:
             # Push everything
             refspec = "refs/*:refs/*"
@@ -344,15 +347,21 @@ class Repository(BaseRepo):
             raise RepositoryError(
                 "When pushing, revision specified but not reference name")
         else:
-            # In any other case, we assume it is a branch
-            ref_name = "refs/heads/%s" % ref_name
+            if self.tag_exists(ref_name):
+                # We don't know what this ref is in remote, but here it is a tag
+                ref_name = "refs/tags/%s" % ref_name
+                all_tags_option = ""
+            else:
+                # In any other case, we assume it is a branch
+                ref_name = "refs/heads/%s" % ref_name
             refspec = "%s:%s" % (rev, ref_name)
 
-        all_tags_option = '--tags'
-        all_notes_refspec = 'refs/notes/*'
-
-        self._git("push", dest, refspec, all_tags_option, all_notes_refspec,
-                  f=force)
+        if all_tags_option:
+            self._git("push", dest, refspec, all_tags_option,
+                      all_notes_refspec, f=force)
+        else:
+            self._git("push", dest, refspec, all_notes_refspec,
+                      f=force)
         return self.tip()
 
     def _merge(self, local_branch=None, other_rev=None,
