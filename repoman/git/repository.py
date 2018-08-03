@@ -335,29 +335,33 @@ class Repository(BaseRepo):
         """Inherited method
         :func:`~repoman.repository.Repository.push`
         """
-        if rev == None and ref_name == None:
+        all_tags_option = "--tags"
+        all_notes_refspec = "refs/notes/*:refs/notes/*"
+
+        if rev is None and ref_name is None:
             # Push everything
             refspec = "refs/*:refs/*"
-        elif rev == None:
+        elif rev is None:
             refspec = "%s:%s" % (ref_name, ref_name)
-        elif ref_name == None:
-            raise RepositoryError("When pushing, revision specified but not reference name")
+        elif ref_name is None:
+            raise RepositoryError(
+                "When pushing, revision specified but not reference name")
         else:
-            remote_refs = list(
-                self._git("ls-remote", "--tags", "--heads",
-                          dest, ref_name,
-                          _iter=True))
-            if len(remote_refs) == 0:
-                # Reference is not qualified
-                if self.tag_exists(ref_name):
-                    # We don't know what this ref is in remote, but here it is a tag
-                    ref_name = "refs/tags/%s" % ref_name
-                else:
-                    # In any other case, we assume it is a branch
-                    ref_name = "refs/heads/%s" % ref_name
+            if self.tag_exists(ref_name):
+                # We don't know what this ref is in remote, but here it is a tag
+                ref_name = "refs/tags/%s" % ref_name
+                all_tags_option = ""
+            else:
+                # In any other case, we assume it is a branch
+                ref_name = "refs/heads/%s" % ref_name
             refspec = "%s:%s" % (rev, ref_name)
 
-        self._git("push", dest, refspec, f=force)
+        if all_tags_option:
+            self._git("push", dest, refspec, all_tags_option,
+                      all_notes_refspec, f=force)
+        else:
+            self._git("push", dest, refspec, all_notes_refspec,
+                      f=force)
         return self.tip()
 
     def _merge(self, local_branch=None, other_rev=None,
@@ -534,6 +538,7 @@ class Repository(BaseRepo):
             revision = 'HEAD'
         args = ['notes', 'append', '-m', note, revision]
         self._git(*args)
+        return self._git('notes', 'list', revision)
 
     def get_changeset_notes(self, revision=None):
         """Inherited method
