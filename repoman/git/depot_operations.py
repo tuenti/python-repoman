@@ -61,11 +61,18 @@ class DepotOperations(BaseDepotOps):
             path,
             sh.git('rev-parse', '--git-dir', _cwd=path).strip())
         logger.debug("Executing git -c core.bare=true fetch " + url + " +refs/*:refs/* on " + git_path)
-        output = sh.git('-c', 'core.bare=true', 'fetch',
-                        url,
-                        '+refs/*:refs/*',
-                        _cwd=git_path,
-                        _err_to_out=True)
+        try:
+            output = sh.git('-c', 'core.bare=true', 'fetch',
+                            url,
+                            '+refs/*:refs/*',
+                            _cwd=git_path,
+                            _err_to_out=True)
+        except sh.ErrorReturnCode as e:
+            logger.exception(
+                'Error fetching from url %s (%s): %s\nComplete output: %s',
+                url, git_path, e, e.stdout)
+            return False
+
         logger.debug("Output:\n%s" % output)
         if sh.git('rev-parse', '--is-bare-repository', _cwd=path).strip() == 'false':
             self._clear_working_copy(path)

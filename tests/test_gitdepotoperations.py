@@ -224,6 +224,32 @@ class TestGitDepotOperations(unittest.TestCase):
         self.assertTrue(workspace1.request_refresh({
             os.path.join(self.environment_path, 'remote'): ['my-branch1']}))
 
+    def test_request_refresh_git_url_does_not_exist(self):
+        dcvs = DepotOperations()
+
+        # Remote repository
+        self.add_content_to_repo(
+            os.path.join(FIXTURE_PATH, 'fixture-2.git.bundle'),
+            'remote')
+
+        # Master cache
+        master = dcvs.init_depot(
+            os.path.join(self.environment_path, 'master'),
+            parent=None,
+            source=os.path.join(self.environment_path, 'other-remote'))
+
+        # Workspace depot
+        workspace1 = dcvs.init_depot(
+            os.path.join(self.environment_path, 'workspace1'),
+            parent=master,
+            source=os.path.join(self.environment_path, 'master'))
+
+        self.assertFalse(workspace1.request_refresh(
+            {
+                os.path.join(self.environment_path, 'other-remote'): ['master']
+            }
+        ))
+
     def _test_request_refresh(self, f):
         dcvs = DepotOperations()
 
