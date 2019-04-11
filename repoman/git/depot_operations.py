@@ -71,7 +71,7 @@ class DepotOperations(BaseDepotOps):
             logger.exception(
                 'Error fetching from url %s (%s): %s\nComplete output: %s',
                 url, git_path, e, e.stdout)
-            return False
+            raise
 
         logger.debug("Output:\n%s" % output)
         if sh.git('rev-parse', '--is-bare-repository', _cwd=path).strip() == 'false':

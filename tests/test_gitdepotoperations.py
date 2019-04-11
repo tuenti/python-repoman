@@ -244,11 +244,13 @@ class TestGitDepotOperations(unittest.TestCase):
             parent=master,
             source=os.path.join(self.environment_path, 'master'))
 
-        self.assertFalse(workspace1.request_refresh(
+        self.assertRaises(
+            sh.ErrorReturnCode,
+            workspace1.request_refresh,
             {
                 os.path.join(self.environment_path, 'other-remote'): ['master']
             }
-        ))
+        )
 
     def _test_request_refresh(self, f):
         dcvs = DepotOperations()
