@@ -148,7 +148,7 @@ class TestGitRepository(unittest.TestCase):
             git = GitCmd(self.main_repo)
             status = {}
             for f in git('status', porcelain=True, _iter=True):
-                s, path = f.split(" ", 1)
+                s, path = f.strip().split(maxsplit=1)
                 status[path] = s
             return status
 
