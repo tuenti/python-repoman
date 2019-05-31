@@ -427,7 +427,8 @@ class Repository(BaseRepo):
         allow_empty = True
         modified = []
         for s in status:
-            status, path = s.split()
+            status, path = s.strip().split(maxsplit=1)
+            path = path.replace('"', '')
             if status == 'M':
                 modified.append(path)
         self.add(modified)
