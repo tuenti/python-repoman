@@ -177,6 +177,7 @@ class Repository(BaseRepo):
         args = ["tag", name, revision]
         if message:
             args += ["-m", message]
+            args += ["-a"]
         self._git(*args)
         return self._new_tag_object(name)
 
@@ -426,6 +427,7 @@ class Repository(BaseRepo):
         # allowed.
         allow_empty = True
         modified = []
+
         for s in status:
             status, path = s.strip().split(maxsplit=1)
             path = path.replace('"', '')
