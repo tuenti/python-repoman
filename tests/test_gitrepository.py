@@ -121,7 +121,7 @@ class TestGitRepository(unittest.TestCase):
         ancestor = gitrepo.get_ancestor(gitrepo[headmaster],
                                         gitrepo[headnewbranch])
 
-        self.assertEquals(ancestor.hash, ancestor_hash)
+        self.assertEqual(ancestor.hash, ancestor_hash)
 
         with self.assertRaises(RepositoryError):
             gitrepo.get_ancestor(None, ancestor_hash)
@@ -155,15 +155,15 @@ class TestGitRepository(unittest.TestCase):
         status = get_status()
         self.assertTrue(file_name in status)
         self.assertTrue(file_name2 in status)
-        self.assertEquals(status[file_name], '??')
-        self.assertEquals(status[file_name2], '??')
+        self.assertEqual(status[file_name], '??')
+        self.assertEqual(status[file_name2], '??')
 
         gitrepo = Repository(self.main_repo)
         gitrepo.add([file_name, file_name2])
 
         status = get_status()
-        self.assertEquals(status[file_name], 'A')
-        self.assertEquals(status[file_name2], 'A')
+        self.assertEqual(status[file_name], 'A')
+        self.assertEqual(status[file_name2], 'A')
         with self.assertRaises(RepositoryError):
             gitrepo.add("nonexistentfile")
 
@@ -183,9 +183,9 @@ class TestGitRepository(unittest.TestCase):
 
         final_len = len(list(git('log', 'HEAD', pretty='oneline', _iter=True)))
 
-        self.assertEquals(final_len, initial_len + 1)
-        self.assertEquals(git('log', '-1', pretty='%B'), commit_msg)
-        self.assertEquals(commit.desc, commit_msg)
+        self.assertEqual(final_len, initial_len + 1)
+        self.assertEqual(git('log', '-1', pretty='%B'), commit_msg)
+        self.assertEqual(commit.desc, commit_msg)
         self.assertIsNone(gitrepo.commit(commit_msg))
 
     def test_commit_commits_all(self):
@@ -207,7 +207,7 @@ class TestGitRepository(unittest.TestCase):
 
         self.assertTrue(os.path.exists(file_path))
         with open(file_path) as fd:
-            self.assertEquals(expected_content, fd.read())
+            self.assertEqual(expected_content, fd.read())
 
     def test_commit_commits_but_with_removed_files(self):
         file_name = "test1.txt"
@@ -231,7 +231,7 @@ class TestGitRepository(unittest.TestCase):
         c2 = gitrepo.commit('Other commit', allow_empty=True)
         gitrepo.commit('Commit with custom parent', allow_empty=True,
             custom_parent=c1.hash)
-        self.assertEquals(
+        self.assertEqual(
             [p.hash for p in gitrepo.parents()],
             [c2.hash, c1.hash])
 
@@ -248,8 +248,8 @@ class TestGitRepository(unittest.TestCase):
         # Checkout to master
         gitrepo.update('master')
         cs = gitrepo.merge(other_rev=gitrepo[headnewbranch])
-        self.assertEquals(len(git('log', '-1', pretty='%P').split()), 2)
-        self.assertEquals(git('rev-parse', 'HEAD'), cs.hash)
+        self.assertEqual(len(git('log', '-1', pretty='%P').split()), 2)
+        self.assertEqual(git('rev-parse', 'HEAD'), cs.hash)
 
     def test_merge_with_conflict(self):
         gitrepo = Repository(self.cloned_from_repo)
@@ -290,9 +290,9 @@ class TestGitRepository(unittest.TestCase):
         gitrepo.update('master')
         cs = gitrepo.merge_fastforward(
             other_rev=ff_head, other_branch_name='test')
-        self.assertEquals(len(git('log', '-1', pretty='%P').split()), 1)
-        self.assertEquals(git('rev-parse', 'HEAD'), cs.hash)
-        self.assertEquals(ff_head.hash, cs.hash)
+        self.assertEqual(len(git('log', '-1', pretty='%P').split()), 1)
+        self.assertEqual(git('rev-parse', 'HEAD'), cs.hash)
+        self.assertEqual(ff_head.hash, cs.hash)
         self.assertTrue(os.path.isfile(ff_file))
 
     def test_merge_fastforward_no_ff(self):
@@ -310,10 +310,10 @@ class TestGitRepository(unittest.TestCase):
         ff_head = gitrepo.commit(message="commit ff file")
         gitrepo.update('master')
         cs = gitrepo.merge(other_rev=ff_head, other_branch_name='test')
-        self.assertEquals(len(git('log', '-1', pretty='%P').split()), 2)
-        self.assertEquals(git('rev-parse', 'HEAD'), cs.hash)
+        self.assertEqual(len(git('log', '-1', pretty='%P').split()), 2)
+        self.assertEqual(git('rev-parse', 'HEAD'), cs.hash)
         # We want a commit in fastforward merges, hashes must be different
-        self.assertNotEquals(ff_head.hash, cs.hash)
+        self.assertNotEqual(ff_head.hash, cs.hash)
         self.assertTrue(os.path.isfile(ff_file))
 
     def test_merge_isuptodate(self):
@@ -329,23 +329,23 @@ class TestGitRepository(unittest.TestCase):
         gitrepo.tag("new-tag", message="fake tag")
 
         git = GitCmd(self.main_repo)
-        self.assertNotEquals(git('show-ref', 'refs/tags/new-tag'), '')
+        self.assertNotEqual(git('show-ref', 'refs/tags/new-tag'), '')
 
     def test_branch(self):
         gitrepo = Repository(self.cloned_from_repo)
         gitrepo.branch("test_branch")
         git = GitCmd(self.cloned_from_repo)
         # Checking we are in the branch
-        self.assertEquals(
+        self.assertEqual(
                 git('rev-parse', 'test_branch'),
                 git('rev-parse', 'HEAD'))
-        self.assertEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'test_branch')
+        self.assertEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'test_branch')
 
         gitrepo.branch('newbranch')
-        self.assertEquals(
+        self.assertEqual(
                 git('rev-parse', 'newbranch'),
                 git('rev-parse', 'HEAD'))
-        self.assertEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'newbranch')
+        self.assertEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'newbranch')
 
     def test_push(self):
         git1 = GitCmd(self.main_repo_bare)
@@ -366,7 +366,7 @@ class TestGitRepository(unittest.TestCase):
 
         changesets1 = list(git1('log', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', pretty='oneline', _iter=True))
-        self.assertEquals(len(changesets1), len(changesets2))
+        self.assertEqual(len(changesets1), len(changesets2))
 
     def test_push_to_unqualified_destination(self):
         git1 = GitCmd(self.main_repo_bare)
@@ -381,7 +381,7 @@ class TestGitRepository(unittest.TestCase):
 
         changesets1 = list(git1('log', 'unqualified', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', cs.hash, pretty='oneline', _iter=True))
-        self.assertEquals(changesets1, changesets2)
+        self.assertEqual(changesets1, changesets2)
 
     def test_push_tag_to_unqualified_destination(self):
         git1 = GitCmd(self.main_repo_bare)
@@ -397,7 +397,7 @@ class TestGitRepository(unittest.TestCase):
 
         changesets1 = list(git1('log', 'unqualified', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', 'unqualified', pretty='oneline', _iter=True))
-        self.assertEquals(changesets1, changesets2)
+        self.assertEqual(changesets1, changesets2)
 
     def test_push_all_with_no_reference(self):
         git1 = GitCmd(self.main_repo_bare)
@@ -420,7 +420,7 @@ class TestGitRepository(unittest.TestCase):
 
         changesets1 = list(git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
-        self.assertEquals(changesets1, changesets2)
+        self.assertEqual(changesets1, changesets2)
 
     def test_push_all_with_reference_and_revision(self):
         git1 = GitCmd(self.main_repo_bare)
@@ -443,7 +443,7 @@ class TestGitRepository(unittest.TestCase):
 
         changesets1 = list(git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
-        self.assertEquals(changesets1, changesets2)
+        self.assertEqual(changesets1, changesets2)
 
     def test_push_only_notes(self):
         git1 = GitCmd(self.main_repo_bare)
@@ -467,10 +467,10 @@ class TestGitRepository(unittest.TestCase):
     def test_get_branch(self):
         repo = Repository(self.cloned_from_repo)
         branch = repo.get_branch('newbranch')
-        self.assertEquals(branch.name, 'newbranch')
+        self.assertEqual(branch.name, 'newbranch')
         repo.update('newbranch')
         branch = repo.get_branch()
-        self.assertEquals(branch.name, 'newbranch')
+        self.assertEqual(branch.name, 'newbranch')
         with self.assertRaises(RepositoryError):
             branch = repo.get_branch('does_not_exist')
 
@@ -481,73 +481,73 @@ class TestGitRepository(unittest.TestCase):
         # Just cs_from
         just_from_second = gitrepo.get_revset(
             cs_from="52109e71fd7f16cb366acfcbb140d6d7f2fc50c9")
-        self.assertEquals(len(list(just_from_second)), 3)
+        self.assertEqual(len(list(just_from_second)), 3)
 
         # No params
         no_params = gitrepo.get_revset()
-        self.assertEquals(len(list(no_params)), 4)
+        self.assertEqual(len(list(no_params)), 4)
 
         # From first commit to head
         first_to_head = gitrepo.get_revset(
             cs_from="e3b1fc907ea8b3482e29eb91520c0e2eee2b4cdb",
             cs_to=git('rev-parse', 'HEAD'))
-        self.assertEquals(len(list(first_to_head)), 4)
+        self.assertEqual(len(list(first_to_head)), 4)
         second_to_head = gitrepo.get_revset(
             cs_from="52109e71fd7f16cb366acfcbb140d6d7f2fc50c9",
             cs_to=git('rev-parse', 'HEAD'))
-        self.assertEquals(len(list(second_to_head)), 3)
+        self.assertEqual(len(list(second_to_head)), 3)
         second_to_third = gitrepo.get_revset(
             cs_from="52109e71fd7f16cb366acfcbb140d6d7f2fc50c9",
             cs_to="2a9e1b9be3fb95ed0841aacc1f20972430dc1a5c")
-        self.assertEquals(len(list(second_to_third)), 2)
+        self.assertEqual(len(list(second_to_third)), 2)
 
         # Just by branch
         by_branch = gitrepo.get_revset(branch='newbranch')
-        self.assertEquals(len(list(by_branch)), 3)
+        self.assertEqual(len(list(by_branch)), 3)
 
         # Just by branch being in another
         gitrepo.update('master')
         by_branch = gitrepo.get_revset(branch='newbranch')
-        self.assertEquals(len(list(by_branch)), 3)
-        self.assertEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'master')
+        self.assertEqual(len(list(by_branch)), 3)
+        self.assertEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'master')
 
         # Only common ancestor belong to newbranch
         common_ancestor = gitrepo.get_revset(
             cs_to="b7fa61d5faf434642e35744b55d8d8f367afc343",
             cs_from="52109e71fd7f16cb366acfcbb140d6d7f2fc50c9",
             branch='newbranch')
-        self.assertEquals(len(list(common_ancestor)), 1)
+        self.assertEqual(len(list(common_ancestor)), 1)
 
         # Zero changesets belong to newbranch
         none = gitrepo.get_revset(
             cs_to="b7fa61d5faf434642e35744b55d8d8f367afc343",
             cs_from="2a9e1b9be3fb95ed0841aacc1f20972430dc1a5c",
             branch='newbranch')
-        self.assertEquals(len(list(none)), 0)
+        self.assertEqual(len(list(none)), 0)
 
         # From the beginning to master tip so only common changesets in both
         # branches
         common_changesets = gitrepo.get_revset(
             cs_to="b7fa61d5faf434642e35744b55d8d8f367afc343",
             branch='newbranch')
-        self.assertEquals(len(list(common_changesets)), 2)
+        self.assertEqual(len(list(common_changesets)), 2)
 
         # From the beginning to common ancestor, that belongs to both branches
         toboth = gitrepo.get_revset(
             cs_to="52109e71fd7f16cb366acfcbb140d6d7f2fc50c9",
             branch='newbranch')
-        self.assertEquals(len(list(toboth)), 2)
+        self.assertEqual(len(list(toboth)), 2)
 
         # From newbranch origin to newbranch tip
         ignore_branch3 = gitrepo.get_revset(
             cs_from="e3b1fc907ea8b3482e29eb91520c0e2eee2b4cdb",
             branch='newbranch')
-        self.assertEquals(len(list(ignore_branch3)), 3)
+        self.assertEqual(len(list(ignore_branch3)), 3)
 
     def test_get_branch_tip(self):
         git = GitCmd(self.cloned_from_repo)
         gitrepo = Repository(self.cloned_from_repo)
-        self.assertEquals(
+        self.assertEqual(
             gitrepo.get_branch_tip('master').hash, git('rev-parse', 'master'))
 
     def test_update(self):
@@ -563,25 +563,25 @@ class TestGitRepository(unittest.TestCase):
         self.assertFalse(os.path.isfile(os.path.join(path, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(path, 'file1.txt')))
         self.assertFalse(os.path.isfile(os.path.join(path, 'file3.txt')))
-        self.assertNotEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
+        self.assertNotEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
 
         gitrepo.update("branch-1")
         self.assertTrue(os.path.isfile(os.path.join(path, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(path, 'file1.txt')))
         self.assertFalse(os.path.isfile(os.path.join(path, 'file3.txt')))
-        self.assertNotEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
+        self.assertNotEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
 
         gitrepo.update("branch-2")
         self.assertTrue(os.path.isfile(os.path.join(path, 'file3.txt')))
         self.assertFalse(os.path.isfile(os.path.join(path, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(path, 'file1.txt')))
-        self.assertNotEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
+        self.assertNotEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
 
         gitrepo.update("08b952ae66e59b216b1171c0c57082353bc80863")
         self.assertFalse(os.path.isfile(os.path.join(path, 'file3.txt')))
         self.assertFalse(os.path.isfile(os.path.join(path, 'file2.txt')))
         self.assertTrue(os.path.isfile(os.path.join(path, 'file1.txt')))
-        self.assertEquals(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
+        self.assertEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'HEAD')
 
     def test_update_failures(self):
         repo_name = 'fixture-3'
@@ -596,7 +596,7 @@ class TestGitRepository(unittest.TestCase):
     def test_parents(self):
         git = GitCmd(self.cloned_from_repo)
         gitrepo = Repository(self.cloned_from_repo)
-        self.assertEquals([x.hash for x in gitrepo.parents()],
+        self.assertEqual([x.hash for x in gitrepo.parents()],
                           git('log', '-1', pretty='%P').split())
 
     def test_strip(self):
@@ -606,8 +606,8 @@ class TestGitRepository(unittest.TestCase):
         parent_old_head = git('log', '-1', pretty='%P').split()[0]
         gitrepo.strip(gitrepo[old_head])
         new_head = git('rev-parse', 'HEAD')
-        self.assertNotEquals(old_head, new_head)
-        self.assertEquals(new_head, parent_old_head)
+        self.assertNotEqual(old_head, new_head)
+        self.assertEqual(new_head, parent_old_head)
 
     def test_is_merge(self):
         git = GitCmd(self.cloned_from_repo)
@@ -633,12 +633,12 @@ class TestGitRepository(unittest.TestCase):
         masterhead_hash = 'b7fa61d5faf434642e35744b55d8d8f367afc343'
         newbranch_hash = 'a277468c9cc0088ba69e0a4b085822d067e360ff'
         firstway = gitrepo.compare_branches(masterhead_hash, 'newbranch')
-        self.assertEquals([
+        self.assertEqual([
             gitrepo['b7fa61d5faf434642e35744b55d8d8f367afc343'],
             gitrepo['2a9e1b9be3fb95ed0841aacc1f20972430dc1a5c']],
             firstway)
         secondway = gitrepo.compare_branches(newbranch_hash, 'master')
-        self.assertEquals([
+        self.assertEqual([
             gitrepo['a277468c9cc0088ba69e0a4b085822d067e360ff']],
             secondway)
 
@@ -651,13 +651,13 @@ class TestGitRepository(unittest.TestCase):
         # remotely too
         gitrepo.push(None, self.main_repo, ref_name=branch_name)
 
-        self.assertEquals(len(list(gitrepo.get_branches())), 2)
-        self.assertEquals(len(list(gitrepo_main.get_branches())), 4)
+        self.assertEqual(len(list(gitrepo.get_branches())), 2)
+        self.assertEqual(len(list(gitrepo_main.get_branches())), 4)
 
         gitrepo.terminate_branch(branch_name, None, self.main_repo)
 
-        self.assertEquals(len(list(gitrepo.get_branches())), 1)
-        self.assertEquals(len(list(gitrepo_main.get_branches())), 4)
+        self.assertEqual(len(list(gitrepo.get_branches())), 1)
+        self.assertEqual(len(list(gitrepo_main.get_branches())), 4)
 
         # Terminating a branch already terminated
         # it shouldn't do anything but warning with a message
@@ -672,13 +672,13 @@ class TestGitRepository(unittest.TestCase):
         # remotely too
         gitrepo.push(None, self.main_repo, ref_name=branch_name)
 
-        self.assertEquals(len(list(gitrepo.get_branches())), 2)
-        self.assertEquals(len(list(gitrepo_main.get_branches())), 4)
+        self.assertEqual(len(list(gitrepo.get_branches())), 2)
+        self.assertEqual(len(list(gitrepo_main.get_branches())), 4)
 
         gitrepo.exterminate_branch(branch_name, None, self.main_repo)
 
-        self.assertEquals(len(list(gitrepo.get_branches())), 1)
-        self.assertEquals(len(list(gitrepo_main.get_branches())), 3)
+        self.assertEqual(len(list(gitrepo.get_branches())), 1)
+        self.assertEqual(len(list(gitrepo_main.get_branches())), 3)
 
         # Terminating a branch already terminated
         # it shouldn't do anything but warning with a message

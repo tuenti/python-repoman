@@ -28,7 +28,7 @@ class TestCommitMessage(unittest.TestCase):
         message = "A message with %(something)s"
         values = {'something': 'foo'}
         commit_message = CommitMessage(message, values)
-        self.assertEquals(str(commit_message), message % values)
+        self.assertEqual(str(commit_message), message % values)
 
     def testCloseBranchMessage(self):
         builder = DefaultCommitMessageBuilder()

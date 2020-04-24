@@ -80,7 +80,7 @@ class TestDepot(unittest.TestCase):
             'b': range(8, 13),
         }
 
-        self.assertEquals(
+        self.assertEqual(
             {'a': range(1, 6), 'b': [8]},
             self.depot._filter_missing_changesets(reqs))
 

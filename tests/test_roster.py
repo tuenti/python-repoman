@@ -50,7 +50,7 @@ class TestRoster(unittest.TestCase):
         self.roster['/test1'] = clone_mother(status=Clone.INUSE)
         self.roster['/test2'] = clone_mother(status=Clone.INUSE)
         self.roster.clear()
-        self.assertEquals(0, len(self.roster))
+        self.assertEqual(0, len(self.roster))
 
     def test_missing(self):
         self.assertRaises(KeyError, lambda x: self.roster[x], '/test')
@@ -68,12 +68,12 @@ class TestRoster(unittest.TestCase):
         self.roster['/test1'] = r1
         self.roster['/test2'] = r2
         r2.status = Clone.INUSE
-        self.assertEquals(r2, self.roster.reserve_clone('1', 'test'))
+        self.assertEqual(r2, self.roster.reserve_clone('1', 'test'))
 
     def test_clone_str(self):
         r1 = clone_mother(status=Clone.INUSE)
-        self.assertEquals(r1.__str__(), str(r1.__dict__))
-        self.assertEquals(r1.__repr__(), str(r1.__dict__))
+        self.assertEqual(r1.__str__(), str(r1.__dict__))
+        self.assertEqual(r1.__repr__(), str(r1.__dict__))
 
     def test_free_clone(self):
         r1 = clone_mother(status=Clone.INUSE, task='1')
@@ -85,7 +85,7 @@ class TestRoster(unittest.TestCase):
         self.roster['/test3'] = r3
         self.roster.free_clone(r1, '1')
         r1 = self.roster['/test1']
-        self.assertEquals(Clone.FREE, r1.status)
+        self.assertEqual(Clone.FREE, r1.status)
         # Check cannot remove elements from the roster not owned.
         self.assertRaises(RosterError, self.roster.free_clone, r3, 1)
 
@@ -136,9 +136,9 @@ class TestRoster(unittest.TestCase):
     def test_get_single(self):
         self.assertListEqual([], self.roster.get_available())
         r1 = self.roster.add('/test1', u'1', 'test')
-        self.assertEquals(r1, self.roster['/test1'])
+        self.assertEqual(r1, self.roster['/test1'])
         r2 = self.roster.add('/test2', u'1', 'test')
-        self.assertEquals(r2, self.roster['/test2'])
+        self.assertEqual(r2, self.roster['/test2'])
 
     def test_add_limit(self):
         # tests the limit imposed to the creation of clones
