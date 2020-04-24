@@ -154,7 +154,7 @@ class Roster(collections.abc.MutableMapping):
             while True:
                 row = cursor.fetchone()
                 if row is None:
-                    raise StopIteration()
+                    return
                 yield row[0]
 
     def __len__(self):
