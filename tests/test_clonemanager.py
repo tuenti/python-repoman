@@ -48,19 +48,19 @@ class AbstractTestDepotManager(object):
         new_clone = self.rman.give_me_depot(
             '1', 'bla', {}, self.rman.main_cache_path)
         self.assertIsNotNone(new_clone)
-        self.assertEquals(Clone.INUSE, self.rman.roster[new_clone.path].status)
+        self.assertEqual(Clone.INUSE, self.rman.roster[new_clone.path].status)
 
     def test_free_depot(self):
         # Reserve clone
         repo = self.rman.give_me_depot(
             '1', 'bla', {}, self.rman.main_cache_path)
         self.assertIsNotNone(repo)
-        self.assertEquals(Clone.INUSE, self.rman.roster[repo.path].status)
+        self.assertEqual(Clone.INUSE, self.rman.roster[repo.path].status)
 
         # Free the repo.
         self.rman.free_depot(repo, '1')
         self.assertIn(repo.path, self.rman.roster)
-        self.assertEquals(Clone.FREE, self.rman.roster[repo.path].status)
+        self.assertEqual(Clone.FREE, self.rman.roster[repo.path].status)
 
     @staticmethod
     def _add_file(repo, file_name):
@@ -155,7 +155,7 @@ class AbstractTestDepotManager(object):
         ][0]
 
         self.assertSequenceEqual([repo_clon], self.rman.roster.get_available())
-        self.assertEquals(
+        self.assertEqual(
             repo_clon, self.rman.get_available_clone(repo_clon.path))
         self.assertIsNone(self.rman.get_not_available_clone(repo_clon.path))
 

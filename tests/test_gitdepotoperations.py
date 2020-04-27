@@ -102,21 +102,21 @@ class TestGitDepotOperations(unittest.TestCase):
         dcvs = DepotOperations()
 
         # It is there
-        self.assertEquals(
+        self.assertEqual(
             [],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
                 ['52109e71fd7f16cb366acfcbb140d6d7f2fc50c9']))
 
         # It is not there
-        self.assertEquals(
+        self.assertEqual(
             [missing_changeset],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
                 [missing_changeset]))
 
         # Missing branches and changesets
-        self.assertEquals(
+        self.assertEqual(
             ['missing_branch', missing_changeset, 'deadbeef'],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
@@ -124,7 +124,7 @@ class TestGitDepotOperations(unittest.TestCase):
 
 
         # Multiple changesets
-        self.assertEquals(
+        self.assertEqual(
             [missing_changeset],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
@@ -132,7 +132,7 @@ class TestGitDepotOperations(unittest.TestCase):
                  '52109e71fd7f16cb366acfcbb140d6d7f2fc50c9']))
 
         # All changesets
-        self.assertEquals(
+        self.assertEqual(
             [],
             dcvs.check_changeset_availability(
                 os.path.join(self.environment_path, 'repo1'),
@@ -166,7 +166,7 @@ class TestGitDepotOperations(unittest.TestCase):
         # check that we are not mixing files with changesets when checking
         # available changesets in working copies
         open(os.path.join(workspace1.path, 'deadbeef'), 'w').close()
-        self.assertEquals(
+        self.assertEqual(
             ['deadbeef'],
             dcvs.check_changeset_availability(workspace1.path, ['deadbeef']))
 
@@ -183,7 +183,7 @@ class TestGitDepotOperations(unittest.TestCase):
             source=os.path.join(self.environment_path, 'remote'))
 
         # Changeset both there
-        self.assertEquals(
+        self.assertEqual(
             True, dcvs.grab_changesets(
                 os.path.join(self.environment_path, 'master'),
                 os.path.join(self.environment_path, 'remote'),
@@ -288,7 +288,7 @@ class TestGitDepotOperations(unittest.TestCase):
         self.assertTrue(workspace1.request_refresh({
             os.path.join(self.environment_path, 'other'): ['newbranch']}))
 
-        self.assertEquals(
+        self.assertEqual(
             sh.git('rev-parse', 'newbranch', _cwd=workspace1.path).strip(),
             "a277468c9cc0088ba69e0a4b085822d067e360ff")
 

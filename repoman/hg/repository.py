@@ -636,7 +636,7 @@ class Repository(BaseRepo):
         """
         Converts an indexer changeset to an Changeset
         """
-        fixed_date = re.match("(.*)[\+|\-]",
+        fixed_date = re.match(r"(.*)[\+|\-]",
                               indexer_changeset.date).groups(0)[0]
         # The date format provided by fecru is: 2013-05-09T15:11:44+02:00
         cs_datetime = datetime.datetime.strptime(

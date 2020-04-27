@@ -15,7 +15,7 @@
 # limitations under the License.
 #
 
-import collections
+import collections.abc
 import sqlite3
 import time
 
@@ -80,7 +80,7 @@ def unmarshall(db_str):
     return Clone(path, status, task, task_name, timestamp)
 
 
-class Roster(collections.MutableMapping):
+class Roster(collections.abc.MutableMapping):
     """Manages the file used as a roster. Provides dict API to it."""
 
     class DBCursor(object):
@@ -154,7 +154,7 @@ class Roster(collections.MutableMapping):
             while True:
                 row = cursor.fetchone()
                 if row is None:
-                    raise StopIteration()
+                    return
                 yield row[0]
 
     def __len__(self):

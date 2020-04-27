@@ -56,14 +56,14 @@ class TestGitChangeset(unittest.TestCase):
         git = GitCmd(os.path.join(self.environment_path, 'remote'))
         gitrepo = Repository(os.path.join(self.environment_path, 'remote'))
         gitcs = gitrepo[git('rev-parse', 'HEAD')]
-        self.assertEquals(gitcs.author, "Jose Plana")
-        self.assertEquals(
+        self.assertEqual(gitcs.author, "Jose Plana")
+        self.assertEqual(
             gitcs.hash, "52109e71fd7f16cb366acfcbb140d6d7f2fc50c9")
-        self.assertEquals(
+        self.assertEqual(
             gitcs.desc.rstrip('\n'), "Second changeset".rstrip('\n'))
         self.assertFalse(gitcs.merge)
         print(gitrepo.get_parents("52109e71fd7f16cb366acfcbb140d6d7f2fc50c9"))
-        self.assertEquals(
+        self.assertEqual(
             gitcs.parents[0].hash, "e3b1fc907ea8b3482e29eb91520c0e2eee2b4cdb")
 
     def test_create_branch(self):
@@ -77,14 +77,14 @@ class TestGitChangeset(unittest.TestCase):
         gitrepo = Repository(non_bare_repo_path)
         gitcs = gitrepo[git('rev-parse', 'HEAD')]
         branch = gitcs.create_branch('fakebranch')
-        self.assertEquals(branch.get_changeset(), gitrepo.tip())
-        self.assertEquals(
+        self.assertEqual(branch.get_changeset(), gitrepo.tip())
+        self.assertEqual(
             'fakebranch', git('rev-parse', '--abbrev-ref', 'fakebranch'))
 
     def test___str__(self):
         git = GitCmd(os.path.join(self.environment_path, 'remote'))
         gitrepo = Repository(os.path.join(self.environment_path, 'remote'))
         gitcs = gitrepo[git('rev-parse', 'HEAD')]
-        self.assertEquals(
+        self.assertEqual(
             gitcs.__str__(),
             git('rev-parse', 'HEAD')[:Changeset.SHORT_HASH_COUNT])

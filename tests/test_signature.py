@@ -28,7 +28,7 @@ class DummyRepository(Repository):
         self.expected_signature = None
 
     def tag(self, *args, **kwargs):
-        self.test_case.assertEquals(self.signature, self.expected_signature)
+        self.test_case.assertEqual(self.signature, self.expected_signature)
 
 
 class TestSignature(unittest.TestCase):
@@ -42,8 +42,8 @@ class TestSignature(unittest.TestCase):
     def testOnlyUser(self):
         a_user = 'foouser'
         signature = Signature(user=a_user)
-        self.assertEquals(signature.user, a_user)
-        self.assertEquals(signature.author, a_user)
+        self.assertEqual(signature.user, a_user)
+        self.assertEqual(signature.author, a_user)
         self.assertTrue(a_user in str(signature))
         self.assertTrue(a_user in signature.email)
         self.assertTrue(a_user in signature.author_email)
@@ -58,17 +58,17 @@ class TestSignature(unittest.TestCase):
             email=a_user_email,
             author=an_author,
             author_email=an_author_email)
-        self.assertEquals(signature.user, a_user)
-        self.assertEquals(signature.email, a_user_email)
-        self.assertEquals(signature.author, an_author)
-        self.assertEquals(signature.author_email, an_author_email)
+        self.assertEqual(signature.user, a_user)
+        self.assertEqual(signature.email, a_user_email)
+        self.assertEqual(signature.author, an_author)
+        self.assertEqual(signature.author_email, an_author_email)
         self.assertTrue(a_user in str(signature))
         self.assertTrue(a_user_email in str(signature))
 
     def testRepositorySignature(self):
         a_signature = Signature()
         repository = DummyRepository(self, signature=a_signature)
-        self.assertEquals(repository.signature, a_signature)
+        self.assertEqual(repository.signature, a_signature)
         repository.expected_signature = a_signature
         repository.tag('foo')
 
