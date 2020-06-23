@@ -500,12 +500,23 @@ class Repository(BaseRepo):
                 ref_tags)
         )
 
-    def compare_branches(self, revision_to_check_hash, branch_base_name):
+    def log_branch(self, revision_to_check_hash, branch_base_name):
+        """
+        returns the list of changesets included in branch_base_name from
+        revision to check_hash
+        (git log branch_base_name..revision_to_check_hash)
+        """
+        hashes = self._git("log", "--pretty=%H",
+            "%s..%s" % (branch_base_name, revision_to_check_hash)).split()
+
+        return [self._new_changeset_object(h) for h in hashes]
+
+    def compare_branches(self, branch_from, branch_to):
         """Inherited method
         :func:`~repoman.repository.Repository.compare_branches`
         """
         hashes = self._git("log", "--pretty=%H",
-            "%s..%s" % (branch_base_name, revision_to_check_hash)).split()
+                           branch_from, "^%s" % branch_to).split()
 
         return [self._new_changeset_object(h) for h in hashes]
 
