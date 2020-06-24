@@ -628,6 +628,20 @@ class TestGitRepository(unittest.TestCase):
         tags = gitrepo.get_changeset_tags(rev.hash)
         self.assertListEqual(tags, ["test_tag", "test_tag2"])
 
+    def test_log_branch(self):
+        gitrepo = Repository(self.cloned_from_repo)
+        masterhead_hash = 'b7fa61d5faf434642e35744b55d8d8f367afc343'
+        newbranch_hash = 'a277468c9cc0088ba69e0a4b085822d067e360ff'
+        firstway = gitrepo.log_branch(masterhead_hash, 'newbranch')
+        self.assertEqual([
+            gitrepo['b7fa61d5faf434642e35744b55d8d8f367afc343'],
+            gitrepo['2a9e1b9be3fb95ed0841aacc1f20972430dc1a5c']],
+            firstway)
+        secondway = gitrepo.log_branch(newbranch_hash, 'master')
+        self.assertEqual([
+            gitrepo['a277468c9cc0088ba69e0a4b085822d067e360ff']],
+            secondway)
+
     def test_compare_branches(self):
         gitrepo = Repository(self.cloned_from_repo)
         masterhead_hash = 'b7fa61d5faf434642e35744b55d8d8f367afc343'

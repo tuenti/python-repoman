@@ -2,15 +2,15 @@ all:: test
 
 env_setup_for_development::
 	@echo installing all requirements...
-	@pip install -r requirements.txt
-	@pip install -r requirements-dev.txt
+	@pip3 install -r requirements.txt
+	@pip3 install -r requirements-dev.txt
 
 	@echo setting up the development environment
 	@python setup.py develop
 
 env_setup_for_documentation::
 	@echo installing all requirements...
-	@pip install -r requirements-doc.txt
+	@pip3 install -r requirements-doc.txt
 
 test::
 	@echo launching tests...
