@@ -644,14 +644,12 @@ class TestGitRepository(unittest.TestCase):
 
     def test_compare_branches(self):
         gitrepo = Repository(self.cloned_from_repo)
-        masterhead_hash = 'b7fa61d5faf434642e35744b55d8d8f367afc343'
-        newbranch_hash = 'a277468c9cc0088ba69e0a4b085822d067e360ff'
-        firstway = gitrepo.compare_branches(masterhead_hash, 'newbranch')
+        firstway = gitrepo.compare_branches('master', 'newbranch')
         self.assertEqual([
             gitrepo['b7fa61d5faf434642e35744b55d8d8f367afc343'],
             gitrepo['2a9e1b9be3fb95ed0841aacc1f20972430dc1a5c']],
             firstway)
-        secondway = gitrepo.compare_branches(newbranch_hash, 'master')
+        secondway = gitrepo.compare_branches('newbranch', 'master')
         self.assertEqual([
             gitrepo['a277468c9cc0088ba69e0a4b085822d067e360ff']],
             secondway)
