@@ -28,6 +28,7 @@ from repoman.reference import Reference
 
 logger = logging.getLogger(__name__)
 
+
 class GitCmd(object):
     def __init__(self, path):
         self.path = path
@@ -36,13 +37,15 @@ class GitCmd(object):
         try:
             cmd = sh.git(_cwd=self.path, _tty_out=False, *args, **kwargs)
         except sh.ErrorReturnCode as e:
-            raise RepositoryError("'%s' failed in %s: %s" % (e.full_cmd, self.path, e))
+            raise RepositoryError(
+                "'%s' failed in %s: %s" % (e.full_cmd, self.path, e))
 
         if '_iter' in kwargs and kwargs['_iter'] != None:
             return cmd
 
         # For convenience, remove last new line of command output
         return re.sub('(\n|\n\r)$', '', cmd.stdout.decode('utf-8'))
+
 
 class GitMerge(MergeStrategy):
     def __init__(self, *args, **kwargs):
@@ -64,8 +67,8 @@ class GitMerge(MergeStrategy):
         self._validate_local_branch()
 
         self._git('merge', '--no-ff', '--no-commit',
-            self.other_rev.hash,
-            _ok_code=[0, 1])
+                  self.other_rev.hash,
+                  _ok_code=[0, 1])
 
         conflicts = self._git('diff', name_only=True, diff_filter='U').split()
 
@@ -137,9 +140,10 @@ class Repository(BaseRepo):
         Return a new Changeset object with the provided info
         """
         tags = ' '.join(self.get_changeset_tags(refname))
-        info, body = self._git("log", "-1",
-                "--pretty=%H,%ct,%cn%n%B",
-                refname).split("\n", 1)
+        info, body = self._git("log",
+                               "-1",
+                               "--pretty=%H,%ct,%cn%n%B",
+                               refname).split("\n", 1)
         sha1, committer_time, committer_name = info.split(",", 2)
 
         initial_values = [
@@ -186,7 +190,8 @@ class Repository(BaseRepo):
         self._git('reset', '--hard', '%s^' % changeset.hash)
 
     def branch_exists(self, branch_name):
-        """Inherited method :func:`~repoman.repository.Repository.branch_exists`
+        """Inherited method
+        :func:`~repoman.repository.Repository.branch_exists`
         """
         for branch in self.get_branches():
             if branch.name == branch_name:
@@ -216,13 +221,11 @@ class Repository(BaseRepo):
         """Inherited method :func:`~repoman.repository.Repository.get_branches`
         """
         branches = list([
-            branch_name.strip() for branch_name in
-                self._git(
-                   "for-each-ref",
-                   "refs/heads",
-                   format="%(refname:short)",
-                   _iter=True,
-                )
+            branch_name.strip() for branch_name in self._git(
+                "for-each-ref",
+                "refs/heads",
+                format="%(refname:short)",
+                _iter=True)
         ])
         try:
             # Add current branch even if it doesn't have commits
@@ -230,9 +233,11 @@ class Repository(BaseRepo):
             if current.name not in branches:
                 branches.append(current.name)
         except:
-            # TODO: Better handle error cases here, related with HEAD not existing
+            # TODO: Better handle error cases here, related to
+            # HEAD not existing
             pass
-        return [self._new_branch_object(branch) for branch in branches if branch != 'HEAD']
+        return [self._new_branch_object(branch) for branch in branches if
+                branch != 'HEAD']
 
     def exterminate_branch(self, branch_name, repo_origin, repo_dest):
         """Inherited method
@@ -320,16 +325,23 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.pull`
         """
         git_dir = os.path.join(
-            self.path, sh.git('rev-parse', '--git-dir', _cwd=self.path).strip())
+            self.path,
+            sh.git('rev-parse', '--git-dir', _cwd=self.path).strip())
         git = GitCmd(git_dir)
 
         refspec = '+refs/*:refs/*'
         if branch != None:
             refspec = '+refs/heads/%s:refs/heads/%s' % (branch, branch)
 
-        logger.debug("Executing git -c core.bare=true fetch %s %s" % (remote, refspec))
-        output = git('-c', 'core.bare=true', 'fetch', remote, refspec, _err_to_out=True)
-        logger.debug("Output:\n%s" % output)
+        logger.debug("Executing git -c core.bare=true fetch %s %s",
+                     remote, refspec)
+        output = git('-c',
+                     'core.bare=true',
+                     'fetch',
+                     remote,
+                     refspec,
+                     _err_to_out=True)
+        logger.debug("Output:\n%s", output)
         self._clean()
 
     def push(self, orig, dest, rev=None, ref_name=None, force=False):
@@ -337,7 +349,6 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.push`
         """
         all_tags_option = "--tags"
-        all_notes_refspec = "refs/notes/*:refs/notes/*"
 
         if rev is None and ref_name is None:
             # Push everything
@@ -349,7 +360,8 @@ class Repository(BaseRepo):
                 "When pushing, revision specified but not reference name")
         else:
             if self.tag_exists(ref_name):
-                # We don't know what this ref is in remote, but here it is a tag
+                # We don't know what this ref is in remote,
+                # but here it is a tag
                 ref_name = "refs/tags/%s" % ref_name
                 all_tags_option = ""
             else:
@@ -358,11 +370,9 @@ class Repository(BaseRepo):
             refspec = "%s:%s" % (rev, ref_name)
 
         if all_tags_option:
-            self._git("push", dest, refspec, all_tags_option,
-                      all_notes_refspec, f=force)
+            self._git("push", dest, refspec, all_tags_option, f=force)
         else:
-            self._git("push", dest, refspec, all_notes_refspec,
-                      f=force)
+            self._git("push", dest, refspec, f=force)
         return self.tip()
 
     def _merge(self, local_branch=None, other_rev=None,
@@ -444,7 +454,12 @@ class Repository(BaseRepo):
             'GIT_COMMITTER_EMAIL': self.signature.email,
         })
 
-        commit = self._git('commit-tree', tree, '-m', message, *parent_args, _env=env).strip()
+        commit = self._git('commit-tree',
+                           tree,
+                           '-m',
+                           message,
+                           *parent_args,
+                           _env=env).strip()
         self._git('reset', '--hard', commit)
         return self.tip()
 
@@ -491,8 +506,9 @@ class Repository(BaseRepo):
             if tag
         ]
 
-        ref_tags = filter(lambda ref_tag: ref_tag[0].startswith(changeset_hash),
-                          ref_tags)
+        ref_tags = filter(
+            lambda ref_tag: ref_tag[0].startswith(changeset_hash),
+            ref_tags)
 
         tag_reference_regexp = re.compile('^refs/tags/')
         return list(
@@ -506,7 +522,9 @@ class Repository(BaseRepo):
         revision to check_hash
         (git log branch_base_name..revision_to_check_hash)
         """
-        hashes = self._git("log", "--pretty=%H",
+        hashes = self._git(
+            "log",
+            "--pretty=%H",
             "%s..%s" % (branch_base_name, revision_to_check_hash)).split()
 
         return [self._new_changeset_object(h) for h in hashes]
@@ -542,7 +560,10 @@ class Repository(BaseRepo):
         """Inherited method
         :func:`~repoman.repository.Repository.get_parents`
         """
-        parents = self._git("log", "--pretty=%P", "-1", changeset_hash.strip()).split()
+        parents = self._git("log",
+                            "--pretty=%P",
+                            "-1",
+                            changeset_hash.strip()).split()
         return [self[cs.strip()] for cs in parents]
 
     def append_note(self, note, revision=None):
