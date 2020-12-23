@@ -1,8 +1,8 @@
 language: python
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
+  - "3.7"
 before_install:
   - sudo add-apt-repository -y ppa:mercurial-ppa/releases
   - sudo apt-get update -qq

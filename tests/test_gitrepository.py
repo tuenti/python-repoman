@@ -56,7 +56,6 @@ class TestGitRepository(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.environment_path)
 
-
     def add_content_to_repo(self, fixture, repo_path, bare=False):
         if bare:
             sh.git("clone",
@@ -175,7 +174,8 @@ class TestGitRepository(unittest.TestCase):
         commit_msg = "Test message"
 
         git = GitCmd(self.main_repo)
-        initial_len = len(list(git('log', 'HEAD', pretty='oneline', _iter=True)))
+        initial_len = len(
+            list(git('log', 'HEAD', pretty='oneline', _iter=True)))
 
         gitrepo = Repository(self.main_repo)
         gitrepo.add(file_name)
@@ -339,7 +339,8 @@ class TestGitRepository(unittest.TestCase):
         self.assertEqual(
                 git('rev-parse', 'test_branch'),
                 git('rev-parse', 'HEAD'))
-        self.assertEqual(git('rev-parse', '--abbrev-ref', 'HEAD'), 'test_branch')
+        self.assertEqual(git('rev-parse', '--abbrev-ref', 'HEAD'),
+                         'test_branch')
 
         gitrepo.branch('newbranch')
         self.assertEqual(
@@ -377,9 +378,11 @@ class TestGitRepository(unittest.TestCase):
 
         # Pushing a revision to a reference name that doesn't exist is
         # considered a push to an unqualified destination
-        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='unqualified')
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash,
+                   ref_name='unqualified')
 
-        changesets1 = list(git1('log', 'unqualified', pretty='oneline', _iter=True))
+        changesets1 = list(
+            git1('log', 'unqualified', pretty='oneline', _iter=True))
         changesets2 = list(git2('log', cs.hash, pretty='oneline', _iter=True))
         self.assertEqual(changesets1, changesets2)
 
@@ -393,10 +396,13 @@ class TestGitRepository(unittest.TestCase):
 
         # Pushing a revision to a reference name that doesn't exist is
         # considered a push to an unqualified destination
-        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='unqualified')
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash,
+                   ref_name='unqualified')
 
-        changesets1 = list(git1('log', 'unqualified', pretty='oneline', _iter=True))
-        changesets2 = list(git2('log', 'unqualified', pretty='oneline', _iter=True))
+        changesets1 = list(
+            git1('log', 'unqualified', pretty='oneline', _iter=True))
+        changesets2 = list(
+            git2('log', 'unqualified', pretty='oneline', _iter=True))
         self.assertEqual(changesets1, changesets2)
 
     def test_push_all_with_no_reference(self):
@@ -418,11 +424,13 @@ class TestGitRepository(unittest.TestCase):
         self.assertEqual(notes_ref_repo1, notes_ref_repo2)
         self.assertEqual(notes_ref, notes_ref_repo1)
 
-        changesets1 = list(git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
-        changesets2 = list(git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        changesets1 = list(
+            git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        changesets2 = list(
+            git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
         self.assertEqual(changesets1, changesets2)
 
-    def test_push_all_with_reference_and_revision(self):
+    def test_push_all_with_reference_and_revision_without_notes(self):
         git1 = GitCmd(self.main_repo_bare)
         git2 = GitCmd(self.cloned_from_repo)
 
@@ -432,17 +440,20 @@ class TestGitRepository(unittest.TestCase):
         repo2.tag('unqualified', revision=cs.hash)
         notes_ref = repo2.append_note('some note dude', cs.hash)
 
-        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='master')
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash,
+                   ref_name='master')
 
-        notes_ref_repo1, commit_ref_repo1 = git1('notes', 'list').split()
         notes_ref_repo2, commit_ref_repo2 = git2('notes', 'list').split()
 
-        self.assertEqual(commit_ref_repo1, commit_ref_repo2)
-        self.assertEqual(notes_ref_repo1, notes_ref_repo2)
-        self.assertEqual(notes_ref, notes_ref_repo1)
+        self.assertListEqual(git1('notes', 'list').split(), [])
 
-        changesets1 = list(git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
-        changesets2 = list(git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        self.assertEqual(cs.hash, commit_ref_repo2)
+        self.assertEqual(notes_ref, notes_ref_repo2)
+
+        changesets1 = list(
+            git1('log', 'unqualified', '--', pretty='oneline', _iter=True))
+        changesets2 = list(
+            git2('log', 'unqualified', '--', pretty='oneline', _iter=True))
         self.assertEqual(changesets1, changesets2)
 
     def test_push_only_notes(self):
@@ -452,10 +463,12 @@ class TestGitRepository(unittest.TestCase):
         repo2 = Repository(self.cloned_from_repo)
         cs = repo2.commit('A commit', allow_empty=True)
 
-        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash, ref_name='master')
+        repo2.push(self.main_repo, self.main_repo_bare, rev=cs.hash,
+                   ref_name='master')
 
         notes_ref = repo2.append_note('some note dude', cs.hash)
-        repo2.push(self.main_repo, self.main_repo_bare, ref_name='refs/notes/*')
+        repo2.push(self.main_repo, self.main_repo_bare,
+                   ref_name='refs/notes/*')
 
         notes_ref_repo1, commit_ref_repo1 = git1('notes', 'list').split()
         notes_ref_repo2, commit_ref_repo2 = git2('notes', 'list').split()
