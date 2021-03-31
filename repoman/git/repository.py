@@ -286,17 +286,17 @@ class Repository(BaseRepo):
         :func:`~repoman.repository.Repository.get_revset`
         """
 
-        if branch is not None:
+        if branch:
             b = self.get_branch(branch)
             if cs_to is None:
                 cs_to = b.get_changeset().hash
             else:
                 cs_to = self.get_ancestor(self[cs_to], b.get_changeset()).hash
 
-        if cs_to is None:
+        if not cs_to:
             cs_to = 'HEAD'
 
-        if cs_from is None:
+        if not cs_from:
             cs = self._git(
                 'log', '--pretty=%H', '--reverse',
                 cs_to,
@@ -311,7 +311,7 @@ class Repository(BaseRepo):
 
             rev_range = "%s..%s" % (cs_from, cs_to)
             cs = self._git(
-                'log', '--pretty=%H', '--reverse', '--ancestry-path',
+                'log', '--pretty=%H', '--reverse',
                 rev_range,
                 _iter=True)
             # When printing git log ranges, it doesn't include the root one
