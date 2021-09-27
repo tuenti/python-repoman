@@ -145,7 +145,7 @@ class GitMergeRebase(GitMerge):
     def perform(self):
         self._validate_local_branch()
 
-        self._git('merge', '--rebase',
+        self._git('rebase',
                   self.other_rev.hash,
                   _ok_code=[0, 1])
 
