@@ -140,7 +140,7 @@ class GitMergeSquash(GitMerge):
 
 class GitMergeRebase(GitMerge):
     def __init__(self, *args, **kwargs):
-        super(GitMergeSquash, self).__init__(*args, **kwargs)
+        super(GitMergeRebase, self).__init__(*args, **kwargs)
 
     def perform(self):
         self._validate_local_branch()
