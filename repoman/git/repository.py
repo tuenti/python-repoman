@@ -120,6 +120,41 @@ class GitMergeFastForward(GitMerge):
         return self.repository.tip()
 
 
+class GitMergeSquash(GitMerge):
+    def __init__(self, *args, **kwargs):
+        super(GitMergeSquash, self).__init__(*args, **kwargs)
+
+    def perform(self):
+        self._validate_local_branch()
+
+        self._git('merge', '--squash',
+                  self.other_rev.hash,
+                  _ok_code=[0, 1])
+
+        conflicts = self._git('diff', name_only=True, diff_filter='U').split()
+
+        if conflicts:
+            raise MergeConflictError("Conflicts found: merging %s failed" %
+                                     ", ".join(conflicts))
+
+
+class GitMergeRebase(GitMerge):
+    def __init__(self, *args, **kwargs):
+        super(GitMergeRebase, self).__init__(*args, **kwargs)
+
+    def perform(self):
+        self._validate_local_branch()
+
+        self._git('rebase',
+                  self.other_rev.hash,
+                  _ok_code=[0, 1])
+
+        conflicts = self._git('diff', name_only=True, diff_filter='U').split()
+
+        if conflicts:
+            raise MergeConflictError("Conflicts found: merging %s failed" %
+                                     ", ".join(conflicts))
+
 class Repository(BaseRepo):
     """
     Models a Git Repository
@@ -398,6 +433,18 @@ class Repository(BaseRepo):
                           dry_run=False):
         return self._merge(local_branch, other_rev, other_branch_name, dry_run,
                            strategy=GitMergeFastForward)
+
+    def merge_squash(self, local_branch=None, other_rev=None,
+                     other_branch_name=None,
+                     dry_run=False):
+        return self._merge(local_branch, other_rev, other_branch_name, dry_run,
+                           strategy=GitMergeSquash)
+
+    def merge_rebase(self, local_branch=None, other_rev=None,
+                    other_branch_name=None,
+                    dry_run=False):
+        return self._merge(local_branch, other_rev, other_branch_name, dry_run,
+                           strategy=GitMergeRebase)
 
     def add(self, files):
         if isinstance(files, str):
