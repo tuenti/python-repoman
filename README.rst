@@ -116,11 +116,11 @@ file for more info.
   :target: `Coveralls`_
   :alt: Coveralls results_
 
-.. |pip version| image:: https://pypip.in/v/repoman-scm/badge.png
+.. |pip version| image:: https://img.shields.io/pypi/v/repoman-scm.svg
     :target: https://pypi.python.org/pypi/repoman-scm
     :alt: Latest PyPI version
 
-.. |pip downloads| image:: https://pypip.in/d/repoman-scm/badge.png
+.. |pip downloads| image:: https://img.shields.io/pypi/dm/repoman-scm.svg
     :target: https://pypi.python.org/pypi/repoman-scm
     :alt: Number of PyPI downloads
 
